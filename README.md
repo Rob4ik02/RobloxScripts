@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://luna.liriliri.io/" target="_blank">
-    <img src="blob:null/829c21aa-7af7-44ea-9661-7ee2cab3ea78" width="400">
+    <img src="https://github.com/Rob4ik02/RobloxScripts/blob/main/rounded-in-photoretrica.png?raw=true" width="400">
   </a>
 </div>
 
