@@ -562,7 +562,7 @@ elseif place == idPlaces.BuildABoatForTreasure then
     })
 
     -- Обработчик включения/выключения ESP
-    local PlayerESP = EspTab:CreateToggle({
+    local PlayerESP = EspTab:CreateButton({
         Name = "EspPlayers",
         Description = nil,
         CurrentValue = false,
@@ -586,7 +586,11 @@ elseif place == idPlaces.BuildABoatForTreasure then
         Color = Color3.fromRGB(0, 0, 0),
         Flag = "ColorPicker1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
         Callback = function(Value)
-            esp.FillColor = Value
+            if esp then
+                esp.FillColor = Value
+            else
+                warn("ESP is not enabled")
+            end
         end
     }, "ColorPicker") 
 
