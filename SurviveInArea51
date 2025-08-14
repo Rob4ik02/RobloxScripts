@@ -12,21 +12,27 @@ if place == idPlaces.Surviveinarea51 then
     local Luna = loadstring(game:HttpGet("https://raw.githubusercontent.com/Nebula-Softworks/Luna-Interface-Suite/refs/heads/master/source.lua", true))()
 
     local Window = Luna:CreateWindow({
-        Name = "Global Script's | SIA51",
-        Subtitle = "free trial",
+        Name = "Global Script's",
+        Subtitle = "Survive In Area 51",
         LogoID = 91154874732986,
         LoadingEnabled = true,
         LoadingTitle = "Oxygen 02",
         LoadingSubtitle = "Survive In Area 51",
         ConfigSettings = {
             RootFolder = nil,
-            ConfigFolder = "Big Hub"
+            ConfigFolder = "GlobalScripts",
         },
         KeySystem = false,
     })
 
+    Window:CreateHomeTab({
+        SupportedExecutors = {"Krnl", "Volcano", "Arceus x neo", "Delta", "Fluxus"}, -- A Table Of Executors Your Script Supports. Add strings of the executor names for each executor.
+        DiscordInvite = "GZmrm5mq", -- The Discord Invite Link. Do Not Include discord.gg/ | Only Include the code.
+        Icon = 2, -- By Default, The Icon Is The Home Icon. If You would like to change it to dashboard, replace the interger with 2
+    })
+
     -- Создание и проверка части для бэйпаса
-    if not workspace:FindFirstChild("Oxy02-BypassCheat") then
+    if not workspace:FindFirstChild("GlobalScripts-BypassCheat") then
         local par = Instance.new("Part")
         par.Parent = workspace
         par.Anchored = true
@@ -38,7 +44,7 @@ if place == idPlaces.Surviveinarea51 then
         par.Size = Vector3.new(35, 2, 35)
     end
 
-    local bypassPart = workspace:FindFirstChild("Oxy02-BypassCheat")
+    local bypassPart = workspace:FindFirstChild("GlobalScripts-BypassCheat")
 
     -- Триггер для бэйпаса
     task.spawn(function()
@@ -445,6 +451,23 @@ if place == idPlaces.Surviveinarea51 then
         end
     })
 
+    local CreditsTab = Window:CreateTab({
+        Name = "Credits",
+        Icon = "view_in_ar",
+        ImageSource = "Material",
+        ShowTitle = true -- This will determine whether the big header text in the tab will show
+    })
+
+    local Label1 = CreditsTab:CreateLabel({
+        Text = "Our Telegram: @universalscriptsroblox",
+        Style = 2 -- Luna Labels Have 3 Styles : A Basic Label, A Green Information Label and A Red Warning Label. Look At The Following Image For More Details
+    })
+
+    local Label2 = CreditsTab:CreateLabel({
+        Text = "Our Roblox: @8h8ph, @kiecsy, @RobTopBot_01.",
+        Style = 1 -- Luna Labels Have 3 Styles : A Basic Label, A Green Information Label and A Red Warning Label. Look At The Following Image For More Details
+    })
+
     local admins = {5022921494}
     Players.PlayerAdded:Connect(function(player)
         if table.find(admins, player.UserId) and
@@ -461,8 +484,58 @@ if place == idPlaces.Surviveinarea51 then
     -- Финальное уведомление
     Luna:Notification({
         Title = "Hey!",
-        Icon = "notifications_active",
+        Icon = "info",
         ImageSource = "Material",
         Content = "Script is fully loaded!"
     })
+
+elseif place == idPlaces.BuildABoatForTreasure then
+    -- Здесь можно добавить код для игры Build A Boat For Treasure
+    local Luna = loadstring(game:HttpGet("https://raw.githubusercontent.com/Nebula-Softworks/Luna-Interface-Suite/refs/heads/master/source.lua", true))()
+
+    local Window = Luna:CreateWindow({
+        Name = "Global Script's",
+        Subtitle = "Build A Boat For Treasure",
+        LogoID = 91154874732986,
+        LoadingEnabled = true,
+        LoadingTitle = "Oxygen 02",
+        LoadingSubtitle = "Build A Boat For Treasure",
+        ConfigSettings = {
+            RootFolder = nil,
+            ConfigFolder = "GlobalScripts",
+        },
+        KeySystem = false,
+    })
+
+    Window:CreateHomeTab({
+        SupportedExecutors = {"Krnl", "Volcano", "Arceus x neo", "Delta", "Fluxus"}, -- A Table Of Executors Your Script Supports. Add strings of the executor names for each executor.
+        DiscordInvite = "GZmrm5mq", -- The Discord Invite Link. Do Not Include discord.gg/ | Only Include the code.
+        Icon = 2, -- By Default, The Icon Is The Home Icon. If You would like to change it to dashboard, replace the interger with 2
+    })
+else
+    local Luna = loadstring(game:HttpGet("https://raw.githubusercontent.com/Nebula-Softworks/Luna-Interface-Suite/refs/heads/master/source.lua", true))()
+
+    local Window = Luna:CreateWindow({
+        Name = "Global Script's",
+        Subtitle = "Not supported game",
+        LogoID = 91154874732986,
+        LoadingEnabled = true,
+        LoadingTitle = "Global Script's",
+        LoadingSubtitle = "Not supported game",
+        ConfigSettings = {
+            RootFolder = nil,
+            ConfigFolder = "GlobalScripts",
+        },
+        KeySystem = false,
+    })
+
+
+    Luna:Notification({
+        Title = "Unsupported Game",
+        Icon = "error",
+        ImageSource = "Material",
+        Content = "Did you know what? This script only works in Survive In Area 51 or Build A Boat For Treasure.\n\n" ..
+                 "If you want to use it in other games, please contact the developer.",
+    })
+    
 end
