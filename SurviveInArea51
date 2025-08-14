@@ -518,7 +518,7 @@ elseif place == idPlaces.BuildABoatForTreasure then
         end)
     end
 
-        local workspace = game:GetService("Workspace")
+    local workspace = game:GetService("Workspace")
     local playersService = game:GetService("Players")
     local replicatedstorage = game:GetService("ReplicatedStorage")
 
@@ -561,98 +561,34 @@ elseif place == idPlaces.BuildABoatForTreasure then
         ShowTitle = true,
     })
 
-    local colorplayers = Color3.fromRGB(86, 171, 128)
-
-    local function updateESPColor(color)
-        colorplayers = color
-        -- Обновление цвета для существующих хайлайтов
-        for _, p in ipairs(playersService:GetPlayers()) do
-            if p.Character then
-                for _, hl in ipairs(p.Character:GetChildren()) do
-                    if hl:IsA("Highlight") then
-                        hl.FillColor = colorplayers
-                    end
-                end
-            end
-        end
-    end
-
-    local ColorESPPlayers = EspTab:CreateColorPicker({
-        Name = "Color of esp players",
-        Color = colorplayers,
-        Flag = "ColorPicker1",
-        Callback = updateESPColor,
-    }, "ColorPicker")
-
-    -- Переменная для включения ESP
-    local espEnabled = false
-    local espHighlights = {} -- таблица для хранения хайлайтов
-
-    -- Функция для установки хайлайтов
-    local function enableESPForPlayer(p)
-        if not p.Character then return end
-        local highlight = Instance.new("Highlight")
-        highlight.Name = "ESPHighlight"
-        highlight.FillTransparency = 0.5
-        highlight.FillColor = colorplayers
-        highlight.OutlineColor = Color3.new(1, 1, 1)
-        highlight.OutlineTransparency = 0
-        highlight.Parent = p.Character
-        espHighlights[p] = highlight
-    end
-
-    -- Функция для удаления хайлайтов
-    local function disableESPForPlayer(p)
-        if espHighlights[p] then
-            espHighlights[p]:Destroy()
-            espHighlights[p] = nil
-        end
-    end
-
     -- Обработчик включения/выключения ESP
     local PlayerESP = EspTab:CreateToggle({
         Name = "EspPlayers",
         Description = nil,
         CurrentValue = false,
         Callback = function(Value)
-            espEnabled = Value
-            if espEnabled then
-                -- Включение: устанавливаем хайлайты для текущих игроков
-                for _, p in ipairs(playersService:GetPlayers()) do
-                    if p ~= player then -- исключая локального игрока, если нужно
-                        enableESPForPlayer(p)
-                    end
-                end
-                -- Следим за добавлением новых игроков
-                playersService.PlayerAdded:Connect(function(newPlayer)
-                    if espEnabled and newPlayer ~= player then
-                        newPlayer.CharacterAdded:Connect(function()
-                            -- Ждем появления character
-                            wait(0.1)
-                            enableESPForPlayer(newPlayer)
-                        end)
-                    end
-                end)
-                -- Обработка уже существующих игроков (если есть)
-                for _, p in ipairs(playersService:GetPlayers()) do
-                    if p ~= player then
-                        if p.Character then
-                            enableESPForPlayer(p)
-                        end
-                        p.CharacterAdded:Connect(function()
-                            wait(0.1)
-                            enableESPForPlayer(p)
-                        end)
-                    end
-                end
-            else
-                -- Отключение: удаляем все хайлайты
-                for p, _ in pairs(espHighlights) do
-                    disableESPForPlayer(p)
-                end
+            local players = game.Players:GetPlayers()
+
+            for i,v in pairs(players) do
+                local esp = Instance.new("Highlight")
+                esp.Name = v.Name
+                esp.FillTransparency = 0.5
+                esp.FillColor = Color3.new(0, 0, 0)
+                esp.OutlineColor = Color3.new(255, 255, 255)
+                esp.OutlineTransparency = 0
+                esp.Parent = v.Character
             end
         end
     })
+
+    local PlayersFillColor = EspTab:CreateColorPicker({
+        Name = "Fill Color",
+        Color = Color3.fromRGB(0, 0, 0),
+        Flag = "ColorPicker1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+        Callback = function(Value)
+            esp.FillColor = Value
+        end
+    }, "ColorPicker") 
 
     local PlayerTab = Window:CreateTab({
         Name = "Player",
