@@ -562,21 +562,52 @@ elseif place == idPlaces.BuildABoatForTreasure then
     })
 
     -- Обработчик включения/выключения ESP
+    local activeHighlights = {} -- Keep track of highlights per player
+
     local PlayerESP = EspTab:CreateButton({
-        Name = "EspPlayers",
+        Name = "Players",
         Description = nil,
         CurrentValue = false,
         Callback = function(Value)
-            local players = game.Players:GetPlayers()
+            if Value then
+                -- Enable ESP for all players
+                for _, player in pairs(game.Players:GetPlayers()) do
+                    -- Skip if highlight already exists
+                    if not activeHighlights[player] then
+                        if player.Character and player.Character:FindFirstChildWhichIsA("Humanoid") then
+                            local esp = Instance.new("Highlight")
+                            esp.Name = "ESPHighlight"
+                            esp.FillTransparency = 0.5
+                            esp.FillColor = Color3.new(0, 0, 0)
+                            esp.OutlineColor = Color3.new(1, 1, 1)
+                            esp.OutlineTransparency = 0
+                            esp.Parent = player.Character
+                            activeHighlights[player] = esp
+                        end
+                    end
+                end
+            else
+                -- Disable ESP for all players
+                for player, esp in pairs(activeHighlights) do
+                    if esp and esp.Parent then
+                        esp:Destroy()
+                    end
+                    activeHighlights[player] = nil
+                end
+            end
+        end
+    })
 
-            for i,v in pairs(players) do
-                local esp = Instance.new("Highlight")
-                esp.Name = v.Name
-                esp.FillTransparency = 0.5
-                esp.FillColor = Color3.new(0, 0, 0)
-                esp.OutlineColor = Color3.new(255, 255, 255)
-                esp.OutlineTransparency = 0
-                esp.Parent = v.Character
+    local PlayerDelESP = EspTab:CreateButton({
+        Name = "Delete esp players",
+        Description = nil,
+        CurrentValue = false,
+        Callback = function(Value)
+            for player, esp in pairs(activeHighlights) do
+                if esp and esp.Parent then
+                    esp:Destroy()
+                end
+                activeHighlights[player] = nil
             end
         end
     })
@@ -584,15 +615,17 @@ elseif place == idPlaces.BuildABoatForTreasure then
     local PlayersFillColor = EspTab:CreateColorPicker({
         Name = "Fill Color",
         Color = Color3.fromRGB(0, 0, 0),
-        Flag = "ColorPicker1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+        Flag = "ColorPicker1",
         Callback = function(Value)
-            if esp then
-                esp.FillColor = Value
-            else
-                warn("ESP is not enabled")
+            -- Change fill color for all active highlights
+            for _, esp in pairs(activeHighlights) do
+                if esp then
+                    esp.FillColor = Value
+                end
             end
         end
-    }, "ColorPicker") 
+    }, "ColorPicker")
+ 
 
     local PlayerTab = Window:CreateTab({
         Name = "Player",
