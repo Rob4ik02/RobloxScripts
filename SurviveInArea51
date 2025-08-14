@@ -12,9 +12,9 @@ if place == idPlaces.Surviveinarea51 then
     local Luna = loadstring(game:HttpGet("https://raw.githubusercontent.com/Nebula-Softworks/Luna-Interface-Suite/refs/heads/master/source.lua", true))()
 
     local Window = Luna:CreateWindow({
-        Name = "Oxy 02 Projects | SIA51",
+        Name = "Global Script's | SIA51",
         Subtitle = "free trial",
-        LogoID = loadstring(game:HttpGet("https://raw.githubusercontent.com/Rob4ik02/RobloxScripts/refs/heads/main/icon.png))(),
+        LogoID = 115657206529404,
         LoadingEnabled = true,
         LoadingTitle = "Oxygen 02",
         LoadingSubtitle = "Survive In Area 51",
