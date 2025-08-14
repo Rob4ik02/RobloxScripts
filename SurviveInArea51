@@ -75,7 +75,7 @@ if place == idPlaces.Surviveinarea51 then
     -- Создаем вкладки
     local TabAura = Window:CreateTab({
         Name = "[ 1 ] Aura",
-        Icon = "view_in_ar",
+        Icon = "radar",
         ImageSource = "Material",
         ShowTitle = true
     })
@@ -178,7 +178,7 @@ if place == idPlaces.Surviveinarea51 then
     -- Кнопка для мгновенной регенерации
     local TabRegeneration = Window:CreateTab({
         Name = "[ 2 ] Regeneration",
-        Icon = "view_in_ar",
+        Icon = "health_and_safety",
         ImageSource = "Material",
         ShowTitle = true
     })
@@ -279,7 +279,7 @@ if place == idPlaces.Surviveinarea51 then
 
     local TabMisc = Window:CreateTab({
         Name = "[ 3 ] Misc",
-        Icon = "view_in_ar",
+        Icon = "miscellaneous_services",
         ImageSource = "Material",
         ShowTitle = true
     })
@@ -377,7 +377,7 @@ if place == idPlaces.Surviveinarea51 then
 
     local TabFarm = Window:CreateTab({
         Name = "[ 4 ] Farm Monsters",
-        Icon = "view_in_ar",
+        Icon = "auto_mode",
         ImageSource = "Material",
         ShowTitle = true
     })
@@ -453,7 +453,7 @@ if place == idPlaces.Surviveinarea51 then
 
     local CreditsTab = Window:CreateTab({
         Name = "Credits",
-        Icon = "view_in_ar",
+        Icon = "info",
         ImageSource = "Material",
         ShowTitle = true -- This will determine whether the big header text in the tab will show
     })
@@ -491,6 +491,39 @@ if place == idPlaces.Surviveinarea51 then
 
 elseif place == idPlaces.BuildABoatForTreasure then
     -- Здесь можно добавить код для игры Build A Boat For Treasure
+    function autofarmstart()
+        tweenService, tweenInfo = game:GetService("TweenService"), TweenInfo.new(1, Enum.EasingStyle.Linear)
+        tweenInfoE = TweenInfo.new(2, Enum.EasingStyle.Linear)
+        AutofarmInfoS = TweenInfo.new(24, Enum.EasingStyle.Linear)
+        local Tween = tweenService:Create(game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart"), tweenInfo, {CFrame = CFrame.new(-53.3258858, 61.0841904, -168.990448, -0.999997914, 6.06681024e-05, -0.00204384234, 8.84582896e-09, 0.999559879, 0.0296659637, 0.00204474269, 0.0296659023, -0.999557793)})
+        Tween:Play()
+        Tween.Completed:Wait()
+        local TweenS = tweenService:Create(game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart"), AutofarmInfoS, {CFrame = CFrame.new(-60.1640434, 45.5146027, 8749.81738, -0.998283863, 0.0156156365, -0.0564399585, 6.99763136e-10, 0.963791013, 0.266658753, 0.0585603714, 0.266201138, -0.962137043)})
+        TweenS:Play()
+        TweenS.Completed:Wait()
+        local TweenE = tweenService:Create(game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart"), tweenInfoE, {CFrame = CFrame.new(-54.7364044, -353.343506, 9499.69141, -0.997614145, -0.057083983, 0.0388260931, 3.42698292e-09, 0.56239897, 0.826866031, -0.0690365583, 0.824893236, -0.56105715)})
+        TweenE:Play()
+
+        wait(2)
+
+        game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
+
+        spawn(function()
+            while game.Players.LocalPlayer.Character do
+                wait()
+                firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart,game:GetService("Workspace").BoatStages.NormalStages.TheEnd.GoldenChest.Trigger,0)
+                wait(0.1)
+                firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart,game:GetService("Workspace").BoatStages.NormalStages.TheEnd.GoldenChest.Trigger,1)
+            end
+        end)
+    end
+
+        local workspace = game:GetService("Workspace")
+    local playersService = game:GetService("Players")
+    local replicatedstorage = game:GetService("ReplicatedStorage")
+
+    local player = playersService.LocalPlayer
+
     local Luna = loadstring(game:HttpGet("https://raw.githubusercontent.com/Nebula-Softworks/Luna-Interface-Suite/refs/heads/master/source.lua", true))()
 
     local Window = Luna:CreateWindow({
@@ -507,11 +540,183 @@ elseif place == idPlaces.BuildABoatForTreasure then
         KeySystem = false,
     })
 
-    Window:CreateHomeTab({
-        SupportedExecutors = {"Krnl", "Volcano", "Arceus x neo", "Delta", "Fluxus"}, -- A Table Of Executors Your Script Supports. Add strings of the executor names for each executor.
-        DiscordInvite = "GZmrm5mq", -- The Discord Invite Link. Do Not Include discord.gg/ | Only Include the code.
-        Icon = 2, -- By Default, The Icon Is The Home Icon. If You would like to change it to dashboard, replace the interger with 2
+    local FarmTab = Window:CreateTab({
+        Name = "Auto Farm",
+        Icon = "repeat",
+        ImageSource = "Material",
+        ShowTitle = true,
     })
+
+    local ShopTab = Window:CreateTab({
+        Name = "Shop",
+        Icon = "store",
+        ImageSource = "Material",
+        ShowTitle = true,
+    })
+
+    local EspTab = Window:CreateTab({
+        Name = "ESP",
+        Icon = "visibility",
+        ImageSource = "Material",
+        ShowTitle = true,
+    })
+
+    local colorplayers = Color3.fromRGB(86, 171, 128) -- объявляем заранее
+
+    local ColorESPPlayers = EspTab:CreateColorPicker({
+        Name = "Color of esp players",
+        Color = colorplayers,
+        Flag = "ColorPicker1",
+        Callback = function(Value)
+            colorplayers = Color3.fromRGB(Value.R, Value.G, Value.B)
+            -- Обновление цвета для уже существующих highlight, если есть
+            for _, playerInstance in pairs(playersService:GetPlayers()) do
+                if playerInstance.Character and playerInstance.Character:FindFirstChildOfClass("Highlight") then
+                    local hl = playerInstance.Character:FindFirstChildOfClass("Highlight")
+                    hl.FillColor = colorplayers
+                end
+            end
+        end
+    }, "ColorPicker")
+
+    local espEnabled = false -- переменная для флага включения ESP
+
+    local PlayersEspToggle = EspTab:CreateToggle({
+        Name = "EspPlayers",
+        Description = nil,
+        CurrentValue = false,
+        Callback = function(Value)
+            espEnabled = Value
+            if espEnabled then
+                -- Включаем ESP: создаем хайлайты для уже существующих игроков
+                for _, plr in pairs(playersService:GetPlayers()) do
+                    if plr.Character then
+                        local highlight = plr.Character:FindFirstChildOfClass("Highlight")
+                        if not highlight then
+                            highlight = Instance.new("Highlight")
+                            highlight.Parent = plr.Character
+                            highlight.FillColor = colorplayers
+                            highlight.FillTransparency = 0.5
+                            highlight.OutlineColor = colorplayers
+                            highlight.OutlineTransparency = 0
+                        end
+                    end
+                end
+            else
+                -- Выключаем ESP: удаляем все хайлайты
+                for _, plr in pairs(playersService:GetPlayers()) do
+                    if plr.Character then
+                        local hl = plr.Character:FindFirstChildOfClass("Highlight")
+                        if hl then
+                            hl:Destroy()
+                        end
+                    end
+                end
+            end
+        end
+    })
+
+    -- Обработка новых игроков
+    playersService.PlayerAdded:Connect(function(plr)
+        if espEnabled and plr.Character then
+            local highlight = plr.Character:FindFirstChildOfClass("Highlight")
+            if not highlight then
+                highlight = Instance.new("Highlight")
+                highlight.Parent = plr.Character
+                highlight.FillColor = colorplayers
+                highlight.FillTransparency = 0.5
+                highlight.OutlineColor = colorplayers
+                highlight.OutlineTransparency = 0
+            end
+        end
+    end)
+
+    -- Обновление хайлайтов при респауне
+    playersService.PlayerAdded:Connect(function(plr)
+        plr.CharacterAdded:Connect(function()
+            if espEnabled then
+                local highlight = plr.Character:FindFirstChildOfClass("Highlight")
+                if not highlight then
+                    highlight = Instance.new("Highlight")
+                    highlight.Parent = plr.Character
+                    highlight.FillColor = colorplayers
+                    highlight.FillTransparency = 0.5
+                    highlight.OutlineColor = colorplayers
+                    highlight.OutlineTransparency = 0
+                end
+            end
+        end)
+    end)
+
+
+    local PlayerTab = Window:CreateTab({
+        Name = "Player",
+        Icon = "person",
+        ImageSource = "Material",
+        ShowTitle = true -- This will determine whether the big header text in the tab will show
+    })
+
+    local SpeedSlider = PlayerTab:CreateSlider({
+        Name = "Speed",
+        Range = {0, 200}, -- The Minimum And Maximum Values Respectively
+        Increment = 1, -- Basically The Changing Value/Rounding Off
+        CurrentValue = 16, -- The Starting Value
+            Callback = function(Value)
+                game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+            end
+    }, "Slider")
+
+    local JumpSlider = PlayerTab:CreateSlider({
+        Name = "Jump Power",
+        Range = {0, 200}, -- The Minimum And Maximum Values Respectively
+        Increment = 1, -- Basically The Changing Value/Rounding Off
+        CurrentValue = 50, -- The Starting Value
+        Callback = function(Value)
+            game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
+        end
+    }, "Slider")
+
+    local Slider = PlayerTab:CreateSlider({
+        Name = "Gravity",
+        Range = {0, 200}, -- The Minimum And Maximum Values Respectively
+        Increment = 1, -- Basically The Changing Value/Rounding Off
+        CurrentValue = 196.2, -- The Starting Value
+        Callback = function(Value)
+            game.Workspace.Gravity = Value
+        end
+    }, "Slider")       
+
+    local MiscTab = Window:CreateTab({
+        Name = "Misc",
+        Icon = "auto_awesome",
+        ImageSource = "Material",
+        ShowTitle = true -- This will determine whether the big header text in the tab will show
+    })
+
+    local SettingsTab = Window:CreateTab({
+        Name = "Settings",
+        Icon = "settings",
+        ImageSource = "Material",
+        ShowTitle = true -- This will determine whether the big header text in the tab will show
+    })
+
+    local CreditsTab = Window:CreateTab({
+        Name = "Credits",
+        Icon = "info",
+        ImageSource = "Material",
+        ShowTitle = true -- This will determine whether the big header text in the tab will show
+    })
+
+    local Label1 = CreditsTab:CreateLabel({
+        Text = "Our Telegram: @universalscriptsroblox",
+        Style = 2 -- Luna Labels Have 3 Styles : A Basic Label, A Green Information Label and A Red Warning Label. Look At The Following Image For More Details
+    })
+
+    local Label2 = CreditsTab:CreateLabel({
+        Text = "Our Roblox: @8h8ph, @kiecsy, @RobTopBot_01.",
+        Style = 1 -- Luna Labels Have 3 Styles : A Basic Label, A Green Information Label and A Red Warning Label. Look At The Following Image For More Details
+    })
+
 else
     local Luna = loadstring(game:HttpGet("https://raw.githubusercontent.com/Nebula-Softworks/Luna-Interface-Suite/refs/heads/master/source.lua", true))()
 
@@ -537,5 +742,5 @@ else
         Content = "Did you know what? This script only works in Survive In Area 51 or Build A Boat For Treasure.\n\n" ..
                  "If you want to use it in other games, please contact the developer.",
     })
-    
+
 end
