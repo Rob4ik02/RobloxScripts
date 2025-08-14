@@ -1,2 +1,467 @@
-do local Players=game:GetService("Players");local Workspace=game:GetService("Workspace");local ReplicatedStorage=game:GetService("ReplicatedStorage");local player=Players.LocalPlayer;local place=game.PlaceId;local idPlaces={Surviveinarea51=2214661900,BuildABoatForTreasure=537413528};local function loadLuna() return loadstring(game:HttpGet("https://raw.githubusercontent.com/Nebula-Softworks/Luna-Interface-Suite/refs/heads/master/source.lua",true))();end if (place==idPlaces.Surviveinarea51) then local Luna=loadLuna();local Window=Luna:CreateWindow({Name="Global Script's",Subtitle="Survive In Area 51",LogoID=91154874732986,LoadingEnabled=true,LoadingTitle="Oxygen 02",LoadingSubtitle="Survive In Area 51",ConfigSettings={RootFolder=nil,ConfigFolder="GlobalScripts"},KeySystem=false});local TabAura=Window:CreateTab({Name="[ 1 ] Aura",Icon="radar",ImageSource="Material",ShowTitle=true});local LabelWarn1=TabAura:CreateLabel({Text="Before you will turn on aura, read this below :|",Style=3});local ParagraphWarn1=TabAura:CreateParagraph({Title="Read this.",Text="Turning on some Aura can result in a ban or reset of your data. We do not recommend turning it on always."});if  not workspace:FindFirstChild("GlobalScripts-BypassCheat") then local part=Instance.new("Part",workspace);part.Name="Oxy02-BypassCheat";part.Anchored=true;part.Locked=true;part.Transparency=1;part.Size=Vector3.new(35,2,35);part.Position=Vector3.new(624,1143.7354695,747);part.CanCollide=false;end local bypassPart=workspace:FindFirstChild("Oxy02-BypassCheat");task.spawn(function() while true do if (bypassPart and Players.LocalPlayer and Players.LocalPlayer.Character and Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")) then local hrp=Players.LocalPlayer.Character.HumanoidRootPart;pcall(function() firetouchinterest(hrp,bypassPart,0);firetouchinterest(hrp,bypassPart,1);end);end task.wait(0.1);end end);local function getTime() local gui=Players.LocalPlayer:FindFirstChild("PlayerGui");if (gui and gui:FindFirstChild("EventGUI")) then local eventGui=gui.EventGUI;if eventGui:FindFirstChild("Time") then return eventGui.Time.Value;end end return nil;end local togl=false;local TabAura=Window:CreateTab({Name="[ 1 ] Aura",Icon="radar",ImageSource="Material",ShowTitle=true});local LabelWarn1=TabAura:CreateLabel({Text="Before you will turn on aura, read this below :|",Style=3});local ParagraphWarn1=TabAura:CreateParagraph({Title="Read this.",Text="Turning on some Aura can result in a ban or reset of your data. We do not recommend turning it on always."});local function createHitAuraToggle() local toggle=false;return {toggle=toggle,set=function(val) toggle=val;if toggle then spawn(function() while toggle do pcall(function() local p=Players.LocalPlayer;local char=p.Character;local root=char and char:FindFirstChild("HumanoidRootPart") ;local tool=char and char:FindFirstChildOfClass("Tool") ;if (root and tool and tool:FindFirstChild("GunScript_Server")) then local parts=workspace:GetPartBoundsInRadius(root.Position,40);for _,part in ipairs(parts) do if (part.Parent and part.Parent:FindFirstChildOfClass("Humanoid") and (part.Parent~=char)) then local humanoid=part.Parent:FindFirstChildOfClass("Humanoid");local args={[1]="Head",[2]=humanoid,[3]=humanoid.Parent:FindFirstChild("Head"),[4]=tool,[5]=Vector3.new(0.9372, -0.3045, -0.17)};pcall(function() tool.GunScript_Server.InflictTarget:FireServer(unpack(args));end);end end end end);task.wait(0.1);end end);end end};end local hitAura=createHitAuraToggle();local function onHitAuraChanged(val) hitAura.set(val);end local function createPowerAuraToggle() local toggle=false;return {toggle=toggle,set=function(val) toggle=val;if toggle then spawn(function() while toggle do pcall(function() local root=Players.LocalPlayer.Character and Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") ;if root then local parts=workspace:GetPartBoundsInRadius(root.Position,40);for _,part in ipairs(parts) do if (part.Parent and part.Parent:FindFirstChildOfClass("Humanoid") and (part.Parent~=Players.LocalPlayer.Character) and (part.Parent.Name~="FakeFriend")) then local humanoid=part.Parent:FindFirstChildOfClass("Humanoid");if (humanoid and (humanoid.Health>0) and  not Players:GetPlayerFromCharacter(humanoid.Parent)) then for _,item in ipairs(Players.LocalPlayer.Character:GetChildren()) do if (item:IsA("Tool") and item:FindFirstChild("GunScript_Server")) then local args={[1]="Head",[2]=humanoid,[3]=humanoid.Parent:FindFirstChild("Head"),[4]=item,[5]=Vector3.new(0.9372, -0.3045, -0.17)};pcall(function() item.GunScript_Server.InflictTarget:FireServer(unpack(args));end);end end end end end end end);task.wait(0.1);end end);end end};end local powerAura=createPowerAuraToggle();local TabRegeneration=Window:CreateTab({Name="[ 2 ] Regeneration",Icon="health_and_safety",ImageSource="Material",ShowTitle=true});local ButtonRegen=TabRegeneration:CreateButton({Name="Instant regeneration",Callback=function() local char=Players.LocalPlayer.Character;if (char and char:FindFirstChild("Humanoid")) then char.Humanoid.Health=char.Humanoid.MaxHealth;end end});local loip=false;local function toggleInfRegen(val) loip=val;spawn(function() while loip do pcall(function() local time=getTime();if time then if (time<15) then firetouchinterest(Players.LocalPlayer.Character.Head,workspace.Misc["Blizzard Armor"].Head,1);firetouchinterest(Players.LocalPlayer.Character.Head,workspace.Misc["Blizzard Armor"].Head,0);elseif ((time>=15) and (time<30)) then local armor=workspace.Misc:FindFirstChild("Silver Armor - 15 min Playtime");if armor then firetouchinterest(Players.LocalPlayer.Character.Head,armor.Head,0);firetouchinterest(Players.LocalPlayer.Character.Head,armor.Head,1);end elseif ((time>=30) and (time<60)) then local armor=workspace.Misc:FindFirstChild("Golden Armor - 30 min Playtime");if armor then firetouchinterest(Players.LocalPlayer.Character.Head,armor.Head,0);firetouchinterest(Players.LocalPlayer.Character.Head,armor.Head,1);end elseif (time>=60) then local armor=workspace.Misc:FindFirstChild("Diamond Armor - 60 min Playtime");if armor then firetouchinterest(Players.LocalPlayer.Character.Head,armor.Head,0);firetouchinterest(Players.LocalPlayer.Character.Head,armor.Head,1);end end end end);task.wait(0.5);end end);end local ToggleRegenInf=TabRegeneration:CreateToggle({Name="Instant regeneration",CurrentValue=false,Callback=toggleInfRegen});local function getPlayerByLowerName(name) for _,p in ipairs(Players:GetPlayers()) do if (p.Name:lower()==name:lower()) then return p;end end return nil;end local TabOther=Window:CreateTab({Name="[ 2 ] Regeneration",Icon="health_and_safety",ShowTitle=true});local InputHealPlayer=TabOther:CreateInput({Name="Heal Player",PlaceholderText="Write name of player to heal him",CurrentValue="",Callback=function(val) local target=getPlayerByLowerName(val);if (target and target.Character and target.Character:FindFirstChildOfClass("Humanoid")) then local hum=target.Character:FindFirstChildOfClass("Humanoid");hum.Health=hum.MaxHealth;else warn("Игрок не найден или его персонаж отсутствует");end end});local healAll=false;local function toggleHealAll(val) healAll=val;if healAll then spawn(function() while healAll do for _,p in ipairs(Players:GetPlayers()) do local char=p.Character;if (char and char:FindFirstChildOfClass("Humanoid")) then char.Humanoid.Health=char.Humanoid.MaxHealth;end end task.wait(0.5);end end);end end local ToggleHealAll=TabOther:CreateToggle({Name="Heal all players",CurrentValue=false,Callback=toggleHealAll});local TabMisc=Window:CreateTab({Name="[ 3 ] Misc",Icon="miscellaneous_services",ShowTitle=true});local ButtonIncinerator=TabMisc:CreateButton({Name="Safe incinerator",Callback=function() local incinerator=Workspace:FindFirstChild("Incinerator");if incinerator then local model=incinerator:FindFirstChild("Model");if model then local challenge1=model:FindFirstChild("Challenge1");if (challenge1 and challenge1:FindFirstChild("Model") and challenge1.Model:FindFirstChild("ChallengeGate")) then challenge1.Model.ChallengeGate:Destroy();end end local acid=incinerator:FindFirstChild("Acid");if acid then acid:Destroy();end end end});local function returnpos(time) if  not Players.LocalPlayer:GetAttribute("WaitScriptEnd") then Players.LocalPlayer:SetAttribute("WaitScriptEnd",true);local pos=Players.LocalPlayer.Character.HumanoidRootPart.CFrame;task.delay(time,function() Players.LocalPlayer:SetAttribute("WaitScriptEnd",false);if (Players.LocalPlayer.Character and Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")) then Players.LocalPlayer.Character.HumanoidRootPart.CFrame=pos;end end);end end local DropdownTeleport=TabMisc:CreateDropdown({Name="Teleport to ",Options={"Spawn","Portal","Incinerator","Metro","Sewerage","Reaper door","Craft zone","Mineshaft"},CurrentOption="Spawn",Callback=function(value) end});local Sorting=false;local function toggleSpamTools(val) Sorting=val;if Sorting then spawn(function() while Sorting do for _,item in ipairs(Players.LocalPlayer.Backpack:GetChildren()) do if item:IsA("Tool") then local humanoid=Players.LocalPlayer.Character and Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid") ;if humanoid then humanoid:EquipTool(item);task.wait(0.1);humanoid:UnequipTools();end task.wait(0.1);end end task.wait();end end);end end local ToggleSpamTools=TabMisc:CreateToggle({Name="Spam Tools",CurrentValue=false,Callback=toggleSpamTools});local TabFarm=Window:CreateTab({Name="[ 4 ] Farm Monsters",Icon="auto_mode",ShowTitle=true});local ButtonHitAll=TabFarm:CreateButton({Name="Hit all entities",Callback=function() for _,model in ipairs(Workspace:GetChildren()) do if (model:IsA("Model") and model:FindFirstChild("Head") and model:FindFirstChildOfClass("Humanoid")) then local humanoid=model:FindFirstChildOfClass("Humanoid");local tool=Players.LocalPlayer.Character and Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") ;if tool then local args={"Head",humanoid,humanoid.Parent:FindFirstChild("Head"),tool,Vector3.new(0.9372, -0.3045, -0.17)};pcall(function() if tool.GunScript_Server then tool.GunScript_Server.InflictTarget:FireServer(unpack(args));end end);end end end end});local oop=false;local function toggleHitLoop(val) oop=val;if oop then spawn(function() while oop do for _,model in ipairs(Workspace:GetChildren()) do if (model:IsA("Model") and model:FindFirstChild("Head") and model:FindFirstChildOfClass("Humanoid")) then local humanoid=model:FindFirstChildOfClass("Humanoid");local tool=Players.LocalPlayer.Character and Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") ;if tool then local args={"Head",humanoid,humanoid.Parent:FindFirstChild("Head"),tool,Vector3.new(0.9372, -0.3045, -0.17)};local success,err=pcall(function() if tool.GunScript_Server then tool.GunScript_Server.InflictTarget:FireServer(unpack(args));end end);if  not success then warn("Ошибка при циклическом ударе: ",err);end end end end task.wait(0.1);end end);end end local ToggleHitLoop=TabFarm:CreateToggle({Name="Hit all entities ( Looped )",CurrentValue=false,Callback=toggleHitLoop});local CreditsTab=Window:CreateTab({Name="Credits",Icon="info",ShowTitle=true});CreditsTab:CreateLabel({Text="Our Telegram: @universalscriptsroblox",Style=2});CreditsTab:CreateLabel({Text="Our Roblox: @8h8ph, @kiecsy, @RobTopBot_01.",Style=1});Luna:Notification({Title="Hey!",Icon="info",Content="Script is fully loaded!"});elseif (place==idPlaces.BuildABoatForTreasure) then local Luna=loadLuna();local Window=Luna:CreateWindow({Name="Global Script's",Subtitle="Build A Boat For Treasure",LogoID=91154874732986,LoadingEnabled=true,LoadingTitle="Oxygen 02",LoadingSubtitle="Build A Boat For Treasure",ConfigSettings={RootFolder=nil,ConfigFolder="GlobalScripts"},KeySystem=false});local FarmTab=Window:CreateTab({Name="Auto Farm",Icon="repeat",ShowTitle=true});FarmTab:CreateLabel({Text="Cooming soon...",Style=1});local ShopTab=Window:CreateTab({Name="Shop",Icon="store",ShowTitle=true});ShopTab:CreateLabel({Text="Cooming soon...",Style=1});local PlayerTab=Window:CreateTab({Name="Player",Icon="person",ShowTitle=true});PlayerTab:CreateSlider({Name="Speed",Range={0,200},CurrentValue=16,Callback=function(v) game.Players.LocalPlayer.Character.Humanoid.WalkSpeed=v;end});PlayerTab:CreateSlider({Name="Jump Power",Range={0,200},CurrentValue=50,Callback=function(v) game.Players.LocalPlayer.Character.Humanoid.JumpPower=v;end});PlayerTab:CreateSlider({Name="Gravity",Range={0,200},CurrentValue=196.2,Callback=function(v) game.Workspace.Gravity=v;end});local MiscTab=Window:CreateTab({Name="Misc",Icon="auto_awesome",ShowTitle=true});MiscTab:CreateLabel({Text="Cooming soon...",Style=1});local SettingsTab=Window:CreateTab({Name="Settings",Icon="settings",ShowTitle=true});SettingsTab:CreateLabel({Text="Cooming soon...",Style=1});local CreditsTab=Window:CreateTab({Name="Credits",Icon="info",ShowTitle=true});CreditsTab:CreateLabel({Text="Our Telegram: @universalscriptsroblox",Style=2});CreditsTab:CreateLabel({Text="Our Roblox: @8h8ph, @kiecsy, @RobTopBot_01.",Style=1});else local Luna=loadLuna();local Window=Luna:CreateWindow({Name="Global Script's",Subtitle="Not supported game",LogoID=91154874732986,LoadingEnabled=true,LoadingTitle="Global Script's",LoadingSubtitle="Not supported game",ConfigSettings={RootFolder=nil,ConfigFolder="GlobalScripts"},KeySystem=false});Luna:Notification({Title="Unsupported Game",Icon="error",Content="Это скрипт работает только в Survive In Area 51 или Build A Boat For Treasure.\n
-"   .. "Если хотите использовать его в других играх, обратитесь к разработчику." });end end
+-- Получение сервисов
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local player = Players.LocalPlayer
+local place = game.PlaceId
+
+-- Сопоставление ID игр
+local idPlaces = {
+    Surviveinarea51 = 2214661900,
+    BuildABoatForTreasure = 537413528
+}
+
+-- Функция для загрузки интерфейса Luna
+local function loadLuna()
+    return loadstring(game:HttpGet("https://raw.githubusercontent.com/Nebula-Softworks/Luna-Interface-Suite/refs/heads/master/source.lua", true))()
+end
+
+-- Основная логика для Survive in Area 51
+if place == idPlaces.Surviveinarea51 then
+    local Luna = loadLuna()
+
+    local Window = Luna:CreateWindow({
+        Name = "Global Script's",
+        Subtitle = "Survive In Area 51",
+        LogoID = 91154874732986,
+        LoadingEnabled = true,
+        LoadingTitle = "Oxygen 02",
+        LoadingSubtitle = "Survive In Area 51",
+        ConfigSettings = { RootFolder = nil, ConfigFolder = "GlobalScripts" },
+        KeySystem = false,
+    })
+
+    -- Создаем вкладки и элементы интерфейса
+    local TabAura = Window:CreateTab({ Name = "[ 1 ] Aura", Icon = "radar", ImageSource = "Material", ShowTitle = true })
+    local LabelWarn1 = TabAura:CreateLabel({ Text = "Before you will turn on aura, read this below :|", Style = 3 })
+    local ParagraphWarn1 = TabAura:CreateParagraph({ Title = "Read this.", Text = "Turning on some Aura can result in a ban or reset of your data. We do not recommend turning it on always." })
+
+    -- Триггер для бэйпаса
+    if not workspace:FindFirstChild("GlobalScripts-BypassCheat") then
+        local part = Instance.new("Part", workspace)
+        part.Name = "Oxy02-BypassCheat"
+        part.Anchored = true
+        part.Locked = true
+        part.Transparency = 1
+        part.Size = Vector3.new(35, 2, 35)
+        part.Position = Vector3.new(624, 1143.7354695, 747)
+        part.CanCollide = false
+    end
+    local bypassPart = workspace:FindFirstChild("Oxy02-BypassCheat")
+
+    -- Постоянный триггер для бэйпаса
+    task.spawn(function()
+        while true do
+            if bypassPart and Players.LocalPlayer and Players.LocalPlayer.Character and Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local hrp = Players.LocalPlayer.Character.HumanoidRootPart
+                pcall(function()
+                    firetouchinterest(hrp, bypassPart, 0)
+                    firetouchinterest(hrp, bypassPart, 1)
+                end)
+            end
+            task.wait(0.1)
+        end
+    end)
+
+    -- Функция для получения времени
+    local function getTime()
+        local gui = Players.LocalPlayer:FindFirstChild("PlayerGui")
+        if gui and gui:FindFirstChild("EventGUI") then
+            local eventGui = gui.EventGUI
+            if eventGui:FindFirstChild("Time") then
+                return eventGui.Time.Value
+            end
+        end
+        return nil
+    end
+
+    -- Создаем вкладки и элементы для ауры
+    local togl = false
+    local TabAura = Window:CreateTab({ Name = "[ 1 ] Aura", Icon = "radar", ImageSource = "Material", ShowTitle = true })
+
+    local LabelWarn1 = TabAura:CreateLabel({ Text = "Before you will turn on aura, read this below :|", Style = 3 })
+    local ParagraphWarn1 = TabAura:CreateParagraph({ Title = "Read this.", Text = "Turning on some Aura can result in a ban or reset of your data. We do not recommend turning it on always." })
+
+    -- Hit Aura (Lag)
+    local function createHitAuraToggle()
+        local toggle = false
+        return {
+            toggle = toggle,
+            set = function(val)
+                toggle = val
+                if toggle then
+                    spawn(function()
+                        while toggle do
+                            pcall(function()
+                                local p = Players.LocalPlayer
+                                local char = p.Character
+                                local root = char and char:FindFirstChild("HumanoidRootPart")
+                                local tool = char and char:FindFirstChildOfClass("Tool")
+                                if root and tool and tool:FindFirstChild("GunScript_Server") then
+                                    local parts = workspace:GetPartBoundsInRadius(root.Position, 40)
+                                    for _, part in ipairs(parts) do
+                                        if part.Parent and part.Parent:FindFirstChildOfClass("Humanoid") and part.Parent ~= char then
+                                            local humanoid = part.Parent:FindFirstChildOfClass("Humanoid")
+                                            local args = {
+                                                [1] = "Head",
+                                                [2] = humanoid,
+                                                [3] = humanoid.Parent:FindFirstChild("Head"),
+                                                [4] = tool,
+                                                [5] = Vector3.new(0.9372, -0.3045, -0.1700)
+                                            }
+                                            pcall(function()
+                                                tool.GunScript_Server.InflictTarget:FireServer(unpack(args))
+                                            end)
+                                        end
+                                    end
+                                end
+                            end)
+                            task.wait(0.1)
+                        end
+                    end)
+                end
+            end
+        }
+    end
+
+    local hitAura = createHitAuraToggle()
+    local function onHitAuraChanged(val)
+        hitAura.set(val)
+    end
+
+    -- Powerfull hit aura
+    local function createPowerAuraToggle()
+        local toggle = false
+        return {
+            toggle = toggle,
+            set = function(val)
+                toggle = val
+                if toggle then
+                    spawn(function()
+                        while toggle do
+                            pcall(function()
+                                local root = Players.LocalPlayer.Character and Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                                if root then
+                                    local parts = workspace:GetPartBoundsInRadius(root.Position, 40)
+                                    for _, part in ipairs(parts) do
+                                        if part.Parent and part.Parent:FindFirstChildOfClass("Humanoid") and part.Parent ~= Players.LocalPlayer.Character and part.Parent.Name ~= "FakeFriend" then
+                                            local humanoid = part.Parent:FindFirstChildOfClass("Humanoid")
+                                            if humanoid and humanoid.Health > 0 and not Players:GetPlayerFromCharacter(humanoid.Parent) then
+                                                for _, item in ipairs(Players.LocalPlayer.Character:GetChildren()) do
+                                                    if item:IsA("Tool") and item:FindFirstChild("GunScript_Server") then
+                                                        local args = {
+                                                            [1] = "Head",
+                                                            [2] = humanoid,
+                                                            [3] = humanoid.Parent:FindFirstChild("Head"),
+                                                            [4] = item,
+                                                            [5] = Vector3.new(0.9372, -0.3045, -0.1700)
+                                                        }
+                                                        pcall(function()
+                                                            item.GunScript_Server.InflictTarget:FireServer(unpack(args))
+                                                        end)
+                                                    end
+                                                end
+                                            end
+                                        end
+                                    end
+                                end
+                            end)
+                            task.wait(0.1)
+                        end
+                    end)
+                end
+            end
+        }
+    end
+
+    local powerAura = createPowerAuraToggle()
+
+    -- Создаем вкладки и элементы интерфейса
+    -- Регенация
+    local TabRegeneration = Window:CreateTab({ Name = "[ 2 ] Regeneration", Icon = "health_and_safety", ImageSource = "Material", ShowTitle = true })
+    local ButtonRegen = TabRegeneration:CreateButton({ Name = "Instant regeneration", Callback = function()
+        local char = Players.LocalPlayer.Character
+        if char and char:FindFirstChild("Humanoid") then
+            char.Humanoid.Health = char.Humanoid.MaxHealth
+        end
+    end })
+
+    local loip = false
+    local function toggleInfRegen(val)
+        loip = val
+        spawn(function()
+            while loip do
+                pcall(function()
+                    local time = getTime()
+                    if time then
+                        if time < 15 then
+                            firetouchinterest(Players.LocalPlayer.Character.Head, workspace.Misc["Blizzard Armor"].Head, 1)
+                            firetouchinterest(Players.LocalPlayer.Character.Head, workspace.Misc["Blizzard Armor"].Head, 0)
+                        elseif time >= 15 and time < 30 then
+                            local armor = workspace.Misc:FindFirstChild("Silver Armor - 15 min Playtime")
+                            if armor then
+                                firetouchinterest(Players.LocalPlayer.Character.Head, armor.Head, 0)
+                                firetouchinterest(Players.LocalPlayer.Character.Head, armor.Head, 1)
+                            end
+                        elseif time >= 30 and time < 60 then
+                            local armor = workspace.Misc:FindFirstChild("Golden Armor - 30 min Playtime")
+                            if armor then
+                                firetouchinterest(Players.LocalPlayer.Character.Head, armor.Head, 0)
+                                firetouchinterest(Players.LocalPlayer.Character.Head, armor.Head, 1)
+                            end
+                        elseif time >= 60 then
+                            local armor = workspace.Misc:FindFirstChild("Diamond Armor - 60 min Playtime")
+                            if armor then
+                                firetouchinterest(Players.LocalPlayer.Character.Head, armor.Head, 0)
+                                firetouchinterest(Players.LocalPlayer.Character.Head, armor.Head, 1)
+                            end
+                        end
+                    end
+                end)
+                task.wait(0.5)
+            end
+        end)
+    end
+
+    local ToggleRegenInf = TabRegeneration:CreateToggle({ Name = "Instant regeneration", CurrentValue = false, Callback = toggleInfRegen })
+
+    -- Функция поиска игрока по имени
+    local function getPlayerByLowerName(name)
+        for _, p in ipairs(Players:GetPlayers()) do
+            if p.Name:lower() == name:lower() then
+                return p
+            end
+        end
+        return nil
+    end
+
+    -- Ввод для лечения другого игрока
+    local TabOther = Window:CreateTab({ Name = "[ 2 ] Regeneration", Icon = "health_and_safety", ShowTitle = true })
+    local InputHealPlayer = TabOther:CreateInput({
+        Name = "Heal Player",
+        PlaceholderText = "Write name of player to heal him",
+        CurrentValue = "",
+        Callback = function(val)
+            local target = getPlayerByLowerName(val)
+            if target and target.Character and target.Character:FindFirstChildOfClass("Humanoid") then
+                local hum = target.Character:FindFirstChildOfClass("Humanoid")
+                hum.Health = hum.MaxHealth
+            else
+                warn("Игрок не найден или его персонаж отсутствует")
+            end
+        end
+    })
+
+    -- Логика для лечения всех
+    local healAll = false
+    local function toggleHealAll(val)
+        healAll = val
+        if healAll then
+            spawn(function()
+                while healAll do
+                    for _, p in ipairs(Players:GetPlayers()) do
+                        local char = p.Character
+                        if char and char:FindFirstChildOfClass("Humanoid") then
+                            char.Humanoid.Health = char.Humanoid.MaxHealth
+                        end
+                    end
+                    task.wait(0.5)
+                end
+            end)
+        end
+    end
+    local ToggleHealAll = TabOther:CreateToggle({ Name = "Heal all players", CurrentValue = false, Callback = toggleHealAll })
+
+    -- Разное
+    local TabMisc = Window:CreateTab({ Name = "[ 3 ] Misc", Icon = "miscellaneous_services", ShowTitle = true })
+    local ButtonIncinerator = TabMisc:CreateButton({ Name = "Safe incinerator", Callback = function()
+        local incinerator = Workspace:FindFirstChild("Incinerator")
+        if incinerator then
+            local model = incinerator:FindFirstChild("Model")
+            if model then
+                local challenge1 = model:FindFirstChild("Challenge1")
+                if challenge1 and challenge1:FindFirstChild("Model") and challenge1.Model:FindFirstChild("ChallengeGate") then
+                    challenge1.Model.ChallengeGate:Destroy()
+                end
+            end
+            local acid = incinerator:FindFirstChild("Acid")
+            if acid then
+                acid:Destroy()
+            end
+        end
+    end })
+
+    -- Телепорты
+    local function returnpos(time)
+        if not Players.LocalPlayer:GetAttribute("WaitScriptEnd") then
+            Players.LocalPlayer:SetAttribute("WaitScriptEnd", true)
+            local pos = Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+            task.delay(time, function()
+                Players.LocalPlayer:SetAttribute("WaitScriptEnd", false)
+                if Players.LocalPlayer.Character and Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pos
+                end
+            end)
+        end
+    end
+
+    local DropdownTeleport = TabMisc:CreateDropdown({
+        Name = "Teleport to ",
+        Options = { "Spawn", "Portal", "Incinerator", "Metro", "Sewerage", "Reaper door", "Craft zone", "Mineshaft" },
+        CurrentOption = "Spawn",
+        Callback = function(value)
+            -- Реализация телепорта по значению
+        end
+    })
+
+    -- Спам инструментов
+    local Sorting = false
+    local function toggleSpamTools(val)
+        Sorting = val
+        if Sorting then
+            spawn(function()
+                while Sorting do
+                    for _, item in ipairs(Players.LocalPlayer.Backpack:GetChildren()) do
+                        if item:IsA("Tool") then
+                            local humanoid = Players.LocalPlayer.Character and Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+                            if humanoid then
+                                humanoid:EquipTool(item)
+                                task.wait(0.1)
+                                humanoid:UnequipTools()
+                            end
+                            task.wait(0.1)
+                        end
+                    end
+                    task.wait()
+                end
+            end)
+        end
+    end
+    local ToggleSpamTools = TabMisc:CreateToggle({ Name = "Spam Tools", CurrentValue = false, Callback = toggleSpamTools })
+
+    -- Фарм монстров
+    local TabFarm = Window:CreateTab({ Name = "[ 4 ] Farm Monsters", Icon = "auto_mode", ShowTitle = true })
+    local ButtonHitAll = TabFarm:CreateButton({ Name = "Hit all entities", Callback = function()
+        for _, model in ipairs(Workspace:GetChildren()) do
+            if model:IsA("Model") and model:FindFirstChild("Head") and model:FindFirstChildOfClass("Humanoid") then
+                local humanoid = model:FindFirstChildOfClass("Humanoid")
+                local tool = Players.LocalPlayer.Character and Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
+                if tool then
+                    local args = {
+                        "Head",
+                        humanoid,
+                        humanoid.Parent:FindFirstChild("Head"),
+                        tool,
+                        Vector3.new(0.9372, -0.3045, -0.1700)
+                    }
+                    pcall(function()
+                        if tool.GunScript_Server then
+                            tool.GunScript_Server.InflictTarget:FireServer(unpack(args))
+                        end
+                    end)
+                end
+            end
+        end
+    end })
+
+    local oop = false
+    local function toggleHitLoop(val)
+        oop = val
+        if oop then
+            spawn(function()
+                while oop do
+                    for _, model in ipairs(Workspace:GetChildren()) do
+                        if model:IsA("Model") and model:FindFirstChild("Head") and model:FindFirstChildOfClass("Humanoid") then
+                            local humanoid = model:FindFirstChildOfClass("Humanoid")
+                            local tool = Players.LocalPlayer.Character and Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
+                            if tool then
+                                local args = {
+                                    "Head",
+                                    humanoid,
+                                    humanoid.Parent:FindFirstChild("Head"),
+                                    tool,
+                                    Vector3.new(0.9372, -0.3045, -0.1700)
+                                }
+                                local success, err = pcall(function()
+                                    if tool.GunScript_Server then
+                                        tool.GunScript_Server.InflictTarget:FireServer(unpack(args))
+                                    end
+                                end)
+                                if not success then warn("Ошибка при циклическом ударе: ", err) end
+                            end
+                        end
+                    end
+                    task.wait(0.1)
+                end
+            end)
+        end
+    end
+    local ToggleHitLoop = TabFarm:CreateToggle({ Name = "Hit all entities ( Looped )", CurrentValue = false, Callback = toggleHitLoop })
+
+    -- Раздел о кредитах
+    local CreditsTab = Window:CreateTab({ Name = "Credits", Icon = "info", ShowTitle = true })
+    CreditsTab:CreateLabel({ Text = "Our Telegram: @universalscriptsroblox", Style = 2 })
+    CreditsTab:CreateLabel({ Text = "Our Roblox: @8h8ph, @kiecsy, @RobTopBot_01.", Style = 1 })
+
+    -- Уведомление о загрузке
+    Luna:Notification({ Title = "Hey!", Icon = "info", Content = "Script is fully loaded!" })
+
+-- Обработка Build A Boat For Treasure
+elseif place == idPlaces.BuildABoatForTreasure then
+    local Luna = loadLuna()
+
+    local Window = Luna:CreateWindow({
+        Name = "Global Script's",
+        Subtitle = "Build A Boat For Treasure",
+        LogoID = 91154874732986,
+        LoadingEnabled = true,
+        LoadingTitle = "Oxygen 02",
+        LoadingSubtitle = "Build A Boat For Treasure",
+        ConfigSettings = { RootFolder = nil, ConfigFolder = "GlobalScripts" },
+        KeySystem = false,
+    })
+
+    -- Разделы для Build A Boat
+    local FarmTab = Window:CreateTab({ Name = "Auto Farm", Icon = "repeat", ShowTitle = true })
+    FarmTab:CreateLabel({ Text = "Cooming soon...", Style = 1 })
+
+    local ShopTab = Window:CreateTab({ Name = "Shop", Icon = "store", ShowTitle = true })
+    ShopTab:CreateLabel({ Text = "Cooming soon...", Style = 1 })
+
+    local PlayerTab = Window:CreateTab({ Name = "Player", Icon = "person", ShowTitle = true })
+    PlayerTab:CreateSlider({ Name = "Speed", Range = {0, 200}, CurrentValue = 16, Callback = function(v) game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = v end })
+    PlayerTab:CreateSlider({ Name = "Jump Power", Range = {0, 200}, CurrentValue = 50, Callback = function(v) game.Players.LocalPlayer.Character.Humanoid.JumpPower = v end })
+    PlayerTab:CreateSlider({ Name = "Gravity", Range = {0, 200}, CurrentValue = 196.2, Callback = function(v) game.Workspace.Gravity = v end })
+
+    local MiscTab = Window:CreateTab({ Name = "Misc", Icon = "auto_awesome", ShowTitle = true })
+    MiscTab:CreateLabel({ Text = "Cooming soon...", Style = 1 })
+
+    local SettingsTab = Window:CreateTab({ Name = "Settings", Icon = "settings", ShowTitle = true })
+    SettingsTab:CreateLabel({ Text = "Cooming soon...", Style = 1 })
+
+    local CreditsTab = Window:CreateTab({ Name = "Credits", Icon = "info", ShowTitle = true })
+    CreditsTab:CreateLabel({ Text = "Our Telegram: @universalscriptsroblox", Style = 2 })
+    CreditsTab:CreateLabel({ Text = "Our Roblox: @8h8ph, @kiecsy, @RobTopBot_01.", Style = 1 })
+
+else
+    -- Для неподдерживаемых игр
+    local Luna = loadLuna()
+    local Window = Luna:CreateWindow({
+        Name = "Global Script's",
+        Subtitle = "Not supported game",
+        LogoID = 91154874732986,
+        LoadingEnabled = true,
+        LoadingTitle = "Global Script's",
+        LoadingSubtitle = "Not supported game",
+        ConfigSettings = { RootFolder = nil, ConfigFolder = "GlobalScripts" },
+        KeySystem = false,
+    })
+
+    Luna:Notification({
+        Title = "Unsupported Game",
+        Icon = "error",
+        Content = "Это скрипт работает только в Survive In Area 51 или Build A Boat For Treasure.\n
+" ..
+                  "Если хотите использовать его в других играх, обратитесь к разработчику."
+    })
+end
