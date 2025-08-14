@@ -14,7 +14,7 @@ if place == idPlaces.Surviveinarea51 then
     local Window = Luna:CreateWindow({
         Name = "Global Script's | SIA51",
         Subtitle = "free trial",
-        LogoID = 115657206529404,
+        LogoID = rbxassetid://91154874732986,
         LoadingEnabled = true,
         LoadingTitle = "Oxygen 02",
         LoadingSubtitle = "Survive In Area 51",
