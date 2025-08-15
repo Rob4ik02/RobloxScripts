@@ -198,16 +198,19 @@ elseif place == idPlaces.BuildABoatForTreasure then
     Description = nil,
     CurrentValue = false,
         Callback = function(Value)
-            local Players = game:GetService("Players")
-            local player = Players.LocalPlayer
-            local PlayerGui = player:FindFirstChild("PlayerGui")
-            local workspace = game:GetService("Workspace")
-
-            if not PlayerGui then
-                warn("PlayerGui not found")
-                return
+            
+            local player = playersService.LocalPlayer
+            
+            -- Создание папки для глобальных скриптов, если она не существует
+            local GlobalScriptFolder = player:FindFirstChild("GlobalScripts")
+            if not GlobalScriptFolder then
+                GlobalScriptFolder = Instance.new("Folder", player)
+                GlobalScriptFolder.Name = "GlobalScripts"
             end
 
+            -- Поиск MainTerrain в Workspace или GlobalScripts
+            local mainTerrain = workspace:FindFirstChild("MainTerrain") or GlobalScriptFolder:FindFirstChild("MainTerrain")
+            
             if not workspace then
                 warn("Workspace not found")
                 return
@@ -215,28 +218,144 @@ elseif place == idPlaces.BuildABoatForTreasure then
 
             if not Value then
                 -- Unhide MainTerrain
-                local mainTerrainFolder = PlayerGui:FindFirstChild("MainTerrainFolder")
-                if mainTerrainFolder then
-                    local mainTerrain = workspace:FindFirstChild("MainTerrain")
-                    if mainTerrain then
-                        mainTerrain.Parent = mainTerrainFolder
-                    end
-                    mainTerrainFolder:Destroy()
+                if mainTerrain then
+                    mainTerrain.Parent = workspace
+                else
+                    warn("MainTerrain not found in workspace or GlobalScripts")
                 end
             else
                 -- Hide MainTerrain
-                local mainTerrain = workspace:FindFirstChild("MainTerrain")
                 if mainTerrain then
-                    -- Create the folder if it doesn't exist
-                    local mainTerrainFolder = Instance.new("Folder")
-                    mainTerrainFolder.Name = "MainTerrainFolder"
-                    mainTerrainFolder.Parent = PlayerGui
-
-                    mainTerrain.Parent = mainTerrainFolder
+                    mainTerrain.Parent = GlobalScriptFolder
+                else
+                    warn("MainTerrain not found in workspace or GlobalScripts")
                 end
             end
         end
     }, "Toggle1")
+
+    local Toggle2 = SettingsTab:CreateToggle({
+    Name = "Hide Players Blocks",
+    Description = nil,
+    CurrentValue = false,
+        Callback = function(Value)
+            
+            local player = playersService.LocalPlayer
+            
+            -- Создание папки для глобальных скриптов, если она не существует
+            local GlobalScriptFolder = player:FindFirstChild("GlobalScripts")
+            if not GlobalScriptFolder then
+                GlobalScriptFolder = Instance.new("Folder", player)
+                GlobalScriptFolder.Name = "GlobalScripts"
+            end
+
+            -- Поиск Blocks в Workspace или GlobalScripts
+            local blocks = workspace:FindFirstChild("Blocks") or GlobalScriptFolder:FindFirstChild("Blocks")
+            
+            if not workspace then
+                warn("Workspace not found")
+                return
+            end
+
+            if not Value then
+                -- Unhide Blocks
+                if blocks then
+                    blocks.Parent = workspace
+                else
+                    warn("Blocks  not found in workspace or GlobalScripts")
+                end
+            else
+                -- Hide Blocks
+                if blocks then
+                    blocks.Parent = GlobalScriptFolder
+                else
+                    warn("MainTerrain not found in workspace or GlobalScripts")
+                end
+            end
+        end
+    }, "Toggle2")
+
+    local Toggle3 = SettingsTab:CreateToggle({
+    Name = "Hide Teams",
+    Description = nil,
+    CurrentValue = false,
+        Callback = function(Value)
+            
+            local player = playersService.LocalPlayer
+            
+            -- Создание папки для глобальных скриптов, если она не существует
+            local GlobalScriptFolder = player:FindFirstChild("GlobalScripts")
+            if not GlobalScriptFolder then
+                GlobalScriptFolder = Instance.new("Folder", player)
+                GlobalScriptFolder.Name = "GlobalScripts"
+            end
+
+            -- Поиск Teams в Workspace или GlobalScripts
+            local teams = workspace:FindFirstChild("Teams") or GlobalScriptFolder:FindFirstChild("Teams")
+            
+            if not workspace then
+                warn("Workspace not found")
+                return
+            end
+
+            if not Value then
+                -- Unhide Teams
+                if teams then
+                    teams.Parent = workspace
+                else
+                    warn("Teams not found in workspace or GlobalScripts")
+                end
+            else
+                -- Hide Teams
+                if teams then
+                    teams.Parent = GlobalScriptFolder
+                else
+                    warn("Teams not found in workspace or GlobalScripts")
+                end
+            end
+        end
+    }, "Toggle3")
+
+    local Toggle4 = SettingsTab:CreateToggle({
+    Name = "Hide Boat Stages",
+    Description = nil,
+    CurrentValue = false,
+        Callback = function(Value)
+            
+            local player = playersService.LocalPlayer
+            
+            -- Создание папки для глобальных скриптов, если она не существует
+            local GlobalScriptFolder = player:FindFirstChild("GlobalScripts")
+            if not GlobalScriptFolder then
+                GlobalScriptFolder = Instance.new("Folder", player)
+                GlobalScriptFolder.Name = "GlobalScripts"
+            end
+
+            -- Поиск BoatStages в Workspace или GlobalScripts
+            local boatStages = workspace:FindFirstChild("BoatStages"):FindFirstChild("OtherStages") or GlobalScriptFolder:FindFirstChild("BoatStages"):FindFirstChild("OtherStages")
+
+            if not workspace then
+                warn("Workspace not found")
+                return
+            end
+
+            if not Value then
+                -- Unhide Boat Stages
+                if boatStages then
+                    boatStages.Parent = workspace
+                else
+                    warn("BoatStages not found in workspace or GlobalScripts")
+                end
+            else
+                -- Hide Boat Stages
+                if boatStages then
+                    boatStages.Parent = GlobalScriptFolder
+                else
+                    warn("BoatStages not found in workspace or GlobalScripts")
+                end
+            end
+        end
+    }, "Toggle4")
 
 
     local SettingsSection = SettingsTab:CreateSection({
