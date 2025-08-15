@@ -188,9 +188,9 @@ elseif place == idPlaces.BuildABoatForTreasure then
         ShowTitle = true -- This will determine whether the big header text in the tab will show
     })
 
-    local SettingsSection = SettingsTab:CreateSection({
-        Name = "FPS Settings",
-        Description = "If you want to change the settings of fps, you can do it here."
+    local Label1 = SettingsTab:CreateLabel({
+        Text = "FPS Settings",
+        Style = 1 -- Luna Labels Have 3 Styles : A Basic Label, A Green Information Label and A Red Warning Label. Look At The Following Image For More Details
     })
 
     local Toggle1 = SettingsTab:CreateToggle({
