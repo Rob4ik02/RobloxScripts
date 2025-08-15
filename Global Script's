@@ -194,39 +194,50 @@ elseif place == idPlaces.BuildABoatForTreasure then
     })
 
     local Toggle1 = SettingsTab:CreateToggle({
-        Name = "Hide MainTerrain",
-        Description = nil,
-        CurrentValue = false,
+    Name = "Hide MainTerrain",
+    Description = nil,
+    CurrentValue = false,
         Callback = function(Value)
-            if Value == false then
-                local players = game:GetService("Players")
-                local player = players.LocalPlayer
-                local playerGui = player:FindFirstChild("PlayerGui")
-                local workspace = workspace or game:GetService("Workspace")
+            local Players = game:GetService("Players")
+            local player = Players.LocalPlayer
+            local PlayerGui = player:FindFirstChild("PlayerGui")
+            local workspace = game:GetService("Workspace")
 
-                if playerGui and playerGui:FindFirstChild("MainTerrainFolder") then
-                    local mainterrainfolder = playerGui.MainTerrainFolder
-                    if mainterrainfolder:FindFirstChild("MainTerrain") then
-                        mainterrainfolder.MainTerrain.Parent = workspace
+            if not PlayerGui then
+                warn("PlayerGui not found")
+                return
+            end
+
+            if not workspace then
+                warn("Workspace not found")
+                return
+            end
+
+            if not Value then
+                -- Unhide MainTerrain
+                local mainTerrainFolder = PlayerGui:FindFirstChild("MainTerrainFolder")
+                if mainTerrainFolder then
+                    local mainTerrain = workspace:FindFirstChild("MainTerrain")
+                    if mainTerrain then
+                        mainTerrain.Parent = mainTerrainFolder
                     end
-                    mainterrainfolder:Destroy()
+                    mainTerrainFolder:Destroy()
                 end
             else
-                local workspace = workspace or game:GetService("Workspace")
-                local mainterrain = workspace:FindFirstChild("MainTerrain")
-                local players = game:GetService("Players")
-                local player = players.LocalPlayer
-                local playerGui = player:FindFirstChild("PlayerGui")
-                if mainterrain then
-                    playerGui.Instance.new(Folder, {
-                        Name = "MainTerrainFolder",
-                        Parent = playerGui,
-                    })
-                    mainterrain.Parent = playerGui.MainTerrainFolder
+                -- Hide MainTerrain
+                local mainTerrain = workspace:FindFirstChild("MainTerrain")
+                if mainTerrain then
+                    -- Create the folder if it doesn't exist
+                    local mainTerrainFolder = Instance.new("Folder")
+                    mainTerrainFolder.Name = "MainTerrainFolder"
+                    mainTerrainFolder.Parent = PlayerGui
+
+                    mainTerrain.Parent = mainTerrainFolder
                 end
             end
         end
-    }, "Toggle")
+    }, "Toggle1")
+
 
     local SettingsSection = SettingsTab:CreateSection({
         Name = "Settings",
