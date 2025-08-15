@@ -159,7 +159,7 @@ elseif place == idPlaces.BuildABoatForTreasure then
         end
     }, "Slider")
 
-    local Slider = PlayerTab:CreateSlider({
+    local GravitySlider = PlayerTab:CreateSlider({
         Name = "Gravity",
         Range = {0, 200}, -- The Minimum And Maximum Values Respectively
         Increment = 1, -- Basically The Changing Value/Rounding Off
@@ -188,10 +188,7 @@ elseif place == idPlaces.BuildABoatForTreasure then
         ShowTitle = true -- This will determine whether the big header text in the tab will show
     })
 
-    local Labelsoon1 = MiscTab:CreateLabel({
-        Text = "Cooming soon...",
-        Style = 1 -- Luna Labels Have 3 Styles : A Basic Label, A Green Information Label and A Red Warning Label. Look At The Following Image For More Details
-    })
+    SettingsTab:BuildThemeSection() -- Tab Should be the name of the tab you are adding this section to.
 
     local CreditsTab = Window:CreateTab({
         Name = "Credits",
