@@ -102,6 +102,7 @@ elseif place == idPlaces.BuildABoatForTreasure then
                 _G.TracersVisible =Value
             end,
     })
+
     local Toggle4 = EspTab:CreateToggle({
         Name = "Tracer Team Check",
         CurrentValue = false,
@@ -110,6 +111,26 @@ elseif place == idPlaces.BuildABoatForTreasure then
                 _G.TeamCheck =Value
             end,
     })
+
+    local Slider1 = EspTab:CreateSlider({
+	Name = "Trace Transparency",
+	Range = {0, 1}, -- The Minimum And Maximum Values Respectively
+	Increment = 0.1, -- Basically The Changing Value/Rounding Off
+	CurrentValue = 0.7, -- The Starting Value
+    	Callback = function(Value)
+            _G.TracerTransparency=Value
+    	end
+    }, "Slider1") 
+
+    local Slider2 = EspTab:CreateSlider({
+	Name = "Trace Thickness",
+	Range = {0, 100}, -- The Minimum And Maximum Values Respectively
+	Increment = 1, -- Basically The Changing Value/Rounding Off
+	CurrentValue = 1, -- The Starting Value
+    	Callback = function(Value)
+            _G.TracerThickness=Value
+    	end
+    }, "Slider2") 
 
     local PlayerTab = Window:CreateTab({
         Name = "Player",
