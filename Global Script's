@@ -188,41 +188,45 @@ elseif place == idPlaces.BuildABoatForTreasure then
         ShowTitle = true -- This will determine whether the big header text in the tab will show
     })
 
-    local Toggle = SettingsTab:CreateToggle({
-        Name = "Toggle Example",
+    local SettingsSection = SettingsTab:CreateSection({
+        Name = "FPS Settings",
+        Description = "If you want to change the settings of fps, you can do it here."
+    })
+
+    local Toggle1 = SettingsTab:CreateToggle({
+        Name = "Hide MainTerrain",
         Description = nil,
         CurrentValue = false,
         Callback = function(Value)
             if Value == false then
-                local replicatedstorage = game:GetService("ReplicatedStorage")
+                local players = game:GetService("Players")
+                local player = players.LocalPlayer
+                local playerGui = player:FindFirstChild("PlayerGui")
                 local workspace = workspace or game:GetService("Workspace")
-                local mainterrain = replicatedstorage:FindFirstChild("GlobalScripts_MainTerrain"):FindFirstChild("MainTerrain")
-                if mainterrain then
-                    mainterrain.Parent = workspace
+
+                if playerGui and playerGui:FindFirstChild("MainTerrainFolder") then
+                    local mainterrainfolder = playerGui.MainTerrainFolder
+                    if mainterrainfolder:FindFirstChild("MainTerrain") then
+                        mainterrainfolder.MainTerrain.Parent = workspace
+                    end
+                    mainterrainfolder:Destroy()
                 end
             else
                 local workspace = workspace or game:GetService("Workspace")
                 local mainterrain = workspace:FindFirstChild("MainTerrain")
-                local replicatedstorage = game:GetService("ReplicatedStorage")
+                local players = game:GetService("Players")
+                local player = players.LocalPlayer
+                local playerGui = player:FindFirstChild("PlayerGui")
                 if mainterrain then
-                    replicatedstorage.Instance.new(Folder, "GlobalScripts_MainTerrain", {
-                        Name = "MainTerrain",
-                        Parent = mainterrain
+                    playerGui.Instance.new(Folder, {
+                        Name = "MainTerrainFolder",
+                        Parent = playerGui,
                     })
-                    mainterrain.Parent = replicatedstorage.GlobalScripts_MainTerrain
+                    mainterrain.Parent = playerGui.MainTerrainFolder
                 end
             end
         end
     }, "Toggle")
-
-    local ConfigTab = Window:CreateTab({
-        Name = "Config Tab",
-        Icon = "settings",
-        ImageSource = "Material",
-        ShowTitle = true
-    })
-
-    ConfigTab:BuildConfigSection()
 
     local SettingsSection = SettingsTab:CreateSection({
         Name = "Settings",
