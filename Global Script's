@@ -220,7 +220,7 @@ local SliderGravity = MiscTab:CreateSlider({
 	Increment = 1,
 	CurrentValue = 196.2,
 	Callback = function(Value)
-		player.Character.Humanoid.Gravity = Value
+		player.Character.Humanoid.JumpGravity = Value
 	end
 }, "SliderGravity")
 
