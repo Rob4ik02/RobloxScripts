@@ -6,93 +6,92 @@ local regionserver = game:GetService("Workspace").CurrentCamera:FindFirstChild("
 local Luna = loadstring(game:HttpGet("https://raw.githubusercontent.com/Nebula-Softworks/Luna-Interface-Suite/refs/heads/master/source.lua", true))()
 
 local Window = Luna:CreateWindow({
-	Name = "Global Script's", -- This Is Title Of Your Window
-	Subtitle = "Hub Script's                                                                                            v1.0.0 | @universalscriptsroblox", -- A Gray Subtitle next To the main title.
-	LogoID = "91154874732986", -- The Asset ID of your logo. Set to nil if you do not have a logo for Luna to use.
-	LoadingEnabled = true, -- Whether to enable the loading animation. Set to false if you do not want the loading screen or have your own custom one.
-	LoadingTitle = "Loading script.", -- Header for loading screen
-	LoadingSubtitle = "Global Script's", -- Subtitle for loading screen
+    Name = "Global Script's", -- Заголовок вашего окна
+    Subtitle = "Hub Script's v1.0.0 | @universalscriptsroblox", -- Подзаголовок
+    LogoID = "91154874732986", -- ID логотипа
+    LoadingEnabled = true, -- Включить анимацию загрузки
+    LoadingTitle = "Loading script.", -- Заголовок для загрузки
+    LoadingSubtitle = "Global Script's", -- Подзаголовок для загрузки
 
-	ConfigSettings = {
-		RootFolder = nil, -- The Root Folder Is Only If You Have A Hub With Multiple Game Scripts and u may remove it. DO NOT ADD A SLASH
-		ConfigFolder = " Global Script " -- The Name Of The Folder Where Luna Will Store Configs For This Script. DO NOT ADD A SLASH
-	},
+    ConfigSettings = {
+        RootFolder = nil,
+        ConfigFolder = " Global Script " -- Название папки для конфигураций
+    },
 
-	KeySystem = false, -- As Of Beta 6, Luna Has officially Implemented A Key System!
-	KeySettings = {
-		Title = "Global Script's Key",
-		Subtitle = "Key System",
-		Note = "Please enter the key to use this script.",
-		SaveInRoot = false, -- Enabling will save the key in your RootFolder (YOU MUST HAVE ONE BEFORE ENABLING THIS OPTION)
-		SaveKey = false, -- The user's key will be saved, but if you change the key, they will be unable to use your script
-		Key = {"GlobalScript_TestKey1"},
-		SecondAction = {
-			Enabled = true,
-			Type = "Telegram", -- You can also put discord as an option, if your are doing that, don’t include discord.gg as Luna will auto add it as a prefix, just replace it with your identifier, example, if your are doing discord.gg/mspaint, just use mspaint.
-			Parameter = "t.me/@universalscriptsroblox"
-		}
-	}
+    KeySystem = false, -- Включить систему ключей
+    KeySettings = {
+        Title = "Global Script's Key",
+        Subtitle = "Key System",
+        Note = "Please enter the key to use this script.",
+        SaveInRoot = false,
+        SaveKey = false,
+        Key = {"GlobalScript_TestKey1"},
+        SecondAction = {
+            Enabled = true,
+            Type = "Telegram",
+            Parameter = "t.me/@universalscriptsroblox"
+        }
+    }
 })
 
-
- -- [[ TAB Home ]] --
+-- [[ TAB Home ]] --
 
 local HomeTab = Window:CreateTab({
-	Name = "Home",
-	Icon = "home",
-	ImageSource = "Material",
-	ShowTitle = true
+    Name = "Home",
+    Icon = "home",
+    ImageSource = "Material",
+    ShowTitle = true
 })
 
 local BigLabel1 = HomeTab:CreateParagraph({
-	Title = "Status key",
-	Text = "Duration: Infinity, Active"
+    Title = "Status key",
+    Text = "Duration: Infinity, Active"
 })
 
 local BigLabel2 = HomeTab:CreateParagraph({
-	Title = "Status place",
-	Text = "Place ID: "..place..", Time server: "..(regionserver and regionserver.Value or "N/A"),
+    Title = "Status place",
+    Text = "Place ID: "..place..", Time server: "..(regionserver and regionserver.Value or "N/A"),
 })
 
 local BigLabel3 = HomeTab:CreateParagraph({
-	Title = "Status player",
-	Text = "Player: "..player.Name..", User ID: "..player.UserId,
+    Title = "Status player",
+    Text = "Player: "..player.Name..", User ID: "..player.UserId,
 })
 
- -- [[ TAB Games ]] --
+-- [[ TAB Games ]] --
 
 local GamesTab = Window:CreateTab({
-	Name = "Game's",
-	Icon = "games",
-	ImageSource = "Material",
-	ShowTitle = true
+    Name = "Game's",
+    Icon = "games",
+    ImageSource = "Material",
+    ShowTitle = true
 })
 
 local Label1 = GamesTab:CreateLabel({
-	Text = "Scripts with key's",
-	Style = 2
+    Text = "Scripts with key's",
+    Style = 2
 })
 
 local GameLabel1_1 = GamesTab:CreateLabel({
-	Text = "The Strongest Battlegrounds",
-	Style = 1
+    Text = "The Strongest Battlegrounds",
+    Style = 1
 })
 
 local Label2 = GamesTab:CreateLabel({
-	Text = "Scripts without key's",
-	Style = 2
+    Text = "Scripts without key's",
+    Style = 2
 })
 
 local GameLabel2_1 = GamesTab:CreateLabel({
-	Text = "Bee swarm Simulator",
-	Style = 1
+    Text = "Bee swarm Simulator",
+    Style = 1
 })
 
-local Button2_1BSS = GamesTab:CreateButton({
-	Name = "Atlas Hub v1.0",
-	Description = nil,
-	Callback = function()
-		loadstring(game:HttpGet("https://raw.githubusercontent.com/Chris12089/atlasbss/main/script.lua"))("https://t.me/universalscriptsroblox")
+local Button2 = GamesTab:CreateButton({
+    Name = "Atlas Hub v1.0",
+    Description = nil,
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Chris12089/atlasbss/main/script.lua"))("https://t.me/universalscriptsroblox")
         Luna:Notification({
             Title = "Notification",
             Icon = "notifications_active",
@@ -100,64 +99,56 @@ local Button2_1BSS = GamesTab:CreateButton({
             Content = "Script executed successfully.",
             Duration = 5
         })
-        if error then
+        if Callback == error then
             Luna:Notification({
                 Title = "Error",
                 Icon = "error",
                 ImageSource = "Material",
-                Content = "Script isnt working.",
+                Content = "Script isn't working.",
                 Duration = 5
             })
         end
-	end
+    end
 })
 
- -- [[ TAB Misc ]] --
+-- [[ TAB Misc ]] --
 
 local MiscTab = Window:CreateTab({
-	Name = "Misc",
-	Icon = "extension",
-	ImageSource = "Material",
-	ShowTitle = true
+    Name = "Misc",
+    Icon = "extension",
+    ImageSource = "Material",
+    ShowTitle = true
 })
 
- -- [[ TAB Settings ]] --
+-- [[ TAB Settings ]] --
 
 local SettingsTab = Window:CreateTab({
-	Name = "Settings",
-	Icon = "settings",
-	ImageSource = "Material",
-	ShowTitle = true
+    Name = "Settings",
+    Icon = "settings",
+    ImageSource = "Material",
+    ShowTitle = true
 })
 
- -- [[ TAB Credits ]] --
+-- [[ TAB Credits ]] --
 
 local CreditsTab = Window:CreateTab({
-	Name = "Credits",
-	Icon = "star",
-	ImageSource = "Material",
-	ShowTitle = true
+    Name = "Credits",
+    Icon = "star",
+    ImageSource = "Material",
+    ShowTitle = true
 })
 
 local BigLabel1 = CreditsTab:CreateParagraph({
-	Title = "Our Telegram",
-	Text = "t.me/@universalscriptsroblox | Made by @Rob4ikOnly"
+    Title = "Our Telegram",
+    Text = "t.me/@universalscriptsroblox | Made by @Rob4ikOnly"
 })
 
 local BigLabel2 = CreditsTab:CreateParagraph({
-	Title = "Our Youtube",
-	Text = "youtube.com/@02rob4ik | Youtube Channel"
+    Title = "Our Youtube",
+    Text = "youtube.com/@02rob4ik | Youtube Channel"
 })
 
 local BigLabel3 = CreditsTab:CreateParagraph({
-	Title = "Special Thanks To",
-	Text = "Nebula Softworks | For Luna Interface Suite, For testers > @RobTopBot_01, @kiecsy, @Bac0nchikgg. Github site. Visual Studio Code | For being the best code editor."
-})
-
-Luna:Notification({
-	Title = "Notification",
-	Icon = "notifications_active",
-	ImageSource = "Material",
-	Content = "Welcome "..player.Name.." to Global Script's",
-    Duration = 5
+    Title = "Special Thanks To",
+    Text = "Nebula Softworks | For Luna Interface Suite, For testers > @RobTopBot_01, @kiecsy, @Bac0nchikgg. Github site. Visual Studio Code | For being the best code editor."
 })
