@@ -2,6 +2,7 @@ local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local place = game.PlaceId
 local regionserver = game:GetService("Workspace").CurrentCamera:FindFirstChild("RegionServer")
+local PlaceId = game.PlaceId
 
 local Luna = loadstring(game:HttpGet("https://raw.githubusercontent.com/Nebula-Softworks/Luna-Interface-Suite/refs/heads/master/source.lua", true))()
 
@@ -38,7 +39,7 @@ local Window = Luna:CreateWindow({
 
 local HomeTab = Window:CreateTab({
     Name = "Home",
-    Icon = "home",
+    Icon = "cloud_queue",
     ImageSource = "Material",
     ShowTitle = true
 })
@@ -61,7 +62,7 @@ local BigLabel3 = HomeTab:CreateParagraph({
 -- [[ TAB Games ]] --
 
 local GamesTab = Window:CreateTab({
-    Name = "Game's",
+    Name = "Games",
     Icon = "games",
     ImageSource = "Material",
     ShowTitle = true
@@ -73,9 +74,37 @@ local Label1 = GamesTab:CreateLabel({
 })
 
 local GameLabel1_1 = GamesTab:CreateLabel({
-    Text = "The Strongest Battlegrounds",
+    Text = "Lootify",
     Style = 1
 })
+
+local Button1_1 = GamesTab:CreateButton({
+	Name = "NS Hub",
+	Description = "PC",
+	Callback = function()
+		if place == 16498193900 then
+            Luna:Notify({
+                Title = "Executing NS Hub",
+                Description = "The script is being loaded, please wait...",
+                Duration = 5,
+                Icon = "Info",
+	            ImageSource = "Material",
+                
+            })
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/OhhMyGehlee/Loo/refs/heads/main/t"))("https://t.me/universalscriptsroblox")
+        else
+            Luna:Notify({
+                Title = "Error",
+                Description = "You are not in the correct game.",
+                Duration = 5,
+                Icon = "Info",
+	            ImageSource = "Material",
+                
+            })
+        end
+	end
+})
+
 
 local Label2 = GamesTab:CreateLabel({
     Text = "Scripts without key's",
@@ -87,28 +116,63 @@ local GameLabel2_1 = GamesTab:CreateLabel({
     Style = 1
 })
 
-local Button2 = GamesTab:CreateButton({
-    Name = "Atlas Hub v1.0",
-    Description = nil,
-    Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Chris12089/atlasbss/main/script.lua"))("https://t.me/universalscriptsroblox")
-        Luna:Notification({
-            Title = "Notification",
-            Icon = "notifications_active",
-            ImageSource = "Material",
-            Content = "Script executed successfully.",
-            Duration = 5
-        })
-        if Callback == error then
-            Luna:Notification({
+local Button2_1 = GamesTab:CreateButton({
+	Name = "Atlas Hub v1.0",
+	Description = "PC and Mobile",
+	Callback = function()
+		if place == 1537690962 then
+            Luna:Notify({
+                Title = "Loading Atlas Hub",
+                Description = "The script is being loaded, please wait...",
+                Duration = 5,
+                Icon = "Info",
+	            ImageSource = "Material",
+                
+            })
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/Rob4ikOnly/AtlasHub/main/AtlasHub.lua", true))()
+        else
+            Luna:Notify({
                 Title = "Error",
-                Icon = "error",
-                ImageSource = "Material",
-                Content = "Script isn't working.",
-                Duration = 5
+                Description = "You are not in the correct game.",
+                Duration = 5,
+                Icon = "Info",
+	            ImageSource = "Material",
+                
             })
         end
-    end
+	end
+})
+
+local GameLabel2_2 = GamesTab:CreateLabel({
+    Text = "The Strongest Battlegrounds",
+    Style = 1
+})
+
+local Button1_1 = GamesTab:CreateButton({
+	Name = "Phantasm Hub",
+	Description = "PC and Mobile",
+	Callback = function()
+		if place == 10449761463 then
+            Luna:Notify({
+                Title = "Executing Phantasm Script",
+                Description = "The script is being loaded, please wait...",
+                Duration = 5,
+                Icon = "Info",
+	            ImageSource = "Material",
+                
+            })
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/ATrainz/Phantasm/refs/heads/main/Games/TSB.lua"))()
+        else
+            Luna:Notify({
+                Title = "Error",
+                Description = "You are not in the correct game.",
+                Duration = 5,
+                Icon = "Info",
+	            ImageSource = "Material",
+                
+            })
+        end
+	end
 })
 
 -- [[ TAB Misc ]] --
