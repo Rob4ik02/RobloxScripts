@@ -218,23 +218,37 @@ local SliderFOV = MiscTab:CreateSlider({
 	Name = "Field of View",
 	Range = {1, 120},
 	Increment = 1,
-	CurrentValue = 16,
+	CurrentValue = 60,
 	Callback = function(Value)
 		workspace.CurrentCamera.FieldOfView = Value
 	end
 }, "SliderFOV")
 
 local ToggleNoclip = MiscTab:CreateToggle({
-	Name = " Noclip",
-	Description = "Enable or disable noclip mode.",
-	CurrentValue = false,
-	Callback = function(Value)
-		if Value then
-			player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Physics)
-		else
-			player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
-		end
-	end
+    Name = "Noclip",
+    Description = "Enable or disable noclip mode.",
+    CurrentValue = false,
+    Callback = function(Value)
+        -- Обрабатываем состояние включения/выключения noclip
+        if Value then
+            -- Включаем noclip
+            player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+
+            -- Создаем бесконечный цикл, чтобы отключить физику
+            local noclipConnection
+            noclipConnection = game:GetService("RunService").Stepped:Connect(function()
+                if player.Character and player.Character:FindFirstChild("Humanoid") then
+                    player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+                    player.Character.Humanoid.RootPart.Velocity = Vector3.new(0, 0, 0) -- Отключение воздействия груза на персонажа
+                else
+                    noclipConnection:Disconnect() -- Отключаем цикл, если персонаж уничтожен
+                end
+            end)
+        else
+            -- Выключаем noclip
+            player.Character.Humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+        end
+    end
 }, "ToggleNoclip")
 
 local ToggleAntiTrollFling = MiscTab:CreateToggle({
@@ -258,7 +272,7 @@ local Button1 = MiscTab:CreateButton({
             Title = "Warning",
             Description = "The gui will be destroyed after 5 seconds.",
             Duration = 5,
-            Icon = "Info",
+            Icon = "info",
 	        ImageSource = "Material",
         })
         wait(5)
