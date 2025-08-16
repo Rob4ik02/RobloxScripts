@@ -55,17 +55,17 @@ local GamesTab = Window:CreateTab({
 
 local Label1 = GamesTab:CreateLabel({
 	Text = "Scripts with key's",
-	Style = 1
+	Style = 2
 })
 
 local GameLabel1 = GamesTab:CreateLabel({
 	Text = "The Strongest Battlegrounds",
-	Style = 2
+	Style = 1
 })
 
 local Label2 = GamesTab:CreateLabel({
 	Text = "Scripts without key's",
-	Style = 1
+	Style = 2
 })
 
  -- [[ TAB Misc ]] --
@@ -93,6 +93,21 @@ local CreditsTab = Window:CreateTab({
 	Icon = "star",
 	ImageSource = "Material",
 	ShowTitle = true
+})
+
+local BigLabel1 = CreditsTab:CreateParagraph({
+	Title = "Our Telegram",
+	Text = "t.me/@universalscriptsroblox | Made by @Rob4ikOnly"
+})
+
+local BigLabel2 = CreditsTab:CreateParagraph({
+	Title = "Our Youtube",
+	Text = "youtube.com/@02rob4ik | Youtube Channel"
+})
+
+local BigLabel3 = CreditsTab:CreateParagraph({
+	Title = "Special Thanks To",
+	Text = "Nebula Softworks | For Luna Interface Suite, For testers > @RobTopBot_01, @kiecsy, @Bac0nchikgg. Github site. Visual Studio Code | For being the best code editor."
 })
 
 Luna:Notification({
