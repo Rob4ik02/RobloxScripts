@@ -44,6 +44,21 @@ local HomeTab = Window:CreateTab({
 	ShowTitle = true
 })
 
+local BigLabel1 = HomeTab:CreateParagraph({
+	Title = "Status key",
+	Text = "Duration: Infinity, Active"
+})
+
+local BigLabel2 = HomeTab:CreateParagraph({
+	Title = "Status place",
+	Text = "Place ID: "..place..", Time server: "..(regionserver and regionserver.Value or "N/A"),
+})
+
+local BigLabel3 = HomeTab:CreateParagraph({
+	Title = "Status player",
+	Text = "Player: "..player.Name..", User ID: "..player.UserId,
+})
+
  -- [[ TAB Games ]] --
 
 local GamesTab = Window:CreateTab({
@@ -58,7 +73,7 @@ local Label1 = GamesTab:CreateLabel({
 	Style = 2
 })
 
-local GameLabel1 = GamesTab:CreateLabel({
+local GameLabel1_1 = GamesTab:CreateLabel({
 	Text = "The Strongest Battlegrounds",
 	Style = 1
 })
@@ -66,6 +81,35 @@ local GameLabel1 = GamesTab:CreateLabel({
 local Label2 = GamesTab:CreateLabel({
 	Text = "Scripts without key's",
 	Style = 2
+})
+
+local GameLabel2_1 = GamesTab:CreateLabel({
+	Text = "Bee swarm Simulator",
+	Style = 1
+})
+
+local Button = Tab:CreateButton({
+	Name = "Atlas Hub v1.0",
+	Description = nil,
+	Callback = function()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Chris12089/atlasbss/main/script.lua"))("https://t.me/universalscriptsroblox")
+        Luna:Notification({
+            Title = "Notification",
+            Icon = "notifications_active",
+            ImageSource = "Material",
+            Content = "Script executed successfully.",
+            Duration = 5
+        })
+        if error then
+            Luna:Notification({
+                Title = "Error",
+                Icon = "error",
+                ImageSource = "Material",
+                Content = "Script isnt working.",
+                Duration = 5
+            })
+        end
+	end
 })
 
  -- [[ TAB Misc ]] --
