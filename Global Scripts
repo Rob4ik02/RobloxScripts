@@ -220,7 +220,7 @@ local SliderFOV = MiscTab:CreateSlider({
 	Increment = 1,
 	CurrentValue = 16,
 	Callback = function(Value)
-		player.Camera.FieldOfView = Value
+		workspace.CurrentCamera.FieldOfView = Value
 	end
 }, "SliderFOV")
 
