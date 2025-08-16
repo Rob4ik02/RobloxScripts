@@ -83,7 +83,7 @@ local Button1_1 = GamesTab:CreateButton({
 	Description = "PC",
 	Callback = function()
 		if place == 16498193900 then
-            Luna:Notify({
+            Luna:Notification({
                 Title = "Executing NS Hub",
                 Description = "The script is being loaded, please wait...",
                 Duration = 5,
@@ -93,7 +93,7 @@ local Button1_1 = GamesTab:CreateButton({
             })
             loadstring(game:HttpGet("https://raw.githubusercontent.com/OhhMyGehlee/Loo/refs/heads/main/t"))("https://t.me/universalscriptsroblox")
         else
-            Luna:Notify({
+            Luna:Notification({
                 Title = "Error",
                 Description = "You are not in the correct game.",
                 Duration = 5,
@@ -121,7 +121,7 @@ local Button2_1 = GamesTab:CreateButton({
 	Description = "PC and Mobile",
 	Callback = function()
 		if place == 1537690962 then
-            Luna:Notify({
+            Luna:Notification({
                 Title = "Loading Atlas Hub",
                 Description = "The script is being loaded, please wait...",
                 Duration = 5,
@@ -131,7 +131,7 @@ local Button2_1 = GamesTab:CreateButton({
             })
             loadstring(game:HttpGet("https://raw.githubusercontent.com/Rob4ikOnly/AtlasHub/main/AtlasHub.lua", true))()
         else
-            Luna:Notify({
+            Luna:Notification({
                 Title = "Error",
                 Description = "You are not in the correct game.",
                 Duration = 5,
@@ -153,7 +153,7 @@ local Button1_1 = GamesTab:CreateButton({
 	Description = "PC and Mobile",
 	Callback = function()
 		if place == 10449761463 then
-            Luna:Notify({
+            Luna:Notification({
                 Title = "Executing Phantasm Script",
                 Description = "The script is being loaded, please wait...",
                 Duration = 5,
@@ -163,7 +163,7 @@ local Button1_1 = GamesTab:CreateButton({
             })
             loadstring(game:HttpGet("https://raw.githubusercontent.com/ATrainz/Phantasm/refs/heads/main/Games/TSB.lua"))()
         else
-            Luna:Notify({
+            Luna:Notification({
                 Title = "Error",
                 Description = "You are not in the correct game.",
                 Duration = 5,
