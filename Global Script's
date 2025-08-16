@@ -88,7 +88,7 @@ local GameLabel2_1 = GamesTab:CreateLabel({
 	Style = 1
 })
 
-local Button = Tab:CreateButton({
+local Button2_1BSS = GamesTab:CreateButton({
 	Name = "Atlas Hub v1.0",
 	Description = nil,
 	Callback = function()
