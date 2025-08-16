@@ -214,15 +214,19 @@ local SliderJump = MiscTab:CreateSlider({
 	end
 }, "SliderJump")
 
-local SliderGravity = MiscTab:CreateSlider({
-	Name = "Gravity",
-	Range = {1, 200},
-	Increment = 1,
-	CurrentValue = 196.2,
-	Callback = function(Value)
-		player.Character.Humanoid.JumpGravity = Value
-	end
-}, "SliderGravity")
+if player.Character.Humanoid.Gravity then
+    local SliderGravity = MiscTab:CreateSlider({
+        Name = "Gravity",
+        Range = {1, 200},
+        Increment = 1,
+        CurrentValue = 196.2,
+        Callback = function(Value)
+            player.Character.Humanoid.JumpGravity = Value
+        end
+    }, "SliderGravity")
+else
+    warn("Gravity property not found in Humanoid. Slider for Gravity will not be created.")
+end
 
 local SliderFOV = MiscTab:CreateSlider({
 	Name = "Field of View",
