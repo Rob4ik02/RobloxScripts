@@ -1,10 +1,13 @@
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 local place = game.PlaceId
+local regionserver = game:GetService("Workspace").CurrentCamera:FindFirstChild("RegionServer")
+
+local Luna = loadstring(game:HttpGet("https://raw.githubusercontent.com/Nebula-Softworks/Luna-Interface-Suite/refs/heads/master/source.lua", true))()
 
 local Window = Luna:CreateWindow({
 	Name = "Global Script's", -- This Is Title Of Your Window
-	Subtitle = "Hub Script's", -- A Gray Subtitle next To the main title.
+	Subtitle = "Hub Script's                                                                                            v1.0.0 | @universalscriptsroblox", -- A Gray Subtitle next To the main title.
 	LogoID = "91154874732986", -- The Asset ID of your logo. Set to nil if you do not have a logo for Luna to use.
 	LoadingEnabled = true, -- Whether to enable the loading animation. Set to false if you do not want the loading screen or have your own custom one.
 	LoadingTitle = "Loading script.", -- Header for loading screen
@@ -15,7 +18,7 @@ local Window = Luna:CreateWindow({
 		ConfigFolder = " Global Script " -- The Name Of The Folder Where Luna Will Store Configs For This Script. DO NOT ADD A SLASH
 	},
 
-	KeySystem = true, -- As Of Beta 6, Luna Has officially Implemented A Key System!
+	KeySystem = false, -- As Of Beta 6, Luna Has officially Implemented A Key System!
 	KeySettings = {
 		Title = "Global Script's Key",
 		Subtitle = "Key System",
@@ -32,10 +35,70 @@ local Window = Luna:CreateWindow({
 })
 
 
+ -- [[ TAB Home ]] --
 
 local HomeTab = Window:CreateTab({
 	Name = "Home",
 	Icon = "home",
 	ImageSource = "Material",
 	ShowTitle = true
+})
+
+ -- [[ TAB Games ]] --
+
+local GamesTab = Window:CreateTab({
+	Name = "Game's",
+	Icon = "games",
+	ImageSource = "Material",
+	ShowTitle = true
+})
+
+local Label1 = GamesTab:CreateLabel({
+	Text = "Scripts with key's",
+	Style = 1
+})
+
+local GameLabel1 = GamesTab:CreateLabel({
+	Text = "The Strongest Battlegrounds",
+	Style = 2
+})
+
+local Label2 = GamesTab:CreateLabel({
+	Text = "Scripts without key's",
+	Style = 1
+})
+
+ -- [[ TAB Misc ]] --
+
+local MiscTab = Window:CreateTab({
+	Name = "Misc",
+	Icon = "extension",
+	ImageSource = "Material",
+	ShowTitle = true
+})
+
+ -- [[ TAB Settings ]] --
+
+local SettingsTab = Window:CreateTab({
+	Name = "Settings",
+	Icon = "settings",
+	ImageSource = "Material",
+	ShowTitle = true
+})
+
+ -- [[ TAB Credits ]] --
+
+local CreditsTab = Window:CreateTab({
+	Name = "Credits",
+	Icon = "star",
+	ImageSource = "Material",
+	ShowTitle = true
+})
+
+Luna:Notification({
+	Title = "Notification",
+	Icon = "notifications_active",
+	ImageSource = "Material",
+	Content = "Welcome "..player.Name.." to Global Script's",
+    Duration = 5
 })
