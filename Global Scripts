@@ -44,6 +44,11 @@ local HomeTab = Window:CreateTab({
     ShowTitle = true
 })
 
+local BigLabel = Tab:CreateParagraph({
+	Title = "Before you will start using this script, please read the following information.",
+	Text = "This Is A Paragraph. You Can Type Very Long Strings Here And They'll Automatically Fit! This Counts As A Description Right? Right? Right? Right? Right? Right? Right? Right? Right? Right? Right? Right? Right? Right? Right? Also Did I Mention This Has Rich Text? Also Did I Mention This Has Rich Text? Also Did I Mention This Has Rich Text? Also Did I Mention This Has Rich Text? Also Did I Mention This Has Rich Text? Also Did I Mention This Has Rich Text?"
+})
+
 local BigLabel1 = HomeTab:CreateParagraph({
     Title = "Status key",
     Text = "Duration: Infinity, Active"
@@ -87,7 +92,7 @@ local Button1_1 = GamesTab:CreateButton({
                 Title = "Executing NS Hub",
                 Description = "The script is being loaded, please wait...",
                 Duration = 5,
-                Icon = "Info",
+                Icon = "info",
 	            ImageSource = "Material",
                 
             })
@@ -97,7 +102,7 @@ local Button1_1 = GamesTab:CreateButton({
                 Title = "Error",
                 Description = "You are not in the correct game.",
                 Duration = 5,
-                Icon = "Info",
+                Icon = "info",
 	            ImageSource = "Material",
                 
             })
@@ -130,7 +135,7 @@ local Button2_1 = GamesTab:CreateButton({
                 Title = "Loading Atlas Hub",
                 Description = "The script is being loaded, please wait...",
                 Duration = 5,
-                Icon = "Info",
+                Icon = "info",
 	            ImageSource = "Material",
                 
             })
@@ -140,7 +145,7 @@ local Button2_1 = GamesTab:CreateButton({
                 Title = "Error",
                 Description = "You are not in the correct game.",
                 Duration = 5,
-                Icon = "Info",
+                Icon = "info",
 	            ImageSource = "Material",
                 
             })
@@ -153,7 +158,7 @@ local GameLabel2_2 = GamesTab:CreateLabel({
     Style = 1
 })
 
-local Button1_1 = GamesTab:CreateButton({
+local Button2_2 = GamesTab:CreateButton({
 	Name = "Phantasm Hub",
 	Description = "PC and Mobile",
 	Callback = function()
@@ -162,7 +167,7 @@ local Button1_1 = GamesTab:CreateButton({
                 Title = "Executing Phantasm Script",
                 Description = "The script is being loaded, please wait...",
                 Duration = 5,
-                Icon = "Info",
+                Icon = "info",
 	            ImageSource = "Material",
                 
             })
@@ -172,7 +177,7 @@ local Button1_1 = GamesTab:CreateButton({
                 Title = "Error",
                 Description = "You are not in the correct game.",
                 Duration = 5,
-                Icon = "Info",
+                Icon = "info",
 	            ImageSource = "Material",
                 
             })
@@ -180,9 +185,96 @@ local Button1_1 = GamesTab:CreateButton({
 	end
 })
 
+local Button2_2 = GamesTab:CreateButton({
+	Name = "Speed Hub",
+	Description = "PC and Mobile",
+	Callback = function()
+		if place == 10449761463 then
+            Luna:Notification({
+                Title = "Executing Speed Hub",
+                Description = "The script is being loaded, please wait...",
+                Duration = 5,
+                Icon = "info",
+	            ImageSource = "Material",
+                
+            })
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))("https://t.me/universalscriptsroblox")
+        else
+            Luna:Notification({
+                Title = "Error",
+                Description = "You are not in the correct game.",
+                Duration = 5,
+                Icon = "info",
+	            ImageSource = "Material",
+                
+            })
+        end
+	end
+})
+
+
 local GameLabel2_3 = GamesTab:CreateLabel({
     Text = "Murder Mystery 2",
     Style = 1
+})
+
+local Button2_3 = GamesTab:CreateButton({
+	Name = "Blind Hub",
+	Description = "PC and Mobile",
+	Callback = function()
+		if place == 142823291 then
+            Luna:Notification({
+                Title = "Executing Blind Hub",
+                Description = "The script is being loaded, please wait...",
+                Duration = 5,
+                Icon = "info",
+	            ImageSource = "Material",
+                
+            })
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/Blind-Man-Walking/Mm2/refs/heads/main/Test"))("https://t.me/universalscriptsroblox")
+        else
+            Luna:Notification({
+                Title = "Error",
+                Description = "You are not in the correct game.",
+                Duration = 5,
+                Icon = "info",
+	            ImageSource = "Material",
+                
+            })
+        end
+	end
+})
+
+local GameLabel2_4 = GamesTab:CreateLabel({
+    Text = "99 nights in the forest",
+    Style = 1
+})
+
+local Button2_4 = GamesTab:CreateButton({
+	Name = "Hub by Solument Development",
+	Description = "PC and Mobile",
+	Callback = function()
+		if place == 79546208627805 then
+            Luna:Notification({
+                Title = "Executing Hub by Solument Development",
+                Description = "The script is being loaded, please wait...",
+                Duration = 5,
+                Icon = "info",
+	            ImageSource = "Material",
+                
+            })
+            loadstring(game:HttpGet("https://soluna-script.vercel.app/99-Nights-in-the-Forest.lua",true))("https://t.me/universalscriptsroblox")
+        else
+            Luna:Notification({
+                Title = "Error",
+                Description = "You are not in the correct game.",
+                Duration = 5,
+                Icon = "info",
+	            ImageSource = "Material",
+                
+            })
+        end
+	end
 })
 
 -- [[ TAB Misc ]] --
@@ -224,7 +316,7 @@ local SliderFOV = MiscTab:CreateSlider({
 	end
 }, "SliderFOV")
 
-local ToggleNoclip = MiscTab:CreateToggle({
+--[[ local ToggleNoclip = MiscTab:CreateToggle({
     Name = "Noclip",
     Description = "Enable or disable noclip mode.",
     CurrentValue = false,
@@ -262,7 +354,7 @@ local ToggleAntiTrollFling = MiscTab:CreateToggle({
             player.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
         end
 	end
-}, "ToggleAntiTrollFling")
+}, "ToggleAntiTrollFling") ]]
 
 local Button1 = MiscTab:CreateButton({
 	Name = "Destroy GUI",
