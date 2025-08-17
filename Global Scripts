@@ -44,9 +44,9 @@ local HomeTab = Window:CreateTab({
     ShowTitle = true
 })
 
-local BigLabel = Tab:CreateParagraph({
+local BigLabel = HomeTab:CreateParagraph({
 	Title = "Before you will start using this script, please read the following information.",
-	Text = "This Is A Paragraph. You Can Type Very Long Strings Here And They'll Automatically Fit! This Counts As A Description Right? Right? Right? Right? Right? Right? Right? Right? Right? Right? Right? Right? Right? Right? Right? Also Did I Mention This Has Rich Text? Also Did I Mention This Has Rich Text? Also Did I Mention This Has Rich Text? Also Did I Mention This Has Rich Text? Also Did I Mention This Has Rich Text? Also Did I Mention This Has Rich Text?"
+	Text = "This script is tested and works on PC and Mobile. If you have any questions or suggestions, please contact us via Telegram: @Rob4ikOnly We hope you enjoy using this script!"
 })
 
 local BigLabel1 = HomeTab:CreateParagraph({
@@ -62,6 +62,23 @@ local BigLabel2 = HomeTab:CreateParagraph({
 local BigLabel3 = HomeTab:CreateParagraph({
     Title = "Status player",
     Text = "Player: "..player.Name..", User ID: "..player.UserId,
+})
+
+local Label1 = GamesTab:CreateLabel({
+    Text = "Updates & News",
+    Style = 2
+})
+
+local BigLabel1 = HomeTab:CreateParagraph({
+	Title = "V1.0.0",
+	Text = "+ Added new tab 'Games'\n"..
+          "+ Added new tab 'Misc'\n"..
+          "+ Added new tab 'Settings'\n"..
+          "+ Added new tab 'Credits'\n"..
+          "+ Added new scripts for games\n"..
+          "+ Fixed some bugs\n"..
+          "+ Improved interface\n"..
+          "+ Added key system\n"..
 })
 
 -- [[ TAB Games ]] --
