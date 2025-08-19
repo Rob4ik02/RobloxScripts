@@ -506,21 +506,13 @@ local Dropdown1Dex = MiscTab:CreateDropdown({
 	Name = "Dex Studio",
 	Description = nil,
 	Options = {
-		"Dex v1", "Dex v2", "Dex v3", "Dex v4"
+		"Dex v2", "Dex v3", "Dex v4"
 	},
-	CurrentOption = {"Dex v1"},
+	CurrentOption = {"Dex v2"},
 	MultipleOptions = false,
 	SpecialType = nil,
 	Callback = function(Options)
-		if Options[1] == "Dex v1" then
-            Luna:Notification({
-                Title = "Notification",
-                Icon = "info",
-                ImageSource = "Material",
-                Content = "Executing Dex v1, please wait..."
-            })
-            loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-New-Dex-Final-Release-29504"))()
-		elseif Options[1] == "Dex v2" then
+		if Options[1] == "Dex v2" then
             Luna:Notification({
                 Title = "Notification",
                 Icon = "info",
@@ -528,7 +520,7 @@ local Dropdown1Dex = MiscTab:CreateDropdown({
                 Content = "Executing Dex v2, please wait..."
             })
             loadstring(game:HttpGet("https://raw.githubusercontent.com/MariyaFurmanova/Library/main/dex2.0", true))()
-		elseif Options[1] == "Dex v3" then
+		elseif Options[2] == "Dex v3" then
             Luna:Notification({
                 Title = "Notification",
                 Icon = "info",
@@ -536,7 +528,7 @@ local Dropdown1Dex = MiscTab:CreateDropdown({
                 Content = "Executing Dex v3, please wait..."
             })
             loadstring(game:HttpGet("https://raw.githubusercontent.com/Babyhamsta/RBLX_Scripts/main/Universal/BypassedDarkDexV3.lua", true))()
-		elseif Options[1] == "Dex v4" then
+		elseif Options[3] == "Dex v4" then
             Luna:Notification({
                 Title = "Notification",
                 Icon = "info",
@@ -596,7 +588,7 @@ local BigLabel1 = FAQTab:CreateParagraph({
            "6. The 'Credits' tab shows the credits for the script."
 })
 
-local BigLabel2 = CreditsTab:CreateParagraph({
+local BigLabel2 = FAQTab:CreateParagraph({
     Title = "Why is functions are not working?,
     Text = "there are some reasons for the function not working.\n" ..
            "1. The game you are trying to use the script in is not supported.\n" ..
