@@ -4,7 +4,7 @@
   </a>
 </div>
 
-<h1 align="center">Oxygen 02 Projects</h1>
+<h1 align="center">Global Script's Developemnt</h1>
 
 <div align="center">
 
