@@ -1,148 +1,167 @@
-local players = game:GetService("Players")
-local localPlayer = players.LocalPlayer
-local PremiumUsers = {
-    9912726907, -- key: MoonLight_premium226455927
-    4007859815, -- key: MoonLight_premium211235255
-}
+-- =====================================================
+-- 🔄 LOCAL & SERVICES
+-- =====================================================
 
--- Предварительная проверка для системы ключей и вкладок
-currentKeys = {"MoonLight_free"}
-isToolsLocked = true
+local Players = game:GetService("Players")
+local LocalizationService = game:GetService("LocalizationService")
 
+local localPlayer = Players.LocalPlayer
+
+local currentKeys = { "MoonLight_free" }
+local isToolsLocked = true
 
 if localPlayer.UserId == 9912726907 then
-    currentKeys = { "MoonLight_premium226455927" }
-    isToolsLocked = false
+	currentKeys = { "MoonLight_premium226455927" }
+	isToolsLocked = false
 elseif localPlayer.UserId == 4007859815 then
-    currentKeys = { "MoonLight_premium211235255" }
-    isToolsLocked = false
+	currentKeys = { "MoonLight_premium211235255" }
+	isToolsLocked = false
 end
 
-local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+local placeid = game.PlaceId
+local games = {
+	MuscleLegends = 3623096087,
+	AdoptMe = 920587237,
+}
+
+-- =====================================================
+-- 🔄 LOADING THE WIND UI
+-- =====================================================
+
+
+local WindUI = loadstring(game:HttpGet(
+	"https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"
+))()
 
 pcall(function()
-    WindUI:SetFont("rbxassetid://12187364842")
+	WindUI:SetFont("rbxassetid://12187364842")
 end)
 
+-- =====================================================
+-- 🔄 SETTING THE WIND UI
+-- =====================================================
 
 local Window = WindUI:CreateWindow({
-    Title = "Moonlight Hub",
-    Icon = "moon-star",
-    Author = "By Moonlight Community",
-    Folder = "MoonLightHubFolder",
-    Size = UDim2.fromOffset(580, 460),
-    Transparent = true,
-    Theme = "Dark",
-    
-    KeySystem = { 
-        Key = currentKeys,
-        Note = "MoonLight Hub Key System",
-    }                         
+	Title = "Moonlight Hub",
+	Icon = "moon-star",
+	Author = "By Moonlight Community",
+	Folder = "MoonLightHubFolder",
+	Size = UDim2.fromOffset(580, 460),
+	Transparent = true,
+	Theme = "Dark",
+
+	KeySystem = {
+		Key = currentKeys,
+		Note = "MoonLight Hub Key System",
+	}
 })
 
 Window:SetBackgroundImage("rbxassetid://12640291711")
 Window:SetBackgroundImageTransparency(0.5)
 
 WindUI:AddTheme({
-    Name = "MoonLight",
-    
-    Accent = Color3.fromHex("#0f172a"),      -- Глубокий темно-синий акцент
-    Background = Color3.fromHex("#020617"),  -- Почти черный (полночь)
-    Outline = Color3.fromHex("#1e293b"),     -- Темно-серый контур
-    Text = Color3.fromHex("#ffffff"),        -- Чистый белый (лунный свет)
-    Placeholder = Color3.fromHex("#94a3b8"), -- Приглушенный серый
-    Button = Color3.fromHex("#1e293b"),      -- Темная кнопка
-    Icon = Color3.fromHex("#ffffff"),        -- Белые иконки
+	Name = "MoonLight",
+
+	Accent = Color3.fromHex("#0f172a"),
+	Background = Color3.fromHex("#020617"),
+	Outline = Color3.fromHex("#1e293b"),
+	Text = Color3.fromHex("#ffffff"),
+	Placeholder = Color3.fromHex("#94a3b8"),
+	Button = Color3.fromHex("#1e293b"),
+	Icon = Color3.fromHex("#ffffff"),
 })
 
 WindUI:SetTheme("MoonLight")
 
+
 Window:EditOpenButton({
-    Title = "Open Ui",
-    Icon = "door-open",
-    CornerRadius = UDim.new(0, 20),
-    StrokeThickness = 3,
-    Color = ColorSequence.new( -- gradient
-        Color3.fromHex("#1e293b"), 
-        Color3.fromHex("#ffffff"),
-        Color3.fromHex("#1e293b"), 
-        Color3.fromHex("#ffffff"),
-        Color3.fromHex("#1e293b"), 
-        Color3.fromHex("#ffffff"),
-        Color3.fromHex("#1e293b"),
-    ),
-    OnlyMobile = false,
-    Enabled = true,
-    Draggable = true,
+	Title = "Open Ui",
+	Icon = "door-open",
+	CornerRadius = UDim.new(0, 20),
+	StrokeThickness = 3,
+	Color = ColorSequence.new(
+		Color3.fromHex("#1e293b"),
+		Color3.fromHex("#ffffff"),
+		Color3.fromHex("#1e293b"),
+		Color3.fromHex("#ffffff"),
+		Color3.fromHex("#1e293b"),
+		Color3.fromHex("#ffffff"),
+		Color3.fromHex("#1e293b")
+	),
+	OnlyMobile = false,
+	Enabled = true,
+	Draggable = true,
 })
 
 Window:SetToggleKey(Enum.KeyCode.H)
 
--- Секция 1
+-- =====================================================
+-- 🔄 SECTION 1
+-- =====================================================
+
+
 local Section1 = Window:Section({
-    Title = "Main Selection",
-    Icon = "cloud-moon",
+	Title = "Main Selection",
+	Icon = "cloud-moon",
 })
 
 local StatusHome = Section1:Tab({
-    Title = "Status",
-    Icon = "circle-user",
-    Locked = false,
+	Title = "Status",
+	Icon = "circle-user",
+	Locked = false,
 })
 
 
-
-local LocalizationService = game:GetService("LocalizationService")
-
 local function getStatusString()
-    local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
-    local humanoid = character:FindFirstChildOfClass("Humanoid")
+	local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
+	local humanoid = character:FindFirstChildOfClass("Humanoid")
 
-    if not humanoid then
-        return "Character loading..."
-    end
+	if not humanoid then
+		return "Character loading..."
+	end
 
-    return string.format(
-        "Nickname: %s\nUserId: %d\nHealth: %d/%d\nWalkSpeed: %d\nJumpPower: %d",
-        localPlayer.Name,
-        localPlayer.UserId,
-        humanoid.Health,
-        humanoid.MaxHealth,
-        humanoid.WalkSpeed,
-        humanoid.JumpPower
-    )
+	return string.format(
+		"Nickname: %s\nUserId: %d\nHealth: %d / %d\nWalkSpeed: %d\nJumpPower: %d",
+		localPlayer.Name,
+		localPlayer.UserId,
+		math.floor(humanoid.Health),
+		math.floor(humanoid.MaxHealth),
+		math.floor(humanoid.WalkSpeed),
+		math.floor(humanoid.JumpPower)
+	)
 end
 
-local exploitName = "Unknown"
+
+local region = "Unknown"
+
 pcall(function()
-    exploitName = WindUI:GetExploitName()
+	region = LocalizationService:GetCountryRegionForPlayerAsync(localPlayer)
+end)
+
+if region == "" then
+	region = "Hidden"
+end
+
+
+local exploitName = "Unknown"
+
+pcall(function()
+	exploitName = WindUI:GetExploitName()
 end)
 
 local PlayerParagraph = StatusHome:Paragraph({
-    Title = "Player Status",
-    Desc = getStatusString(),
-    Color = "Blue",
+	Title = "Player Status",
+	Desc = getStatusString(),
+	Color = "Green",
 })
 
-local ExploitParagraph = StatusHome:Paragraph({
-    Title = "Exploit Status",
-    Desc = "Using " .. exploitName,
-    Color = "Blue",
-})
 
-local ServerParagraph = StatusHome:Paragraph({
-    Title = "Server Status",
-    Desc = "Session started at " .. os.date("%Y-%m-%d %H:%M:%S", os.time()),
-    Color = "Blue",
-})
 
-local region = LocalizationService.CountryRegion or "Unknown"
-
-local RegionServerParagraph = StatusHome:Paragraph({
-    Title = "Region Status",
-    Desc = "Region: " .. region,
-    Color = "Blue",
-})
+task.spawn(function()
+	while task.wait(0.25) do
+		PlayerParagraph:SetDesc(getStatusString())
+	end
+end)
 
 
 local HomeTab = Section1:Tab({
@@ -151,17 +170,55 @@ local HomeTab = Section1:Tab({
     Locked = false,
 })
 
+local ExploitParagraph = HomeTab:Paragraph({
+	Title = "Exploit Status",
+	Desc = "Using " .. exploitName,
+	Color = "Green",
+})
+
+local ServerParagraph = HomeTab:Paragraph({
+	Title = "Server Status",
+	Desc = "Session started at " .. os.date("%Y-%m-%d %H:%M:%S"),
+	Color = "Green",
+})
+
+local RegionParagraph = HomeTab:Paragraph({
+	Title = "Region Status",
+	Desc = "Region: " .. region,
+	Color = "Green",
+})
+
 local KeySystemTab = Section1:Tab({
     Title = "Key System",
     Icon = "key",
     Locked = false,
 })
 
--- Секция 2
+local KeyParagraph = KeySystemTab:Paragraph({
+    Title = "Key System Status",
+    Desc = PremiumUsers and "Your key is infinity premium key!" or "Your key is free key!",
+    Color = "White",
+})
+
+local KeyParagraph2 = KeySystemTab:Paragraph({
+    Title = "Current user Status",
+    Desc = PremiumUsers and "Your are buyer premium key!" or "Your are not buyer premium key!",
+    Color = "White",
+})
+
+-- =====================================================
+-- 🔄 SECTION 2 
+-- =====================================================
+
 local Section2 = Window:Section({
     Title = "Games Selection",
     Icon = "cloud-moon",
 })
+
+-- =====================================================
+-- 🔄 SCRIPTS
+-- =====================================================
+
 
 local ScriptsTab = Section2:Tab({
     Title = "Scripts",
@@ -169,11 +226,66 @@ local ScriptsTab = Section2:Tab({
     Locked = false,
 })
 
+local ButtonScriptOne = ScriptsTab:Button({
+    Title = "Speed Hub X",
+    Desc = "Muscle Legends",
+    Locked = false,
+    Callback = function()
+        if placeid == games.MuscleLegends then
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/Speed-Hub-X/Speed-Hub-X/main/Loader.lua"))()
+			WindUI:Notify({
+				Title = "Executed script!",
+				Content = "Script is loading, please wait...",
+				Duration = 3,
+				Icon = "message-circle-warning",
+			})
+		else
+			WindUI:Popup({
+				Title = "You are not in Muscle Legends!",
+				Icon = "info",
+				Content = "Do you want to teleport to Muscle Legends?",
+				Buttons = {
+					{
+						Title = "Cancel",
+						Callback = function() 
+
+						end,
+						Variant = "Tertiary",
+					},
+					{
+						Title = "Yes, i wanted!",
+						Icon = "arrow-right",
+						Callback = function()
+							WindUI:Notify({
+								Title = "Teleporting...",
+								Content = "Please wait while we teleport you to Muscle Legends.",
+								Duration = 3,
+								Icon = "message-circle-warning",
+							})
+							wait(0.2)
+							game:GetService("TeleportService"):Teleport(games.MuscleLegends)
+						end,
+						Variant = "Primary",
+					}
+				}
+			})
+		end 
+    end
+})
+
+-- =====================================================
+-- 🔄 OUR SCRIPTS
+-- =====================================================
+
 local OurScriptsTab = Section2:Tab({
     Title = "Our scripts",
     Icon = "code-xml",
     Locked = false,
 })
+
+-- =====================================================
+-- 🔄 SCRIPTS WITH SHIELD
+-- =====================================================
 
 local ShieldScriptsTab = Section2:Tab({ 
     Title = "Scripts with RBXShield",
@@ -181,7 +293,10 @@ local ShieldScriptsTab = Section2:Tab({
     Locked = false,
 })
 
--- Секция 3
+-- =====================================================
+-- 🔄 SECTION 3 
+-- =====================================================
+
 local Section3 = Window:Section({
     Title = "Server Selection",
     Icon = "cloud-moon",
@@ -193,7 +308,10 @@ local ManagementServerTab = Section3:Tab({
     Locked = false,
 })
 
--- Секция 4
+-- =====================================================
+-- 🔄 SECTION 4
+-- =====================================================
+
 local Section4 = Window:Section({
     Title = "Misc Selection",
     Icon = "cloud-moon",
@@ -229,21 +347,36 @@ local ToolsTab = Section4:Tab({
     Locked = isToolsLocked,
 })
 
--- Секции без вкладок
+-- =====================================================
+-- 🔄 SECTION 5
+-- =====================================================
+
 local Section5 = Window:Section({
     Title = "Settings Selection",
     Icon = "cloud-moon",
 })
+
+-- =====================================================
+-- 🔄 SECTION 6
+-- =====================================================
 
 local Section6 = Window:Section({
     Title = "FAQ Selection",
     Icon = "cloud-moon",
 })
 
+-- =====================================================
+-- 🔄 SECTION 7
+-- =====================================================
+
 local Section7 = Window:Section({
     Title = "Credits Selection",
     Icon = "cloud-moon",
 })
+
+-- =====================================================
+-- 🔄 NOTIFYING WIND UI LOADED
+-- =====================================================
 
 WindUI:Notify({
     Title = "The script is loading...",
