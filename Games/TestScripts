@@ -1,1 +1,134 @@
 
+local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+
+WindUI:SetFont("rbxassetid://12187364842")
+
+local Window = WindUI:CreateWindow({
+    Title = "Moonlight Hub",
+    Icon = "moon-star",
+    Author = "By Moonlight Community",
+    Folder = "MoonLightHubFolder",
+    Size = UDim2.fromOffset(580, 460),
+    Transparent = true,
+    Theme = "Dark",
+    
+    KeySystem = { 
+        -- ↓ Optional. You can remove it.
+        Key = { "1234", "5678" },
+        Note = "MoonLight Hub Key System",
+    }                         
+})
+
+
+
+
+local Section1 = Window:Section({
+    Title = "Main Selection",
+    Icon = "cloud-moon",
+    Opened = false,
+})
+
+
+
+
+local StatusHome = Section1:Tab({
+    Title = "Status",
+    Icon = "circle-user", -- optional
+    Locked = false,
+})
+
+local HomeTab = Section1:Tab({
+    Title = "Home",
+    Icon = "menu", -- optional
+    Locked = false,
+})
+
+local KeySystemTab = Section1:Tab({
+    Title = "Key System",
+    Icon = "key", -- optional
+    Locked = false,
+})
+
+
+
+local Section2 = Window:Section({
+    Title = "Games Selection",
+    Icon = "cloud-moon",
+    Opened = false,
+})
+
+
+
+local ScriptsTab = Section2:Tab({
+    Title = "Scripts",
+    Icon = "code", -- optional
+    Locked = false,
+})
+
+local OurScriptsTab = Section2:Tab({
+    Title = "Our scripts",
+    Icon = "code-xml", -- optional
+    Locked = false,
+})
+
+local OurScriptsTab = Section2:Tab({
+    Title = "Scripts with RBXShield",
+    Icon = "code", -- optional
+    Locked = false,
+})
+
+
+
+local Section3 = Window:Section({
+    Title = "Server Selection",
+    Icon = "cloud-moon",
+    Opened = false,
+})
+
+
+
+local ManagementServerTab = Section3:Tab({
+    Title = "Servers",
+    Icon = "server", -- optional
+    Locked = false,
+})
+
+
+
+local Section4 = Window:Section({
+    Title = "Misc Selection",
+    Icon = "cloud-moon",
+    Opened = false,
+})
+
+
+
+local TrollTab = Section4:Tab({
+    Title = "Troll",
+    Icon = "laugh", -- optional
+    Locked = false,
+})
+
+local AdminScriptsTab = Section4:Tab({
+    Title = "Admin Scripts",
+    Icon = "infinity", -- optional
+    Locked = false,
+})
+
+local DexHubTab = Section4:Tab({
+    Title = "Explorers",
+    Icon = "panel-top", -- optional
+    Locked = false,
+})
+
+local PlayerTab = Section4:Tab({
+    Title = "Player",
+    Icon = "file-user", -- optional
+    Locked = false,
+})
+
+local ToolsTab = Section4:Tab({
+    Title = "Tools",
+    Icon = "pen-tool", -- optional
+    Locked = true,
+})
