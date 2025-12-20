@@ -6,7 +6,7 @@ local PremiumUsers = {
 }
 
 -- Предварительная проверка для системы ключей и вкладок
-local currentKeys = { "1234", "5678", "MoonLight_free" }
+local currentKeys = { "MoonLight_free" }
 local isToolsLocked = true
 
 if localPlayer.UserId == 9912726907 then
@@ -60,7 +60,12 @@ Window:EditOpenButton({
     StrokeThickness = 3,
     Color = ColorSequence.new( -- gradient
         Color3.fromHex("#1e293b"), 
-        Color3.fromHex("#94a3b8")
+        Color3.fromHex("#ffffff"),
+        Color3.fromHex("#1e293b"), 
+        Color3.fromHex("#ffffff"),
+        Color3.fromHex("#1e293b"), 
+        Color3.fromHex("#ffffff"),
+        Color3.fromHex("#1e293b"),
     ),
     OnlyMobile = false,
     Enabled = true,
@@ -80,6 +85,36 @@ local StatusHome = Section1:Tab({
     Icon = "circle-user",
     Locked = false,
 })
+
+local function getStatusString()
+    local character = localPlayer.Character
+    local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+    
+    if humanoid then
+        return "Nickname: " .. localPlayer.Name .. "\n" ..
+               "UserId: " .. localPlayer.UserId .. "\n" ..
+               "Health: " .. math.floor(humanoid.Health) .. "/" .. math.floor(humanoid.MaxHealth) .. "\n" ..
+               "WalkSpeed: " .. math.floor(humanoid.WalkSpeed) .. "\n" ..
+               "JumpPower: " .. math.floor(humanoid.JumpPower)
+    else
+        return "Character not found"
+    end
+end
+
+-- Создаем параграф
+local PlayerParagraph = StatusHome:Paragraph({
+    Title = "Player Status",
+    Desc = getStatusString(),
+    Color = Color3.fromHex("#3b82f6"),
+})
+
+-- Цикл обновления (0.01 сек)
+task.spawn(function()
+    while true do
+        PlayerParagraph:SetDesc(getStatusString())
+        task.wait(0.01)
+    end
+end)
 
 local HomeTab = Section1:Tab({
     Title = "Home",
