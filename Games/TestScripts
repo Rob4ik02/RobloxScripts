@@ -12,9 +12,14 @@ local Window = WindUI:CreateWindow({
     Theme = "Dark",
     
     KeySystem = { 
-        -- ↓ Optional. You can remove it.
-        Key = { "1234", "5678" },
-        Note = "MoonLight Hub Key System",
+        Note = "Ключ выдается на 24 часа. Нажми 'Get Key', чтобы получить его.",
+        API = {                                                                 
+            { 
+                Type = "PandaAuth", 
+                ServiceId = "moonlight-hub", 
+                Link = "https://pandadevelopment.net/getkey?service=moonlight-hub", 
+            },                                                                  
+        },
     }                         
 })
 
@@ -94,7 +99,7 @@ local OurScriptsTab = Section2:Tab({
     Locked = false,
 })
 
-local OurScriptsTab = Section2:Tab({
+local ShieldScriptsTab = Section2:Tab({ -- ИСПРАВЛЕНО: Уникальное имя переменной
     Title = "Scripts with RBXShield",
     Icon = "code", -- optional
     Locked = false,
