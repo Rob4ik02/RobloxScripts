@@ -21,13 +21,13 @@ local Window = WindUI:CreateWindow({
 WindUI:AddTheme({
     Name = "MoonLight",
     
-    Accent = Color3.fromHex("#18181b"),
-    Background = Color3.fromHex("#272400"),
-    Outline = Color3.fromHex("#887a00"),
-    Text = Color3.fromHex("#aeff19"), -- БЫЛО "#aeff19ff", ИСПРАВЛЕНО (убрал лишние ff)
-    Placeholder = Color3.fromHex("#f1ff75"),
-    Button = Color3.fromHex("#6b3d00"),
-    Icon = Color3.fromHex("#eeff00"),
+    Accent = Color3.fromHex("#0f172a"),      -- Глубокий темно-синий акцент
+    Background = Color3.fromHex("#020617"),  -- Почти черный (полночь)
+    Outline = Color3.fromHex("#1e293b"),     -- Темно-серый контур
+    Text = Color3.fromHex("#ffffff"),        -- Чистый белый (лунный свет)
+    Placeholder = Color3.fromHex("#94a3b8"), -- Приглушенный серый
+    Button = Color3.fromHex("#1e293b"),      -- Темная кнопка
+    Icon = Color3.fromHex("#ffffff"),        -- Белые иконки
 })
 
 WindUI:SetTheme("MoonLight")
