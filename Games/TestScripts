@@ -6,8 +6,9 @@ local PremiumUsers = {
 }
 
 -- Предварительная проверка для системы ключей и вкладок
-local currentKeys = { "MoonLight_free" }
-local isToolsLocked = true
+currentKeys = {"MoonLight_free"}
+isToolsLocked = true
+
 
 if localPlayer.UserId == 9912726907 then
     currentKeys = { "MoonLight_premium226455927" }
@@ -19,7 +20,10 @@ end
 
 local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 
-WindUI:SetFont("rbxassetid://12187364842")
+pcall(function()
+    WindUI:SetFont("rbxassetid://12187364842")
+end)
+
 
 local Window = WindUI:CreateWindow({
     Title = "Moonlight Hub",
@@ -86,35 +90,60 @@ local StatusHome = Section1:Tab({
     Locked = false,
 })
 
+
+
+local LocalizationService = game:GetService("LocalizationService")
+
 local function getStatusString()
-    local character = localPlayer.Character
-    local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-    
-    if humanoid then
-        return "Nickname: " .. localPlayer.Name .. "\n" ..
-               "UserId: " .. localPlayer.UserId .. "\n" ..
-               "Health: " .. math.floor(humanoid.Health) .. "/" .. math.floor(humanoid.MaxHealth) .. "\n" ..
-               "WalkSpeed: " .. math.floor(humanoid.WalkSpeed) .. "\n" ..
-               "JumpPower: " .. math.floor(humanoid.JumpPower)
-    else
-        return "Character not found"
+    local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+
+    if not humanoid then
+        return "Character loading..."
     end
+
+    return string.format(
+        "Nickname: %s\nUserId: %d\nHealth: %d/%d\nWalkSpeed: %d\nJumpPower: %d",
+        localPlayer.Name,
+        localPlayer.UserId,
+        humanoid.Health,
+        humanoid.MaxHealth,
+        humanoid.WalkSpeed,
+        humanoid.JumpPower
+    )
 end
 
--- Создаем параграф
+local exploitName = "Unknown"
+pcall(function()
+    exploitName = WindUI:GetExploitName()
+end)
+
 local PlayerParagraph = StatusHome:Paragraph({
     Title = "Player Status",
     Desc = getStatusString(),
     Color = "Blue",
 })
 
--- Цикл обновления (0.01 сек)
-task.spawn(function()
-    while true do
-        PlayerParagraph:SetDesc(getStatusString())
-        task.wait(0.01)
-    end
-end)
+local ExploitParagraph = StatusHome:Paragraph({
+    Title = "Exploit Status",
+    Desc = "Using " .. exploitName,
+    Color = "Blue",
+})
+
+local ServerParagraph = StatusHome:Paragraph({
+    Title = "Server Status",
+    Desc = "Session started at " .. os.date("%Y-%m-%d %H:%M:%S", os.time()),
+    Color = "Blue",
+})
+
+local region = LocalizationService.CountryRegion or "Unknown"
+
+local RegionServerParagraph = StatusHome:Paragraph({
+    Title = "Region Status",
+    Desc = "Region: " .. region,
+    Color = "Blue",
+})
+
 
 local HomeTab = Section1:Tab({
     Title = "Home",
