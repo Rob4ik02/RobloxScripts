@@ -21,13 +21,13 @@ local Window = WindUI:CreateWindow({
 WindUI:AddTheme({
     Name = "MoonLight",
     
-    Accent = Color3.fromHex("#18181b"),      -- Темно-серый
-    Background = Color3.fromHex("#272400"),  -- Темно-коричневый/оливковый
-    Outline = Color3.fromHex("#887a00"),     -- Золотисто-коричневый
-    Text = Color3.fromHex("#aeff19ff"),        -- Почти черный (ВНИМАНИЕ: будет плохо видно)
-    Placeholder = Color3.fromHex("#f1ff75"), -- Светло-желтый
-    Button = Color3.fromHex("#6b3d00"),      -- Коричневый
-    Icon = Color3.fromHex("#eeff00"),        -- Ярко-желтый
+    Accent = Color3.fromHex("#18181b"),
+    Background = Color3.fromHex("#272400"),
+    Outline = Color3.fromHex("#887a00"),
+    Text = Color3.fromHex("#aeff19"), -- БЫЛО "#aeff19ff", ИСПРАВЛЕНО (убрал лишние ff)
+    Placeholder = Color3.fromHex("#f1ff75"),
+    Button = Color3.fromHex("#6b3d00"),
+    Icon = Color3.fromHex("#eeff00"),
 })
 
 WindUI:SetTheme("MoonLight")
@@ -37,9 +37,6 @@ local Section1 = Window:Section({
     Icon = "cloud-moon",
     Opened = false,
 })
-
-
-
 
 local StatusHome = Section1:Tab({
     Title = "Status",
@@ -59,15 +56,11 @@ local KeySystemTab = Section1:Tab({
     Locked = false,
 })
 
-
-
 local Section2 = Window:Section({
     Title = "Games Selection",
     Icon = "cloud-moon",
     Opened = false,
 })
-
-
 
 local ScriptsTab = Section2:Tab({
     Title = "Scripts",
@@ -87,15 +80,11 @@ local OurScriptsTab = Section2:Tab({
     Locked = false,
 })
 
-
-
 local Section3 = Window:Section({
     Title = "Server Selection",
     Icon = "cloud-moon",
     Opened = false,
 })
-
-
 
 local ManagementServerTab = Section3:Tab({
     Title = "Servers",
@@ -103,15 +92,11 @@ local ManagementServerTab = Section3:Tab({
     Locked = false,
 })
 
-
-
 local Section4 = Window:Section({
     Title = "Misc Selection",
     Icon = "cloud-moon",
     Opened = false,
 })
-
-
 
 local TrollTab = Section4:Tab({
     Title = "Troll",
@@ -143,15 +128,11 @@ local ToolsTab = Section4:Tab({
     Locked = true,
 })
 
-
-
 local Section5 = Window:Section({
     Title = "Settings Selection",
     Icon = "cloud-moon",
     Opened = false,
 })
-
-
 
 local Section6 = Window:Section({
     Title = "FAQ Selection",
@@ -159,17 +140,13 @@ local Section6 = Window:Section({
     Opened = false,
 })
 
-
-
 local Section7 = Window:Section({
     Title = "Credits Selection",
     Icon = "cloud-moon",
     Opened = false,
 })
 
-
 Window.Icon:Enable()
-
 
 WindUI:Notify({
     Title = "The script is loading...",
