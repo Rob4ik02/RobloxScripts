@@ -105,7 +105,7 @@ end
 local PlayerParagraph = StatusHome:Paragraph({
     Title = "Player Status",
     Desc = getStatusString(),
-    Color = Color3.fromHex("#3b82f6"),
+    Color = "Blue",
 })
 
 -- Цикл обновления (0.01 сек)
