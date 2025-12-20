@@ -18,6 +18,10 @@ local Window = WindUI:CreateWindow({
     }                         
 })
 
+Window:SetBackgroundImage("rbxassetid://12640291711")
+
+Window:SetBackgroundImageTransparency(value: 0.5)
+
 WindUI:AddTheme({
     Name = "MoonLight",
     
@@ -31,6 +35,22 @@ WindUI:AddTheme({
 })
 
 WindUI:SetTheme("MoonLight")
+
+Window:EditOpenButton({
+    Title = "Open Ui",
+    Icon = "door-open",
+    CornerRadius = UDim.new(0, 20),
+    StrokeThickness = 3,
+    Color = ColorSequence.new( -- gradient
+        Color3.fromHex("#1e293b"), 
+        Color3.fromHex("#94a3b8")
+    ),
+    OnlyMobile = true,
+    Enabled = true,
+    Draggable = true,
+})
+
+Window:SetToggleKey(Enum.KeyCode.H)
 
 local Section1 = Window:Section({
     Title = "Main Selection",
@@ -145,8 +165,6 @@ local Section7 = Window:Section({
     Icon = "cloud-moon",
     Opened = false,
 })
-
-Window.Icon:Enable()
 
 WindUI:Notify({
     Title = "The script is loading...",
