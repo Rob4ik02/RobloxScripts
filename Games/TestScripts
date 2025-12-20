@@ -1,3 +1,22 @@
+local players = game:GetService("Players")
+local localPlayer = players.LocalPlayer
+local PremiumUsers = {
+    9912726907, -- key: MoonLight_premium226455927
+    4007859815, -- key: MoonLight_premium211235255
+}
+
+-- Предварительная проверка для системы ключей и вкладок
+local currentKeys = { "1234", "5678", "MoonLight_free" }
+local isToolsLocked = true
+
+if localPlayer.UserId == 9912726907 then
+    currentKeys = { "MoonLight_premium226455927" }
+    isToolsLocked = false
+elseif localPlayer.UserId == 4007859815 then
+    currentKeys = { "MoonLight_premium211235255" }
+    isToolsLocked = false
+end
+
 local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 
 WindUI:SetFont("rbxassetid://12187364842")
@@ -12,14 +31,12 @@ local Window = WindUI:CreateWindow({
     Theme = "Dark",
     
     KeySystem = { 
-        -- ↓ Optional. You can remove it.
-        Key = { "1234", "5678" },
+        Key = currentKeys,
         Note = "MoonLight Hub Key System",
     }                         
 })
 
 Window:SetBackgroundImage("rbxassetid://12640291711")
-
 Window:SetBackgroundImageTransparency(0.5)
 
 WindUI:AddTheme({
@@ -45,130 +62,128 @@ Window:EditOpenButton({
         Color3.fromHex("#1e293b"), 
         Color3.fromHex("#94a3b8")
     ),
-    OnlyMobile = true,
+    OnlyMobile = false,
     Enabled = true,
     Draggable = true,
 })
 
 Window:SetToggleKey(Enum.KeyCode.H)
 
+-- Секция 1
 local Section1 = Window:Section({
     Title = "Main Selection",
     Icon = "cloud-moon",
-    Opened = false,
 })
 
 local StatusHome = Section1:Tab({
     Title = "Status",
-    Icon = "circle-user", -- optional
+    Icon = "circle-user",
     Locked = false,
 })
 
 local HomeTab = Section1:Tab({
     Title = "Home",
-    Icon = "menu", -- optional
+    Icon = "menu",
     Locked = false,
 })
 
 local KeySystemTab = Section1:Tab({
     Title = "Key System",
-    Icon = "key", -- optional
+    Icon = "key",
     Locked = false,
 })
 
+-- Секция 2
 local Section2 = Window:Section({
     Title = "Games Selection",
     Icon = "cloud-moon",
-    Opened = false,
 })
 
 local ScriptsTab = Section2:Tab({
     Title = "Scripts",
-    Icon = "code", -- optional
+    Icon = "code",
     Locked = false,
 })
 
 local OurScriptsTab = Section2:Tab({
     Title = "Our scripts",
-    Icon = "code-xml", -- optional
+    Icon = "code-xml",
     Locked = false,
 })
 
-local ShieldScriptsTab = Section2:Tab({ -- Сделал уникальное имя, чтобы не было ошибки
+local ShieldScriptsTab = Section2:Tab({ 
     Title = "Scripts with RBXShield",
-    Icon = "code", -- optional
+    Icon = "code",
     Locked = false,
 })
 
+-- Секция 3
 local Section3 = Window:Section({
     Title = "Server Selection",
     Icon = "cloud-moon",
-    Opened = false,
 })
 
 local ManagementServerTab = Section3:Tab({
     Title = "Servers",
-    Icon = "server", -- optional
+    Icon = "server",
     Locked = false,
 })
 
+-- Секция 4
 local Section4 = Window:Section({
     Title = "Misc Selection",
     Icon = "cloud-moon",
-    Opened = false,
 })
 
 local TrollTab = Section4:Tab({
     Title = "Troll",
-    Icon = "laugh", -- optional
+    Icon = "laugh",
     Locked = false,
 })
 
 local AdminScriptsTab = Section4:Tab({
     Title = "Admin Scripts",
-    Icon = "infinity", -- optional
+    Icon = "infinity",
     Locked = false,
 })
 
 local DexHubTab = Section4:Tab({
     Title = "Explorers",
-    Icon = "panel-top", -- optional
+    Icon = "panel-top",
     Locked = false,
 })
 
 local PlayerTab = Section4:Tab({
     Title = "Player",
-    Icon = "file-user", -- optional
+    Icon = "file-user",
     Locked = false,
 })
 
 local ToolsTab = Section4:Tab({
     Title = "Tools",
-    Icon = "pen-tool", -- optional
-    Locked = true,
+    Icon = "pen-tool",
+    Locked = isToolsLocked,
 })
 
+-- Секции без вкладок
 local Section5 = Window:Section({
     Title = "Settings Selection",
     Icon = "cloud-moon",
-    Opened = false,
 })
 
 local Section6 = Window:Section({
     Title = "FAQ Selection",
     Icon = "cloud-moon",
-    Opened = false,
 })
 
 local Section7 = Window:Section({
     Title = "Credits Selection",
     Icon = "cloud-moon",
-    Opened = false,
 })
 
 WindUI:Notify({
     Title = "The script is loading...",
     Content = "Maybe icons will loaded not to fast, please wait.",
-    Duration = 3, -- 3 seconds
+    Duration = 3,
     Icon = "message-circle-warning",
 })
