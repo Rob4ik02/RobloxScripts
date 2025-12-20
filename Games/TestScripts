@@ -1,4 +1,3 @@
-
 local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 
 WindUI:SetFont("rbxassetid://12187364842")
@@ -19,8 +18,19 @@ local Window = WindUI:CreateWindow({
     }                         
 })
 
+WindUI:AddTheme({
+    Name = "MoonLight", -- theme name
+    
+    Accent = Color3.fromHex("#18181b"),
+    Background = Color3.fromHex("#272400ff"), -- Accent
+    Outline = Color3.fromHex("#887a00ff"),
+    Text = Color3.fromHex("#1b1b00ff"),
+    Placeholder = Color3.fromHex("#f1ff75ff"),
+    Button = Color3.fromHex("#6b3d00ff"),
+    Icon = Color3.fromHex("#eeff00ff"),
+})
 
-
+WindUI:SetTheme("MoonLight")
 
 local Section1 = Window:Section({
     Title = "Main Selection",
@@ -131,4 +141,39 @@ local ToolsTab = Section4:Tab({
     Title = "Tools",
     Icon = "pen-tool", -- optional
     Locked = true,
+})
+
+
+
+local Section5 = Window:Section({
+    Title = "Settings Selection",
+    Icon = "cloud-moon",
+    Opened = false,
+})
+
+
+
+local Section6 = Window:Section({
+    Title = "FAQ Selection",
+    Icon = "cloud-moon",
+    Opened = false,
+})
+
+
+
+local Section7 = Window:Section({
+    Title = "Credits Selection",
+    Icon = "cloud-moon",
+    Opened = false,
+})
+
+
+Window.Icon:Enable()
+
+
+WindUI:Notify({
+    Title = "The script is loading...",
+    Content = "Maybe icons will loaded not to fast, please wait.",
+    Duration = 3, -- 3 seconds
+    Icon = "message-circle-warning",
 })
