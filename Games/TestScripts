@@ -5,6 +5,7 @@
 local Players = game:GetService("Players")
 local LocalizationService = game:GetService("LocalizationService")
 local TeleportService = game:GetService("TeleportService")
+local RunService = game:GetService("RunService")
 
 local localPlayer = Players.LocalPlayer
 local PremiumUsersList = {
@@ -84,9 +85,9 @@ Window:EditOpenButton({
     CornerRadius = UDim.new(0, 20),
     StrokeThickness = 3,
     Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(1, Color3.fromHex("#94a3b8")),
-        ColorSequenceKeypoint.new(1, Color3.fromHex("#1e293b")),
-        ColorSequenceKeypoint.new(1, Color3.fromHex("#94a3b8"))
+        ColorSequenceKeypoint.new(0, Color3.fromHex("#1e293b")),
+        ColorSequenceKeypoint.new(0.5, Color3.fromHex("#94a3b8")),
+        ColorSequenceKeypoint.new(1, Color3.fromHex("#1e293b"))
     }),
     OnlyMobile = false,
     Enabled = true,
@@ -96,7 +97,7 @@ Window:EditOpenButton({
 Window:SetToggleKey(Enum.KeyCode.H)
 
 -- =====================================================
--- 🔄 SECTION 1
+-- 🔄 SECTION 1: MAIN
 -- =====================================================
 
 local Section1 = Window:Section({
@@ -147,9 +148,11 @@ local PlayerParagraph = StatusHome:Paragraph({
 
 task.spawn(function()
     while task.wait(0.5) do
-        pcall(function()
-            PlayerParagraph:SetDesc(getStatusString())
-        end)
+        if PlayerParagraph then
+            pcall(function()
+                PlayerParagraph:SetDesc(getStatusString())
+            end)
+        end
     end
 end)
 
@@ -196,7 +199,7 @@ KeySystemTab:Paragraph({
 })
 
 -- =====================================================
--- 🔄 SECTION 2
+-- 🔄 SECTION 2: GAMES
 -- =====================================================
 
 local Section2 = Window:Section({
@@ -215,16 +218,13 @@ ScriptsTab:Button({
     Desc = "Muscle Legends",
     Callback = function()
         if placeid == games.MuscleLegends then
-            
             WindUI:Notify({
                 Title = "Executed!",
                 Content = "Script is loading...",
                 Duration = 3,
                 Icon = "check",
             })
-
             loadstring(game:HttpGet("https://raw.githubusercontent.com/Speed-Hub-X/Speed-Hub-X/main/Loader.lua"))()
-
         else
             WindUI:Notify({
                 Title = "MoonLight Hub",
@@ -241,32 +241,25 @@ local OurScriptsTab = Section2:Tab({
     Icon = "code-xml" 
 })
 
-
-
 local ShieldScriptsTab = Section2:Tab({ 
     Title = "Scripts with RBXShield", 
     Icon = "code" 
 })
 
 ShieldScriptsTab:Button({
-    Title = "Speed Hub X",
+    Title = "Speed Hub X (Shield)",
     Desc = "Muscle Legends",
     Callback = function()
         if placeid == games.MuscleLegends then
-            
             WindUI:Notify({
                 Title = "Executed!",
                 Content = "Script is loading...",
                 Duration = 3,
                 Icon = "check",
             })
-
             getgenv().Skip = true 
-
             getgenv().Script = "https://raw.githubusercontent.com/Speed-Hub-X/Speed-Hub-X/main/Loader.lua"
-
             loadstring(game:HttpGet("https://raw.githubusercontent.com/abramsonhan/RScritps/refs/heads/main/rbxscript"))()
-
         else
             WindUI:Notify({
                 Title = "MoonLight Hub",
@@ -278,9 +271,8 @@ ShieldScriptsTab:Button({
     end
 })
 
-
 -- =====================================================
--- 🔄 OTHER SECTIONS
+-- 🔄 SECTION 3: SERVERS
 -- =====================================================
 
 local Section3 = Window:Section({ 
@@ -292,6 +284,10 @@ Section3:Tab({
     Title = "Servers", 
     Icon = "server" 
 })
+
+-- =====================================================
+-- 🔄 SECTION 4: MISC & PLAYER
+-- =====================================================
 
 local Section4 = Window:Section({ 
     Title = "Misc Selection", 
@@ -313,62 +309,48 @@ Section4:Tab({
     Icon = "panel-top" 
 })
 
-Section4:Tab({ 
+local PlayerTab = Section4:Tab({ 
     Title = "Player", 
     Icon = "file-user" 
 })
 
-local PlayerSection = Tab:Section({ 
-    Title = "Player Settings",
-    Box = false,
-    FontWeight = "SemiBold",
-    TextTransparency = 0,
-    TextXAlignment = "Left",
-    TextSize = 17, -- Default Size
-    Opened = false,
-})
-
-local SpeedSlider = PlayerSection:Slider({
+-- Исправленная логика слайдеров (удалены лишние секции, исправлена переменная player)
+PlayerTab:Slider({
     Title = "Speed Changer",
-    Desc = "You can change your speed here.",
+    Desc = "Change your WalkSpeed",
     Step = 1,
     Value = {
-        Min = 0,
+        Min = 16,
         Max = 500,
         Default = 16,
     },
     Callback = function(value)
-        player.Character.Humanoid.WalkSpeed = value
+        if localPlayer.Character and localPlayer.Character:FindFirstChild("Humanoid") then
+            localPlayer.Character.Humanoid.WalkSpeed = value
+        end
     end
 })
 
-local JumpSlider = PlayerSection:Slider({
+PlayerTab:Slider({
     Title = "Jump Height Changer",
-    Desc = "You can change your jump height here.",
+    Desc = "Change your JumpPower",
     Step = 1,
     Value = {
-        Min = 0,
+        Min = 50,
         Max = 500,
-        Default = 30,
+        Default = 50,
     },
     Callback = function(value)
-        player.Character.Humanoid.JumpPower = value
+        if localPlayer.Character and localPlayer.Character:FindFirstChild("Humanoid") then
+            localPlayer.Character.Humanoid.UseJumpPower = true
+            localPlayer.Character.Humanoid.JumpPower = value
+        end
     end
 })
 
-local CameraSection = Tab:Section({ 
-    Title = "Camera Settings",
-    Box = false,
-    FontWeight = "SemiBold",
-    TextTransparency = 0,
-    TextXAlignment = "Left",
-    TextSize = 17, -- Default Size
-    Opened = false,
-})
-
-local FovSlider = CameraSection:Slider({
-    Title = "Fov Camera Changer",
-    Desc = "You can change your Fov camera here.",
+PlayerTab:Slider({
+    Title = "FOV Changer",
+    Desc = "Change Camera Field of View",
     Step = 1,
     Value = {
         Min = 10,
@@ -386,6 +368,10 @@ Section4:Tab({
     Locked = isToolsLocked 
 })
 
+-- =====================================================
+-- 🔄 OTHER SECTIONS
+-- =====================================================
+
 local Section5 = Window:Section({ 
     Title = "Settings Selection", 
     Icon = "cloud-moon" 
@@ -401,21 +387,20 @@ local Section7 = Window:Section({
     Icon = "cloud-moon" 
 })
 
+-- =====================================================
+-- 🔄 FOOTER & NOTIFY
+-- =====================================================
 
--- =====================================================
--- 🔄 NOTIFY
--- =====================================================
+Window:Tag({
+    Title = "v1.0.0",
+    Icon = "moon",
+    Color = Color3.fromHex("#94a3b8"),
+    Radius = 6, 
+})
 
 WindUI:Notify({
     Title = "MoonLight Hub",
     Content = "The script is ready to use!",
     Duration = 4,
     Icon = "moon-star",
-})
-
-Window:Tag({
-    Title = "v1.0.0",
-    Icon = "moon",
-    Color = Color3.fromHex("#94a3b8"),
-    Radius = 6, -- from 0 to 13
 })
