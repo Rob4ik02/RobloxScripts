@@ -84,7 +84,6 @@ Window:EditOpenButton({
     CornerRadius = UDim.new(0, 20),
     StrokeThickness = 3,
     Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromHex("#1e293b")),
         ColorSequenceKeypoint.new(1, Color3.fromHex("#94a3b8"))
     }),
     OnlyMobile = false,
@@ -317,6 +316,68 @@ Section4:Tab({
     Icon = "file-user" 
 })
 
+local PlayerSection = Tab:Section({ 
+    Title = "Player Settings",
+    Box = false,
+    FontWeight = "SemiBold",
+    TextTransparency = 0,
+    TextXAlignment = "Left",
+    TextSize = 17, -- Default Size
+    Opened = false,
+})
+
+local SpeedSlider = PlayerSection:Slider({
+    Title = "Speed Changer",
+    Desc = "You can change your speed here.",
+    Step = 1,
+    Value = {
+        Min = 0,
+        Max = 500,
+        Default = 16,
+    },
+    Callback = function(value)
+        player.Character.Humanoid.WalkSpeed = value
+    end
+})
+
+local JumpSlider = PlayerSection:Slider({
+    Title = "Jump Height Changer",
+    Desc = "You can change your jump height here.",
+    Step = 1,
+    Value = {
+        Min = 0,
+        Max = 500,
+        Default = 30,
+    },
+    Callback = function(value)
+        player.Character.Humanoid.JumpPower = value
+    end
+})
+
+local CameraSection = Tab:Section({ 
+    Title = "Camera Settings",
+    Box = false,
+    FontWeight = "SemiBold",
+    TextTransparency = 0,
+    TextXAlignment = "Left",
+    TextSize = 17, -- Default Size
+    Opened = false,
+})
+
+local FovSlider = CameraSection:Slider({
+    Title = "Fov Camera Changer",
+    Desc = "You can change your Fov camera here.",
+    Step = 1,
+    Value = {
+        Min = 10,
+        Max = 120,
+        Default = 70,
+    },
+    Callback = function(value)
+        workspace.CurrentCamera.FieldOfView = value
+    end
+})
+
 Section4:Tab({ 
     Title = "Tools", 
     Icon = "pen-tool", 
@@ -352,7 +413,7 @@ WindUI:Notify({
 
 Window:Tag({
     Title = "v1.0.0",
-    Icon = "github",
-    Color = Color3.fromHex("#30ff6a"),
-    Radius = 5, -- from 0 to 13
+    Icon = "moon",
+    Color = Color3.fromHex("#94a3b8"),
+    Radius = 6, -- from 0 to 13
 })
