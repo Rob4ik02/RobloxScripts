@@ -3,123 +3,76 @@ local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/i77lh
 
 -- Создание главного окна
 local window = library:window({name = "GS:", suffix = " Backness", gameInfo = "Universal Usement Gui"})
+
+-- СЕКЦИЯ: HOME
 window:seperator({name = "Main"})
+local home_tabs = window:tab({name = "Home", tabs = {"Status", "Updates & News", "Credits"}})
+local statusTab, updatesTab, creditsTab = home_tabs[1], home_tabs[2], home_tabs[3]
 
--- Создание вкладок
-local statusTab, updatesTab, creditsTab = window:tab({name = "Home", tabs = {"Status", "Updates & News", "Credits"}})
-local gamesTab, trollTab, premiumTab = window:tab({name = "Executing's", tabs = {"Games", "Trolling", "Premium Use"}})
+-- СЕКЦИЯ: EXECUTING'S
+window:seperator({name = "Attach"})
+local exec_tabs = window:tab({name = "Executing's", tabs = {"Games", "Trolling", "Premium Use"}})
+local gamesTab, trollTab, premiumTab = exec_tabs[1], exec_tabs[2], exec_tabs[3]
 
--- Глобальные флаги для управления логикой скрипта
+-- СЕКЦИЯ: MISC
+window:seperator({name = "Other functions"})
+local misc_tabs = window:tab({name = "Misc", tabs = {"FPS boost", "ESP", "Other"}})
+local fpsTab, espTab, otherTab = misc_tabs[1], misc_tabs[2], misc_tabs[3]
+
+-- СЕКЦИЯ: SETTING'S
+window:seperator({name = "Setting Gui"})
+local settings_tabs = window:tab({name = "Setting's", tabs = {"Ui", "Customable", "Config"}})
+local settinguiTab, customTab, configTab = settings_tabs[1], settings_tabs[2], settings_tabs[3]
+
+-- Глобальные переменные (Flags)
 local flags = {
     esp_enabled = false,
     esp_color = Color3.fromRGB(255, 50, 50),
     walkspeed = 16,
-    jumppower = 50,
-    aimbot_enabled = false
+    jumppower = 50
 }
 
--- Сервисы Roblox
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local LocalPlayer = Players.LocalPlayer
+-- Уведомление о запуске
+library:notification({
+    title = "GS: Backness",
+    description = "Система инициализирована. Добро пожаловать, Агент.",
+    time = 5,
+    type = "info"
+})
 
--- ==========================================
--- Вкладка: VISUALS (Визуальные функции)
--- ==========================================
-local visColumn = visualsTab:column({})
-local espSection = visColumn:section({name = "ESP Settings", default = true})
+--- ==========================================
+--- ЗАПОЛНЕНИЕ ВКЛАДКИ CONFIG
+--- ==========================================
+local configColumn = configTab:column({})
+local keybindSection = configColumn:section({name = "Menu Settings", default = true})
 
-espSection:toggle({name = "Enable Highlight ESP", seperator = true, callback = function(state)
-    flags.esp_enabled = state
-    -- Очистка ESP при выключении
-    if not state then
-        for _, player in ipairs(Players:GetPlayers()) do
-            if player ~= LocalPlayer and player.Character then
-                local highlight = player.Character:FindFirstChild("AgentESP")
-                if highlight then highlight:Destroy() end
-            end
-        end
-    end
-end})
+keybindSection:label({
+    name = "Press keybind to hide/show gui", 
+    info = "And not only can show/hide, you can change the keybind for your comfort!"
+})
 
--- Настройка цвета ESP (использование colorpicker из библиотеки)
-local colorToggle = espSection:toggle({name = "ESP Color", seperator = true})
-colorToggle:colorpicker({callback = function(color)
-    flags.esp_color = color
-end})
+keybindSection:keybind({
+    name = "Menu Toggle Key", 
+    default = Enum.KeyCode.RightControl, -- Установим стандартную клавишу
+    callback = function(key)
+        library:notification({
+            title = "Keybind System",
+            description = "Клавиша меню успешно изменена!",
+            time = 3,
+            type = "info"
+        })
+    end, 
+    info = "Нажмите, чтобы изменить клавишу скрытия меню"
+})
 
--- ==========================================
--- Вкладка: LOCAL PLAYER (Управление персонажем)
--- ==========================================
-local playerColumn = playerTab:column({})
-local movementSection = playerColumn:section({name = "Movement Modification", default = true})
+--- ==========================================
+--- ЗАПОЛНЕНИЕ ВКЛАДКИ STATUS (Пример)
+--- ==========================================
+local statusColumn = statusTab:column({})
+local infoSection = statusColumn:section({name = "Information", default = true})
 
-movementSection:slider({name = "WalkSpeed", min = 16, max = 300, interval = 1, callback = function(val)
-    flags.walkspeed = val
-end})
+infoSection:label({name = "Status: Undetected", info = "Скрипт безопасен для использования"})
+infoSection:label({name = "User: " .. game.Players.LocalPlayer.Name})
 
-movementSection:slider({name = "JumpPower", min = 50, max = 300, interval = 1, callback = function(val)
-    flags.jumppower = val
-end})
-
--- ==========================================
--- Вкладка: COMBAT (Каркас для боевых функций)
--- ==========================================
-local combatColumn = combatTab:column({})
-local aimSection = combatColumn:section({name = "Aimbot Settings", default = true})
-
-aimSection:toggle({name = "Enable Aimbot (Template)", seperator = true, callback = function(state)
-    flags.aimbot_enabled = state
-    if state then
-        print("[System]: Боевой протокол активирован.")
-    else
-        print("[System]: Боевой протокол деактивирован.")
-    end
-end})
-
-aimSection:dropdown({name = "Target Part", items = {"Head", "HumanoidRootPart", "Torso"}, default = "Head", multi = false, seperator = true, callback = function(selected)
-    print("[System]: Цель изменена на " .. tostring(selected))
-end})
-
--- ==========================================
--- ОСНОВНОЙ ЦИКЛ ОБРАБОТКИ (Main Loop)
--- ==========================================
-RunService.RenderStepped:Connect(function()
-    -- 1. Обработка параметров локального игрока
-    local character = LocalPlayer.Character
-    if character and character:FindFirstChild("Humanoid") then
-        character.Humanoid.WalkSpeed = flags.walkspeed
-        -- В Roblox Studio у новых Humanoid используется UseJumpPower = true для старого JumpPower
-        character.Humanoid.UseJumpPower = true 
-        character.Humanoid.JumpPower = flags.jumppower
-    end
-
-    -- 2. Обработка ESP
-    if flags.esp_enabled then
-        for _, player in ipairs(Players:GetPlayers()) do
-            if player ~= LocalPlayer then
-                local pChar = player.Character
-                if pChar and pChar:FindFirstChild("HumanoidRootPart") and pChar:FindFirstChild("Humanoid") and pChar.Humanoid.Health > 0 then
-                    local highlight = pChar:FindFirstChild("AgentESP")
-                    if not highlight then
-                        highlight = Instance.new("Highlight")
-                        highlight.Name = "AgentESP"
-                        highlight.FillTransparency = 0.5
-                        highlight.OutlineTransparency = 0
-                        highlight.Parent = pChar
-                    end
-                    -- Обновляем цвет в реальном времени
-                    highlight.FillColor = flags.esp_color
-                    highlight.OutlineColor = Color3.new(1, 1, 1)
-                elseif pChar and pChar:FindFirstChild("Humanoid") and pChar.Humanoid.Health <= 0 then
-                    -- Удаляем ESP с мертвых
-                    local highlight = pChar:FindFirstChild("AgentESP")
-                    if highlight then highlight:Destroy() end
-                end
-            end
-        end
-    end
-end)
-
--- Финализация и загрузка конфигурации UI
+-- Инициализация конфига (ВАЖНО ставить в конце)
 library:init_config(window)
