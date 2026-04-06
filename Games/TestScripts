@@ -2,11 +2,12 @@
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/i77lhm/Libraries/refs/heads/main/Millenium/Library.lua"))()
 
 -- Создание главного окна
-local window = library:window({name = "Global Script's", suffix = " | Come Back.", gameInfo = "Universal Usement Gui"})
+local window = library:window({name = "GS:", suffix = " Backness", gameInfo = "Universal Usement Gui"})
 window:seperator({name = "Main"})
 
 -- Создание вкладок
 local statusTab, updatesTab, creditsTab = window:tab({name = "Home", tabs = {"Status", "Updates & News", "Credits"}})
+local gamesTab, trollTab, premiumTab = window:tab({name = "Executing's", tabs = {"Games", "Trolling", "Premium Use"}})
 
 -- Глобальные флаги для управления логикой скрипта
 local flags = {
