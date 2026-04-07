@@ -2,7 +2,7 @@
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/i77lhm/Libraries/refs/heads/main/Millenium/Library.lua"))()
 
 -- Создание главного окна
-local window = library:window({name = "GS:", suffix = " Backness", gameInfo = "Universal Usement Gui"})
+local window = library:window({name = "Oxy Hub:", suffix = " 0²", gameInfo = "Universal Usement Gui"})
 
 -- СЕКЦИЯ: HOME
 window:seperator({name = "Main"})
@@ -20,46 +20,44 @@ local misc_tabs = window:tab({name = "Misc", tabs = {"FPS boost", "ESP", "Other"
 local fpsTab, espTab, otherTab = misc_tabs[1], misc_tabs[2], misc_tabs[3]
 
 -- СЕКЦИЯ: SETTING'S
+--- ==========================================
+--- СЕКЦИЯ: SETTING'S (Исправлено)
+--- ==========================================
 window:seperator({name = "Setting Gui"})
-local settings_tabs = window:tab({name = "Setting's", tabs = {"Ui", "Customable", "Config"}})
-local settinguiTab, customTab, configTab = settings_tabs[1], settings_tabs[2], settings_tabs[3]
 
--- Глобальные переменные (Flags)
-local flags = {
-    esp_enabled = false,
-    esp_color = Color3.fromRGB(255, 50, 50),
-    walkspeed = 16,
-    jumppower = 50
-}
+-- Убрал кавычку из названия "Settings", чтобы избежать конфликтов в именах объектов
+local settings_tabs = window:tab({name = "Settings", tabs = {"Ui", "Customable", "Config"}})
 
-
+-- Проверяем, что вкладки созданы, прежде чем обращаться к ним
+local settinguiTab = settings_tabs[1]
+local customTab    = settings_tabs[2]
+local configTab    = settings_tabs[3]
 
 --- ==========================================
 --- ЗАПОЛНЕНИЕ ВКЛАДКИ CONFIG
 --- ==========================================
-local configColumn = configTab:column({})
-local keybindSection = configColumn:section({name = "Menu Settings", default = true})
 
-keybindSection:label({
-    name = "Press keybind to hide/show gui", 
-    info = "And not only can show/hide, you can change the keybind for your comfort!"
-})
+-- Проверка: если по какой-то причине configTab не создался, скрипт не упадет
+if configTab then
+    local configTabColumn = configTab:column({})
+    local keybindSection = configTabColumn:section({name = "- Keybind Config -", default = true})
 
-keybindSection:keybind({
-    name = "Menu Toggle Key", 
-    default = Enum.KeyCode.RightControl, -- Установим стандартную клавишу
-    callback = function(key)
-    end
-})
+    keybindSection:label({
+        name = "Press keybind to hide/show gui", 
+        info = "And not only can show/hide, you can change the keybind for your comfort!"
+    })
 
---- ==========================================
---- ЗАПОЛНЕНИЕ ВКЛАДКИ STATUS (Пример)
---- ==========================================
-local statusColumn = statusTab:column({})
-local infoSection = statusColumn:section({name = "Information", default = true})
+    keybindSection:keybind({
+        name = "Menu Toggle Key", 
+        default = Enum.KeyCode.RightControl,
+        callback = function(key)
+            -- Здесь можно добавить уведомление о смене кнопки
+            
+        end
+    })
+else
+    warn("[Oxy Hub Error]: Вкладка Config не была найдена!")
+end
 
-infoSection:label({name = "Status: Undetected", info = "Скрипт безопасен для использования"})
-infoSection:label({name = "User: " .. game.Players.LocalPlayer.Name})
-
--- Инициализация конфига (ВАЖНО ставить в конце)
+-- ВАЖНО: Вызываем в самом конце
 library:init_config(window)
