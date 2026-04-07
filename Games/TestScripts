@@ -59,7 +59,12 @@ local HomeTab = Window:DrawTab({
 	EnableScrolling = true
 });
 
-HomeTab:AddParagraph({
+local ListSectionHome1 = HomeTab:DrawSection({
+	Name = "List 1",
+	Position = 'left'	
+});
+
+ListSectionHome1:AddParagraph({
 	Title = "Script is succesfuly loaded!",
 	Content = "Look's like working god."
 })
@@ -76,7 +81,7 @@ local ratings = {
 
 local current_rating = ratings[exploituser] or "normal"
 
-HomeTab:AddParagraph({
+ListSectionHome1:AddParagraph({
     Title = "You choosed " .. exploituser,
     Content = "Exploit working: " .. exploituser .. " (" .. current_rating .. ")"
 })
