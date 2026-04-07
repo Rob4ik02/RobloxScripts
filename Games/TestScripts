@@ -46,6 +46,9 @@ local Time = Watermark:AddText({
 });
 
 
+
+
+
 Window:DrawCategory({
 	Name = "Main"
 });
@@ -55,6 +58,28 @@ local HomeTab = Window:DrawTab({
 	Icon = "home",
 	EnableScrolling = true
 });
+
+HomeTab:AddParagraph({
+	Title = "Script is succesfuly loaded!",
+	Content = "Look's like working god."
+})
+
+local exploituser = identifyexecutor and identifyexecutor() or "Unknown"
+
+local ratings = {
+    ["Ronix"] = "god",
+    ["Delta"] = "god",
+    ["Synapse"] = "bad",
+    ["ArceusX"] = "amazing",
+    ["Fluxus"] = "mid"
+}
+
+local current_rating = ratings[exploituser] or "normal"
+
+HomeTab:AddParagraph({
+    Title = "You choosed " .. exploituser,
+    Content = "Exploit working: " .. exploituser .. " (" .. current_rating .. ")"
+})
 
 local StatusTab = Window:DrawTab({
 	Name = "Status Tab",
@@ -85,54 +110,17 @@ local GamesTab = Window:DrawContainerTab({
 	EnableScrolling = true
 });
 
-local Game1Tab = GamesTab:DrawTab({
-	Name = "Game 1",
+local Choose1Tab = GamesTab:DrawTab({
+	Name = "Added",
 	Type = "Single",
 	EnableScrolling = true, -- this will make tab can scrolling (recommend)
 });
 
-local Game2Tab = GamesTab:DrawTab({
-	Name = "Game 2",
+local Choose2Tab = GamesTab:DrawTab({
+	Name = "Soon",
 	Type = "Single",
 	EnableScrolling = true, -- this will make tab can scrolling (recommend)
 });
-
-local Game3Tab = GamesTab:DrawTab({
-	Name = "Game 3",
-	Type = "Single",
-	EnableScrolling = true, -- this will make tab can scrolling (recommend)
-});
-
-local Game4Tab = GamesTab:DrawTab({
-	Name = "Game 4",
-	Type = "Single",
-	EnableScrolling = true, -- this will make tab can scrolling (recommend)
-});
-
-local Game5Tab = GamesTab:DrawTab({
-	Name = "Game 5",
-	Type = "Single",
-	EnableScrolling = true, -- this will make tab can scrolling (recommend)
-});
-
-local Game6Tab = GamesTab:DrawTab({
-	Name = "Game 6",
-	Type = "Single",
-	EnableScrolling = true, -- this will make tab can scrolling (recommend)
-});
-
-local Game7Tab = GamesTab:DrawTab({
-	Name = "Game 7",
-	Type = "Single",
-	EnableScrolling = true, -- this will make tab can scrolling (recommend)
-});
-
-local Game8Tab = GamesTab:DrawTab({
-	Name = "Game 8",
-	Type = "Single",
-	EnableScrolling = true, -- this will make tab can scrolling (recommend)
-});
-
 
 
 
@@ -144,10 +132,10 @@ local PremiumTab = Window:DrawTab({
 	EnableScrolling = true
 });
 
-local WarnSection = PremiumTab:DrawSection({
-	Name = "You doesn't have acces to this tab.",
-	Position = 'left'	
-});
+NormalSection:AddParagraph({
+	Title = "You can't check this tab!",
+	Content = "This fuctions is locked for you."
+})
 
 
 
