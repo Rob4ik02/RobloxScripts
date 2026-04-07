@@ -45,13 +45,6 @@ local Time = Watermark:AddText({
 	Text = "lifetime",
 });
 
-task.spawn(function()
-	while true do task.wait()
-		Time:SetText(Compkiller:GetTimeNow());
-	end
-end)
-
-
 
 Window:DrawCategory({
 	Name = "Main"
@@ -142,7 +135,7 @@ local TrollTab = Window:DrawTab({
 
 local PlayerAdjustmentTab = Window:DrawTab({
 	Name = "Player Tab",
-	Icon = "smile",
+	Icon = "user",
 	EnableScrolling = true
 });
 
