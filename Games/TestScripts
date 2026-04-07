@@ -2,42 +2,75 @@
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/i77lhm/Libraries/refs/heads/main/Millenium/Library.lua"))()
 
 -- Создание главного окна
-local window = library:window({name = "Oxy Hub:", suffix = " 0²", gameInfo = "Universal Usement Gui"})
+local window = library:window({
+    name = "Oxy Hub:", 
+    suffix = " 0²", 
+    gameInfo = "Universal Usement Gui"
+})
 
+
+
+-- ==========================================
 -- СЕКЦИЯ: HOME
+-- ==========================================
 window:seperator({name = "Main"})
+
 local home_tabs = window:tab({name = "Home", tabs = {"Status", "Updates & News", "Credits"}})
-local statusTab, updatesTab, creditsTab = home_tabs[1], home_tabs[2], home_tabs[3]
+local statusTab   = home_tabs[1]
+local updatesTab  = home_tabs[2]
+local creditsTab  = home_tabs[3]
 
+
+
+-- ==========================================
 -- СЕКЦИЯ: EXECUTING'S
+-- ==========================================
 window:seperator({name = "Attach"})
+
 local exec_tabs = window:tab({name = "Executing's", tabs = {"Games", "Trolling", "Premium Use"}})
-local gamesTab, trollTab, premiumTab = exec_tabs[1], exec_tabs[2], exec_tabs[3]
+local gamesTab    = exec_tabs[1]
+local trollTab    = exec_tabs[2]
+local premiumTab  = exec_tabs[3]
 
+
+
+-- ==========================================
 -- СЕКЦИЯ: MISC
+-- ==========================================
 window:seperator({name = "Other functions"})
-local misc_tabs = window:tab({name = "Misc", tabs = {"FPS boost", "ESP", "Other"}})
-local fpsTab, espTab, otherTab = misc_tabs[1], misc_tabs[2], misc_tabs[3]
 
--- СЕКЦИЯ: SETTING'S
---- ==========================================
---- СЕКЦИЯ: SETTING'S (Исправлено)
---- ==========================================
+local misc_tabs = window:tab({name = "Misc", tabs = {"FPS boost", "ESP", "Other"}})
+local fpsTab      = misc_tabs[1]
+local espTab      = misc_tabs[2]
+local otherTab    = misc_tabs[3]
+
+
+
+-- ==========================================
+-- СЕКЦИЯ: SETTINGS
+-- ==========================================
 window:seperator({name = "Setting Gui"})
 
--- Убрал кавычку из названия "Settings", чтобы избежать конфликтов в именах объектов
 local settings_tabs = window:tab({name = "Settings", tabs = {"Ui", "Customable", "Config"}})
+local settinguiTab  = settings_tabs[1]
+local customTab     = settings_tabs[2]
+local configTab     = settings_tabs[3]
 
--- Проверяем, что вкладки созданы, прежде чем обращаться к ним
-local settinguiTab = settings_tabs[1]
-local customTab    = settings_tabs[2]
-local configTab    = settings_tabs[3]
 
---- ==========================================
---- ЗАПОЛНЕНИЕ ВКЛАДКИ CONFIG
---- ==========================================
 
--- Проверка: если по какой-то причине configTab не создался, скрипт не упадет
+-- Глобальные переменные (Flags)
+local flags = {
+    esp_enabled = false,
+    esp_color = Color3.fromRGB(255, 0, 0),
+    walkspeed = 16,
+    jumppower = 50
+}
+
+
+
+-- ==========================================
+-- ЗАПОЛНЕНИЕ ВКЛАДКИ CONFIG
+-- ==========================================
 if configTab then
     local configTabColumn = configTab:column({})
     local keybindSection = configTabColumn:section({name = "- Keybind Config -", default = true})
@@ -51,13 +84,13 @@ if configTab then
         name = "Menu Toggle Key", 
         default = Enum.KeyCode.RightControl,
         callback = function(key)
-            -- Здесь можно добавить уведомление о смене кнопки
-            
+            -- Функция смены кнопки (реализуется самой библиотекой)
+            print("Клавиша меню изменена на: " .. tostring(key))
         end
     })
-else
-    warn("[Oxy Hub Error]: Вкладка Config не была найдена!")
 end
 
--- ВАЖНО: Вызываем в самом конце
+
+
+-- Финализация (Всегда в самом конце)
 library:init_config(window)
