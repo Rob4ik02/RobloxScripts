@@ -18,7 +18,7 @@ local Window = LibraryUi.new({
 	Keybind = "LeftAlt",
 	Logo = "rbxassetid://102643647961511",
 	Scale = LibraryUi.Scale.Window, -- Leave blank if you want automatic scale [PC, Mobile].
-	TextSize = 15,
+	TextSize = 16,
 });
 
 Notifier.new({
@@ -85,7 +85,7 @@ Window:DrawCategory({
 
 local GamesTab = Window:DrawTab({
 	Name = "Games Tab",
-	Icon = "prefix",
+	Icon = "earth",
 	EnableScrolling = true
 });
 
@@ -125,8 +125,10 @@ local CustomUiTab = Window:DrawTab({
 	EnableScrolling = true
 });
 
-local ConfigTab = Window:DrawTab({
+local ConfigTab = Window:DrawConfig({
 	Name = "Config Tab",
 	Icon = "gear",
-	EnableScrolling = true
+	Config = ConfigManager,
 });
+
+ConfigUI:Init();
