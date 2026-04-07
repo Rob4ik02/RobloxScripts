@@ -32,13 +32,7 @@ local flags = {
     jumppower = 50
 }
 
--- Уведомление о запуске
-library:notification({
-    title = "GS: Backness",
-    description = "Система инициализирована. Добро пожаловать, Агент.",
-    time = 5,
-    type = "info"
-})
+
 
 --- ==========================================
 --- ЗАПОЛНЕНИЕ ВКЛАДКИ CONFIG
@@ -55,14 +49,7 @@ keybindSection:keybind({
     name = "Menu Toggle Key", 
     default = Enum.KeyCode.RightControl, -- Установим стандартную клавишу
     callback = function(key)
-        library:notification({
-            title = "Keybind System",
-            description = "Клавиша меню успешно изменена!",
-            time = 3,
-            type = "info"
-        })
-    end, 
-    info = "Нажмите, чтобы изменить клавишу скрытия меню"
+    end
 })
 
 --- ==========================================
