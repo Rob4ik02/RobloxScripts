@@ -137,12 +137,6 @@ local PremiumTab = Window:DrawTab({
 	EnableScrolling = true
 });
 
-NormalSection:AddParagraph({
-	Title = "You can't check this tab!",
-	Content = "This fuctions is locked for you."
-})
-
-
 
 Window:DrawCategory({
 	Name = "Other functions"
