@@ -109,6 +109,30 @@ local Game4Tab = GamesTab:DrawTab({
 	EnableScrolling = true, -- this will make tab can scrolling (recommend)
 });
 
+local Game5Tab = GamesTab:DrawTab({
+	Name = "Game 5",
+	Type = "Single",
+	EnableScrolling = true, -- this will make tab can scrolling (recommend)
+});
+
+local Game6Tab = GamesTab:DrawTab({
+	Name = "Game 6",
+	Type = "Single",
+	EnableScrolling = true, -- this will make tab can scrolling (recommend)
+});
+
+local Game7Tab = GamesTab:DrawTab({
+	Name = "Game 7",
+	Type = "Single",
+	EnableScrolling = true, -- this will make tab can scrolling (recommend)
+});
+
+local Game8Tab = GamesTab:DrawTab({
+	Name = "Game 8",
+	Type = "Single",
+	EnableScrolling = true, -- this will make tab can scrolling (recommend)
+});
+
 
 
 
@@ -120,6 +144,10 @@ local PremiumTab = Window:DrawTab({
 	EnableScrolling = true
 });
 
+local WarnSection = PremiumTab:DrawSection({
+	Name = "You doesn't have acces to this tab.",
+	Position = 'left'	
+});
 
 
 
