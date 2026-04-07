@@ -83,11 +83,43 @@ Window:DrawCategory({
 	Name = "Attachment"
 });
 
-local GamesTab = Window:DrawTab({
+
+
+
+local GamesTab = Window:DrawContainerTab({
 	Name = "Games Tab",
 	Icon = "earth",
 	EnableScrolling = true
 });
+
+local Game1Tab = GamesTab:DrawTab({
+	Name = "Game 1",
+	Type = "Single",
+	EnableScrolling = true, -- this will make tab can scrolling (recommend)
+});
+
+local Game2Tab = GamesTab:DrawTab({
+	Name = "Game 2",
+	Type = "Single",
+	EnableScrolling = true, -- this will make tab can scrolling (recommend)
+});
+
+local Game3Tab = GamesTab:DrawTab({
+	Name = "Game 3",
+	Type = "Single",
+	EnableScrolling = true, -- this will make tab can scrolling (recommend)
+});
+
+local Game4Tab = GamesTab:DrawTab({
+	Name = "Game 4",
+	Type = "Single",
+	EnableScrolling = true, -- this will make tab can scrolling (recommend)
+});
+
+
+
+
+
 
 local PremiumTab = Window:DrawTab({
 	Name = "Premium Tab",
@@ -110,7 +142,7 @@ local TrollTab = Window:DrawTab({
 
 local PlayerAdjustmentTab = Window:DrawTab({
 	Name = "Player Tab",
-	Icon = "profile",
+	Icon = "smile",
 	EnableScrolling = true
 });
 
