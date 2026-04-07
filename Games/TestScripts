@@ -8,89 +8,91 @@ local window = library:window({
     gameInfo = "Universal Usement Gui"
 })
 
-
+-- Глобальные переменные (Flags)
+local flags = {
+    esp_enabled = false,
+    esp_color = Color3.fromRGB(255, 50, 50),
+    walkspeed = 16,
+    jumppower = 50
+}
 
 -- ==========================================
 -- СЕКЦИЯ: HOME
 -- ==========================================
 window:seperator({name = "Main"})
+local home_tabs = window:tab({name = "Home", tabs = {"Status", "Updates", "Credits"}})
+local statusTab, updatesTab, creditsTab = home_tabs[1], home_tabs[2], home_tabs[3]
 
-local home_tabs = window:tab({name = "Home", tabs = {"Status", "Updates & News", "Credits"}})
-local statusTab   = home_tabs[1]
-local updatesTab  = home_tabs[2]
-local creditsTab  = home_tabs[3]
+-- Заполнение вкладки Status
+local statusCol = statusTab:column({side = "left"})
+local statusSec = statusCol:section({name = "Information", default = true})
 
+statusSec:label({
+    name = "Oxy Hub Online",
+    info = "Скрипт успешно запущен. Все системы стабильны."
+})
 
+statusSec:button({
+    name = "Print Status",
+    callback = function()
+        print("Oxy Hub работает корректно!")
+    end
+})
 
 -- ==========================================
 -- СЕКЦИЯ: EXECUTING'S
 -- ==========================================
 window:seperator({name = "Attach"})
+local exec_tabs = window:tab({name = "Executing", tabs = {"Games", "Trolling"}})
+local gamesTab, trollTab = exec_tabs[1], exec_tabs[2]
 
-local exec_tabs = window:tab({name = "Executing's", tabs = {"Games", "Trolling", "Premium Use"}})
-local gamesTab    = exec_tabs[1]
-local trollTab    = exec_tabs[2]
-local premiumTab  = exec_tabs[3]
+-- Заполнение вкладки Trolling (для теста)
+local trollCol = trollTab:column({side = "left"})
+local trollSec = trollCol:section({name = "Player Mods", default = true})
 
-
-
--- ==========================================
--- СЕКЦИЯ: MISC
--- ==========================================
-window:seperator({name = "Other functions"})
-
-local misc_tabs = window:tab({name = "Misc", tabs = {"FPS boost", "ESP", "Other"}})
-local fpsTab      = misc_tabs[1]
-local espTab      = misc_tabs[2]
-local otherTab    = misc_tabs[3]
-
-
+trollSec:toggle({
+    name = "Infinite Jump",
+    default = false,
+    callback = function(state)
+        print("Inf Jump: ", state)
+    end
+})
 
 -- ==========================================
 -- СЕКЦИЯ: SETTINGS
 -- ==========================================
 window:seperator({name = "Setting Gui"})
+local settings_tabs = window:tab({name = "Settings", tabs = {"Ui", "Config"}})
+local settinguiTab, configTab = settings_tabs[1], settings_tabs[2]
 
-local settings_tabs = window:tab({name = "Settings", tabs = {"Ui", "Customable", "Config"}})
-local settinguiTab  = settings_tabs[1]
-local customTab     = settings_tabs[2]
-local configTab     = settings_tabs[3]
-
-
-
--- Глобальные переменные (Flags)
-local flags = {
-    esp_enabled = false,
-    esp_color = Color3.fromRGB(255, 0, 0),
-    walkspeed = 16,
-    jumppower = 50
-}
-
-
-
--- ==========================================
 -- ЗАПОЛНЕНИЕ ВКЛАДКИ CONFIG
--- ==========================================
 if configTab then
-    local configTabColumn = configTab:column({})
-    local keybindSection = configTabColumn:section({name = "- Keybind Config -", default = true})
+    local configCol = configTab:column({side = "left"})
+    local keySection = configCol:section({name = "- Keybind Config -", default = true})
 
-    keybindSection:label({
-        name = "Press keybind to hide/show gui", 
-        info = "And not only can show/hide, you can change the keybind for your comfort!"
+    keySection:label({
+        name = "Menu Toggle Key", 
+        info = "Используйте эту клавишу, чтобы скрыть или показать меню."
     })
 
-    keybindSection:keybind({
-        name = "Menu Toggle Key", 
+    keySection:keybind({
+        name = "Hide/Show Gui", 
         default = Enum.KeyCode.RightControl,
         callback = function(key)
-            -- Функция смены кнопки (реализуется самой библиотекой)
-            print("Клавиша меню изменена на: " .. tostring(key))
+            print("Клавиша изменена на: " .. tostring(key))
         end
     })
 end
 
+-- ==========================================
+-- ФИНАЛИЗАЦИЯ
+-- ==========================================
 
-
--- Финализация (Всегда в самом конце)
+-- Инициализируем конфиг
 library:init_config(window)
+
+-- КРИТИЧЕСКИЙ МОМЕНТ: Принудительно открываем первую вкладку после полной загрузки
+task.wait(0.2)
+statusTab:show()
+
+print("Oxy Hub: Загрузка завершена.")
