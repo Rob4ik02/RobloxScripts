@@ -1,174 +1,2496 @@
-local LibraryUi = loadstring(game:HttpGet("https://raw.githubusercontent.com/4lpaca-pin/CompKiller/refs/heads/main/src/source.luau"))();
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local place = game.PlaceId
+local function updateservertime()
+    game:GetService("MarketplaceService"):GetProductInfo(place).Created
+    wait(1)
+end
+local timeserver = updateservertime
+local PlaceId = game.PlaceId
+local TweenService = game:GetService("TweenService");
+local Debris = game:GetService("Debris");
+local CoreGui = (gethui and gethui()) or game:GetService("CoreGui");
+local playerId = player.UserId 
+local TeleportService = game:GetService("TeleportService")
+local HttpService = game:GetService("HttpService")
 
--- Create Notification --
-local Notifier = LibraryUi.newNotify();
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+local Mouse = LocalPlayer:GetMouse()
+local Camera = workspace.CurrentCamera
+local UserInputService = game:GetService("UserInputService")
 
--- Create Config Mamager --
-local ConfigManager = LibraryUi:ConfigManager({
-	Directory = "Oxygen-UI",
-	Config = "Configs"
-});
+local AimTargetPartName = "Head"
+local AimbotEnabled = false
+local AimWallEnabled = false
+local AimRadius = 100
+local Smoothness = 0.15 -- по умолчанию
+local TargetPlayerName = "" -- для фильтра по нику
 
--- Loading UI (Icon <string> , Duration <number>) --
-LibraryUi:Loader("rbxassetid://102643647961511" , 3).yield();
+local loadedgui_notification = Instance.new("Sound", ScreenGui)
+loadedgui_notification.SoundId = "rbxassetid://8503531171"
+loadedgui_notification.Volume = 1
 
--- Creating Window --
-local Window = LibraryUi.new({
-	Name = "| Oxygen Hub",
-	Keybind = "LeftAlt",
-	Logo = "rbxassetid://102643647961511",
-	Scale = LibraryUi.Scale.Window, -- Leave blank if you want automatic scale [PC, Mobile].
-	TextSize = 16,
-});
+-- Звук уведомления о загрузке скрипта
+local notification_loadingscript = Instance.new("Sound", ScreenGui)
+notification_loadingscript.SoundId = "rbxassetid://8503530582"
+notification_loadingscript.Volume = 1
 
-Notifier.new({
-	Title = "Notification",
-	Content = "The script has been succesfuly loaded for use!",
-	Duration = 4,
-	Icon = "rbxassetid://102643647961511"
-});
+-- Звук успешного уведомления
+local notification_success = Instance.new("Sound", ScreenGui)
+notification_success.SoundId = "rbxassetid://8503529139"
+notification_success.Volume = 1
 
-local Watermark = Window:Watermark();
+-- Звук ошибки уведомления
+local notification_error = Instance.new("Sound", ScreenGui)
+notification_error.SoundId = "rbxassetid://8499261098"
+notification_error.Volume = 1
 
-Watermark:AddText({
-	Icon = "user",
-	Text = "Verified",
-});
-
-Watermark:AddText({
-	Icon = "clock",
-	Text = LibraryUi:GetDate(),
-});
-
-local Time = Watermark:AddText({
-	Icon = "timer",
-	Text = "lifetime",
-});
-
-
-
-
-
-Window:DrawCategory({
-	Name = "Main"
-});
-
-local HomeTab = Window:DrawTab({
-	Name = "Home Tab",
-	Icon = "home",
-	EnableScrolling = true
-});
-
-local ListSectionHome1 = HomeTab:DrawSection({
-	Name = "List 1",
-	Position = 'left'	
-});
-
-ListSectionHome1:AddParagraph({
-	Title = "Script is succesfuly loaded!",
-	Content = "Look's like working god."
-})
-
-local exploituser = identifyexecutor and identifyexecutor() or "Unknown"
-
-local ratings = {
-    ["Ronix"] = "god",
-    ["Delta"] = "god",
-    ["Synapse"] = "bad",
-    ["ArceusX"] = "amazing",
-    ["Fluxus"] = "mid"
+local gamesid = {
+    ["99nightintheforest"] = 79546208627805, -- 1 2.4
+    BuildABoatForTreasure = 537413528, -- 2 2.8
+    Petsgo = 18901165922, -- 3 2.9
+    Bladeball = 13772394625, -- 4 2.7
+    Lootify = 16498193900, -- 5 1.1
+    Fisch = 16732694052, -- 6 1.2
+    Beeswarmsimulator = 1537690962,  -- 7 2.1
+    TheStrongestBattlegrounds = 10449761463, -- 8 2.2
+    MM2 = 142823291, -- 9 2.3
+    BrookhavenRP = 4924922222, -- 10 2.5
+    Evade = 9872472334, -- 11 2.6
+    Arsenal = 286090429, -- 12 2.12
+    Forsaken = 18687417158, -- 13 2.11
+    Bloxfruits = 2753915549, -- 14
+    Beaninja = 81202316929048, -- 15
+    CombatWarriors = 4282985734, -- 16
+    Jujutsushenanigans = 9391468976, -- 17
+    YBA = 2809202155, -- 18
+    TSB = 10449761463, -- 19
+    PlantsVsBrainrots = 127742093697776, -- 20 1.3
+    IKEA = 2768379856, -- 21
+    StealABrainrot = 109983668079237, -- 22
+    Doors = 6516141723, -- 23
+    EatTheWorld = 16480898254, -- 24
+    PetSimulator99 = 8737899170, -- 25
+    DeadRails = 116495829188952, -- 26
+    MuscleLegends = 3623096087, -- 27
+    SpeedLegends = 3101667897, -- 28
+    NinjaLegends = 3956818381, -- 29
+    ToiletTowerDefense = 13775256536 -- 30
 }
 
-local current_rating = ratings[exploituser] or "normal"
-
-ListSectionHome1:AddParagraph({
-    Title = "You choosed " .. exploituser,
-    Content = "Exploit working: " .. exploituser .. " (" .. current_rating .. ")"
-})
-
-local StatusTab = Window:DrawTab({
-	Name = "Status Tab",
-	Icon = "server",
-	EnableScrolling = true
-});
-
-local UpdatesTab = Window:DrawTab({
-	Name = "Updates",
-	Icon = "newspaper",
-	EnableScrolling = true
-});
+-- max 50
 
 
 
 
-
-Window:DrawCategory({
-	Name = "Attachment"
-});
-
-
-
-
-local GamesTab = Window:DrawContainerTab({
-	Name = "Games Tab",
-	Icon = "earth",
-	EnableScrolling = true
-});
-
-local Choose1Tab = GamesTab:DrawTab({
-	Name = "Added",
-	Type = "Single",
-	EnableScrolling = true, -- this will make tab can scrolling (recommend)
-});
-
-local Choose2Tab = GamesTab:DrawTab({
-	Name = "Soon",
-	Type = "Single",
-	EnableScrolling = true, -- this will make tab can scrolling (recommend)
-});
+    --  //                  \\ 
+    -- ||  PREMIUM PLUS GUI  ||  
+    --  \\                  // 
 
 
 
 
+    local Luna = loadstring(game:HttpGet("https://raw.githubusercontent.com/Nebula-Softworks/Luna-Interface-Suite/refs/heads/master/source.lua", true))()
 
-local PremiumTab = Window:DrawTab({
-	Name = "Premium Tab",
-	Icon = "lock",
-	EnableScrolling = true
-});
+    local Window = Luna:CreateWindow({
+        Name = "Global Script's", -- Заголовок вашего окна
+        Subtitle = "Hub Script's v1.2.0 | @universalscriptsroblox | Premium Plus ", -- Подзаголовок
+        LogoID = "91154874732986", -- ID логотипа
+        LoadingEnabled = false, -- Включить анимацию загрузки
+        LoadingTitle = "Loading script.", -- Заголовок для загрузки
+        LoadingSubtitle = "Global Script's", -- Подзаголовок для загрузки
+
+        ConfigSettings = {
+            RootFolder = nil,
+            ConfigFolder = " Global Script " -- Название папки для конфигураций
+        },  
+
+        KeySystem = false, -- Включить систему ключей
+        
+    })
+
+    -- [[ TAB Home ]] --
+
+    local HomeTab = Window:CreateTab({
+        Name = "Home",
+        Icon = "cloud_queue",
+        ImageSource = "Material",
+        ShowTitle = true
+    })
+
+    local BigLabel = HomeTab:CreateParagraph({
+        Title = "Before you will start using this script, please read the following information.",
+        Text = "This script is tested and works on PC and Mobile. If you have any questions or suggestions, please contact us via Telegram: @Rob4ikOnly We hope you enjoy using this script!"
+    })
+
+    local HomeTab = Window:CreateTab({
+        Name = "Home",
+        Icon = "cloud_queue",
+        ImageSource = "Material",
+        ShowTitle = true
+    })
+
+    local Label = HomeTab:CreateLabel({
+        Text = "Server Information",
+        Style = 2
+    })
 
 
-Window:DrawCategory({
-	Name = "Other functions"
-});
+    local BigLabel1 = HomeTab:CreateParagraph({
+        Title = "Server time",
+        Text = "Time:"..timeserver.."
+        
+    })
 
-local TrollTab = Window:DrawTab({
-	Name = "Troll Tab",
-	Icon = "skull",
-	EnableScrolling = true
-});
+    local BigLabe2 = HomeTab:CreateParagraph({
+        Title = "Place Id:",
+        Text = ""..place.."
+    })
 
-local PlayerAdjustmentTab = Window:DrawTab({
-	Name = "Player Tab",
-	Icon = "user",
-	EnableScrolling = true
-});
+    local Label = HomeTab:CreateLabel({
+        Text = "Exploit Information",
+        Style = 2
+    })
 
 
-Window:DrawCategory({
-	Name = "Settings"
-});
+    local BigLabel2 = HomeTab:CreateParagraph({
+        Title = "Current exploit",
+        Text = "Exploit: "..(identifyexecutor and identifyexecutor() or " Not found"),
+    })
 
-local CustomUiTab = Window:DrawTab({
-	Name = " Custom Ui Tab",
-	Icon = "brush",
-	EnableScrolling = true
-});
+    local Label = HomeTab:CreateLabel({
+        Text = "Player Information",
+        Style = 2
+    })
 
-local ConfigTab = Window:DrawConfig({
-	Name = "Config Tab",
-	Icon = "gear",
-	Config = ConfigManager,
-});
+    local BigLabel3 = HomeTab:CreateParagraph({
+        Title = "Status player",
+        Text = "Player: "..player.Name..", User ID: "..player.UserId,
+    })
 
-ConfigUI:Init();
+    local NewsTab = Window:CreateTab({
+        Name = "News",
+        Icon = "campaign",
+        ImageSource = "Material",
+        ShowTitle = true
+    })
+
+    local Label1 = NewsTab:CreateLabel({
+        Text = "Updates & News",
+        Style = 2
+    })
+
+    local BigLabel4 = NewsTab:CreateParagraph({
+        Title = "V1.2.0 Soon..",
+        Text = "+ Added new scripts without keys in Games\n" ..
+            "+ Added new scripts with keys in Games\n" ..
+            "+ Added sounds notify\n" ..
+            "+ fixed some bugs\n"
+    })
+
+    local BigLabel5 = NewsTab:CreateParagraph({
+        Title = "V1.1.0",
+        Text = "+ Added new scripts without keys in Games\n" ..
+            "+ Added new scripts with keys in Games\n" ..
+            "+ Added new tab 'FAQ'\n" ..
+            "+ Added new 2 functions in misc. \n" ..
+            "+ Fixed some bugs\n"
+    })
+
+    local BigLabel6 = NewsTab:CreateParagraph({
+        Title = "V1.0.0",
+        Text = "+ Added new tab 'Games'\n" ..
+            "+ Added new tab 'Misc'\n" ..
+            "+ Added new tab 'Settings'\n" ..
+            "+ Added new tab 'Credits'\n" ..
+            "+ Added new scripts for games\n" ..
+            "+ Fixed some bugs\n" ..
+            "+ Improved interface\n" ..
+            "+ Added key system\n"
+    })
+
+    -- [[ TAB Games ]] --
+
+    local GamesTab = Window:CreateTab({
+        Name = "Games",
+        Icon = "games",
+        ImageSource = "Material",
+        ShowTitle = true
+    })
+
+    local BigLabel1 = GamesTab:CreateParagraph({
+        Title = "All scripts are tested. ",
+        Text = "Scripts that have been tested against exploits: Krnl, Delta X, Volcano, Xeno.\n" ..
+            "If you find a bug or have a suggestion, please contact us via Telegram: @Rob4ikOnly"
+    })
+
+    local Label1 = GamesTab:CreateLabel({
+        Text = "Scripts with key's",
+        Style = 2
+    })
+
+    local GameLabel1_1 = GamesTab:CreateLabel({
+        Text = "Lootify",
+        Style = 1
+    })
+
+    local Button1_1 = GamesTab:CreateButton({
+        Name = "NS Hub",
+        Description = "PC",
+        Callback = function()
+            if place == gamesid.Lootify then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing NS Hub",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/OhhMyGehlee/Loo/refs/heads/main/t"))("https://t.me/universalscriptsroblox")
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel1_2 = GamesTab:CreateLabel({
+        Text = "Fisch",
+        Style = 1
+    })
+
+    local Button1_2 = GamesTab:CreateButton({
+        Name = "Alchemy Hub",
+        Description = "PC",
+        Callback = function()
+            if place == gamesid.Fisch then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing Alchemy Hub",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet("https://scripts.alchemyhub.xyz"))()
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel1_3 = GamesTab:CreateLabel({
+        Text = "Plants Vs Brainrots",
+        Style = 1
+    })
+
+    local Button1_3 = GamesTab:CreateButton({
+        Name = "Speed Hub X",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.PlantsVsBrainrots then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing Speed Hub X",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel1_4 = GamesTab:CreateLabel({
+        Text = "Combat Warriors",
+        Style = 1
+    })
+
+    local Button1_4 = GamesTab:CreateButton({
+        Name = "Stratos Hub ",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.CombatWarriors then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing Speed Hub X",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/Nivex123456/main/refs/heads/main/Loader.lua"))()
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+
+    local Label2 = GamesTab:CreateLabel({
+        Text = "Scripts without key's",
+        Style = 2
+    })
+
+    local GameLabel2_1 = GamesTab:CreateLabel({
+        Text = "Bee swarm Simulator",
+        Style = 1
+    })
+
+    local Button2_1 = GamesTab:CreateButton({
+        Name = "Atlas Hub v1.0",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.Beeswarmsimulator then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Loading Atlas Hub",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/Rob4ikOnly/AtlasHub/main/AtlasHub.lua", true))()
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel2_2 = GamesTab:CreateLabel({
+        Text = "The Strongest Battlegrounds",
+        Style = 1
+    })
+
+    local Button2_2 = GamesTab:CreateButton({
+        Name = "Phantasm Hub",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.TSB then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing Phantasm Script",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/ATrainz/Phantasm/refs/heads/main/Games/TSB.lua"))()
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local Button2_2 = GamesTab:CreateButton({
+        Name = "Speed Hub",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.TSB then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing Speed Hub",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material", 
+                })
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))("https://t.me/universalscriptsroblox")
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material", 
+                })
+            end
+        end
+    })
+
+
+    local GameLabel2_3 = GamesTab:CreateLabel({
+        Text = "Murder Mystery 2",
+        Style = 1
+    })
+
+    local Button2_3 = GamesTab:CreateButton({
+        Name = "Blind Hub",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.MM2 then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing Blind Hub",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/Blind-Man-Walking/Mm2/refs/heads/main/Test"))("https://t.me/universalscriptsroblox")
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel2_4 = GamesTab:CreateLabel({
+        Text = "99 nights in the forest",
+        Style = 1
+    })
+
+    local Button2_4 = GamesTab:CreateButton({
+        Name = "Hub by Solument Development",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid["99nightintheforest"] then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing Hub by Solument Development",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet("https://soluna-script.vercel.app/99-Nights-in-the-Forest.lua",true))("https://t.me/universalscriptsroblox")
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel2_5 = GamesTab:CreateLabel({
+        Text = "Brookhaven RP",
+        Style = 1
+    })
+
+    local Button2_5 = GamesTab:CreateButton({
+        Name = "Hub by Soluna",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.BrookhavenRP then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing Hub by Soluna",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet("https://soluna-script.vercel.app/brookhaven.lua",true))()
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel2_6 = GamesTab:CreateLabel({
+        Text = "Evade",
+        Style = 1
+    })
+
+    local Button2_6 = GamesTab:CreateButton({
+        Name = "Saturn Hub",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.Evade then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing Saturn Hub",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/JScripter-Lua/Saturn_Open_Source/refs/heads/main/Saturn%20(Evade).lua"))()
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel2_7 = GamesTab:CreateLabel({
+        Text = "Blade Ball",
+        Style = 1
+    })
+
+    local Button2_7 = GamesTab:CreateButton({
+        Name = "Plutonium Hub ",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.Bladeball then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing Plutonium Hub",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/PawsThePaw/Plutonium.AA/main/Plutonium.Loader.lua", true))()
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel2_8 = GamesTab:CreateLabel({
+        Text = "Build a Boat for Treasure",
+        Style = 1
+    })
+
+    local Button2_8 = GamesTab:CreateButton({
+        Name = "Asu Hub ",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.BABFT then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing Asu Hub",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                
+                Luna:Notification({
+                    Title = "Warning!",
+                    Content = "Auto Builder have key system! Also 2st frame is free.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet('https://raw.githubusercontent.com/TheRealAsu/BABFT/refs/heads/main/Loader.lua'))()
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel2_9 = GamesTab:CreateLabel({
+        Text = "Pets Go",
+        Style = 1
+    })
+
+    local Button2_9 = GamesTab:CreateButton({
+        Name = "Speed Hub X",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.Petsgo then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing Speed Hub X",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel2_10 = GamesTab:CreateLabel({
+        Text = "Arsenal",
+        Style = 1
+    })
+
+    local Button2_9 = GamesTab:CreateButton({
+        Name = "Speed Hub X",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.Arsenal then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing Plutonic hub",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/OpposedDev/Plutonic/refs/heads/main/source/loader.lua"))()
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel2_11 = GamesTab:CreateLabel({
+        Text = "Forsaken",
+        Style = 1
+    })
+
+    local Button2_11 = GamesTab:CreateButton({
+        Name = "Lunix Hub",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.Forsaken then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing Lunix",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                Luna:Notification({
+                    Title = "Warning!",
+                    Content = "If you will turning on auto generator that will kick you for cheats!",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/Dzgak/xrurus/refs/heads/main/farsaken.lua"))("cool text")
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel2_12 = GamesTab:CreateLabel({
+        Text = "Blox fruits",
+        Style = 1
+    })
+
+    local Button2_12 = GamesTab:CreateButton({
+        Name = "Nat hub",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.Bloxfruits then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing Nat hub",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/ArdyBotzz/NatHub/refs/heads/master/bf.lua"))()
+
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    -- local GameLabel2_13 = GamesTab:CreateLabel({
+    --     Text = "The wild west",
+    --     Style = 1
+    -- })
+
+    -- local Button2_13 = GamesTab:CreateButton({
+    --     Name = "Eternal X hub",
+    --     Description = "PC and Mobile",
+    --     Callback = function()
+    --         if place == gamesid.Bloxfruits then
+    --             notification_loadingscript:Play()
+    --             Luna:Notification({
+    --                 Title = "Executing Eternal X hub",
+    --                 Content = "The script is being loaded, please wait...",
+    --                 Duration = 5,
+    --                 Icon = "info",
+    --                 ImageSource = "Material",
+                    
+    --             })
+                
+    --             loadstring(game:HttpGet("https://raw.githubusercontent.com/Spooksmn/Tww-Stuff/main/EternalXcracked.lua"))()
+    --         else
+    --             notification_error:Play()
+    --             Luna:Notification({
+    --                 Title = "Error",
+    --                 Content = "You are not in the correct game.",
+    --                 Duration = 5,
+    --                 Icon = "info",
+    --                 ImageSource = "Material", 
+    --             })
+    --         end
+    --     end
+    -- })
+
+    local GameLabel2_14 = GamesTab:CreateLabel({
+        Text = "Your Bizarre Adventure",
+        Style = 1
+    })
+
+    local Button2_14 = GamesTab:CreateButton({
+        Name = "Beach Boy Hub",
+        Description = "PC & Mobile ",
+        Callback = function()
+            if place == gamesid.YBA then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing Beach Boy hub",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/zakater5/LuaRepo/main/YBA/v3.lua"))() 
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material", 
+                })
+            end
+        end
+    })
+
+    local Button2_14 = GamesTab:CreateButton({
+        Name = "NukeVsCity Hub",
+        Description = "PC ",
+        Callback = function()
+            if place == gamesid.YBA then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing NukeVsCity hub",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/NukeVsCity/Scripts2024/main/ybaredguiforpc"))()
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material", 
+                })
+            end
+        end
+    })
+
+    local GameLabel2_15 = GamesTab:CreateLabel({
+        Text = "Plants Vs Brainrots",
+        Style = 1
+    })
+
+    local Button2_15 = GamesTab:CreateButton({
+        Name = "Anonymous hub",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.PlantsVsBrainrots then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing Anonymous hub",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/HitAMassy/AnonymousHub/refs/heads/main/loader.lua"))()
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel2_16 = GamesTab:CreateLabel({
+        Text = "3008 SCP",
+        Style = 1
+    })
+
+    local Button2_16 = GamesTab:CreateButton({
+        Name = "Sky hub",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.IKEA then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing Sky hub",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/yofriendfromschool1/Sky-Hub/main/SkyHub.txt"))() 
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel2_17 = GamesTab:CreateLabel({
+        Text = "Steal a brainrot",
+        Style = 1
+    })
+
+    local Button2_17 = GamesTab:CreateButton({
+        Name = "Chilli hub",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.StealABrainrot then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing Chilli hub",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/tienkhanh1/spicy/main/Chilli.lua"))()
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel2_18 = GamesTab:CreateLabel({
+        Text = "Doors",
+        Style = 1
+    })
+
+    local Button2_18 = GamesTab:CreateButton({
+        Name = "Pryc Hub",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.Doors then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing Pryc hub",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/Qiwikox12/stubrawl/refs/heads/main/DoorsHardcore.txt"))()
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel2_19 = GamesTab:CreateLabel({
+        Text = "Eat the world",
+        Style = 1
+    })
+
+    local Button2_19 = GamesTab:CreateButton({
+        Name = "Unknown hub",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.EatTheWorld then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing Unknown hub",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/Kenniel123/Eat-the-World-script/main/Eat%20the%20world%20Script"))()
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel2_20 = GamesTab:CreateLabel({
+        Text = "Dead rails",
+        Style = 1
+    })
+
+    local Button2_20 = GamesTab:CreateButton({
+        Name = "NovaZ hub",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.DeadRails then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing NovaZ hub",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/NovaZHub/Yield/main/autofarmbonds.lua"))()
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel2_21 = GamesTab:CreateLabel({
+        Text = "Pet Simulator 99",
+        Style = 1
+    })
+
+    local Button2_21 = GamesTab:CreateButton({
+        Name = "6Foot hub",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.PetSimulator99 then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing 6Foot hub",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet('https://raw.githubusercontent.com/SlamminPig/6FootScripts/main/Scripts/PetSimulator99.lua'))();
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel2_22 = GamesTab:CreateLabel({
+        Text = "Muscle Legends",
+        Style = 1
+    })
+
+    local Button2_22 = GamesTab:CreateButton({
+        Name = "Speed hub x",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.MuscleLegends then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing Speed Hub x",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))()
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel2_23 = GamesTab:CreateLabel({
+        Text = "Legends of Speed",
+        Style = 1
+    })
+
+    local Button2_23 = GamesTab:CreateButton({
+        Name = "Nova hub",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.SpeedLegends then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing Nova hub",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/EncryptedV10/Roblox-Scripts/refs/heads/main/Legends%20Of%20Speed.lua"))()
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel2_24 = GamesTab:CreateLabel({
+        Text = "Ninja Legends",
+        Style = 1
+    })
+
+    local Button2_24 = GamesTab:CreateButton({
+        Name = "AppleScript001 hub",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.NinjaLegends then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing AppleScript001 hub",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet(("https://raw.githubusercontent.com/AppleScript001/Ninjas_Legends/main/README.md"),true))()
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel2_25 = GamesTab:CreateLabel({
+        Text = "Toilet Tower Defense",
+        Style = 1
+    })
+
+    local Button2_25 = GamesTab:CreateButton({
+        Name = "stormcloak51 hub",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.ToiletTowerDefense then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing stormcloak51 hub",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet("https://pastebin.com/raw/c3cSPAiZ"))()
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel2_26 = GamesTab:CreateLabel({
+        Text = "Jujutsu Shenanigans",
+        Style = 1
+    })
+
+    local Button2_26 = GamesTab:CreateButton({
+        Name = "plutonium hub",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.Jujutsushenanigans then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing plutonium hub",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/PawsThePaw/Plutonium.AA/main/Plutonium.Loader.lua", true))()
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local GameLabel2_27 = GamesTab:CreateLabel({
+        Text = "Be a ninja",
+        Style = 1
+    })
+
+    local Button2_27 = GamesTab:CreateButton({
+        Name = "toraisme hub",
+        Description = "PC and Mobile",
+        Callback = function()
+            if place == gamesid.Beaninja then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Executing toraisme hub",
+                    Content = "The script is being loaded, please wait...",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/gumanba/Scripts/main/BeaNinja"))()
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Content = "You are not in the correct game.",
+                    Duration = 5,
+                    Icon = "info",
+                    ImageSource = "Material",
+                    
+                })
+            end
+        end
+    })
+
+    local TeleportTab = Window:CreateTab({
+        Name = "Servers",
+        Icon = "add_location",
+        ImageSource = "Material",
+        ShowTitle = true
+    })
+
+    local Label = TeleportTab:CreateLabel({
+        Text = "Teleport | 1 ",
+        Style = 2
+    })
+
+    local DropdownTeleporter = TeleportTab:CreateDropdown({
+        Name = "Place's",
+        Description = "Teleport to?",
+        Options = {
+            "99 Night In The Forest", "Build A Boat For Treasure", "Pets Go", "Blade Ball", "Lootify",
+            "Fisch", "Bee Swarm Simulator", "The strongest battlegrounds", "Murder Mystery 2", "Brookhaven RolePlay",
+            "Evade", "Arsenal", "Forsaken", "Blox Fruits", "The Wild West", "Combat Warriors", "Jujutsu Shenanigans"
+        },
+        CurrentOption = {"Blade Ball"},
+        MultipleOptions = false,
+        SpecialType = nil,
+        Callback = function(Options)
+            local choice = Options[1] -- Берём выбранный элемент
+
+            if choice == "99 Night In The Forest" then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Warning",
+                    Icon = "notifications_active",
+                    ImageSource = "Material",
+                    Content = "Teleporting to 99 night in the forest"
+                })
+
+            elseif choice == "Build A Boat For Treasure" then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Warning",
+                    Icon = "notifications_active",
+                    ImageSource = "Material",
+                    Content = "Teleporting to BABFT"
+                })
+
+            elseif choice == "Pets Go" then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Warning",
+                    Icon = "notifications_active",
+                    ImageSource = "Material",
+                    Content = "Teleporting to Pets Go"
+                })
+
+            elseif choice == "Blade Ball" then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Warning",
+                    Icon = "notifications_active",
+                    ImageSource = "Material",
+                    Content = "Teleporting to Blade Ball"
+                })
+
+            elseif choice == "Lootify" then
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Warning",
+                    Icon = "notifications_active",
+                    ImageSource = "Material",
+                    Content = "Teleporting to Lootify"
+                })
+
+            else
+                notification_loadingscript:Play()
+                Luna:Notification({
+                    Title = "Warning",
+                    Icon = "notifications_active",
+                    ImageSource = "Material",
+                    Content = "Error!"
+                })
+            end
+        end
+    }, "Dropdown")
+
+    local Label = TeleportTab:CreateLabel({
+        Text = "Teleport | 2",
+        Style = 2
+    })
+
+   local ToggleHop = TeleportTab:CreateButton({
+        Name = "Server Hop",
+        Description = "Join another random server",
+        CurrentValue = false,
+        Callback = function(Value)
+            
+                Luna:Notification({
+                    Title = "Notification",
+                    Icon = "info",
+                    ImageSource = "Material",
+                    Content = "Teleporting to another server..."
+                })
+                task.wait(2)
+
+                -- получаем список серверов
+                local servers = HttpService:JSONDecode(game:HttpGetAsync(
+                    "https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100"
+                ))
+
+                for _, srv in ipairs(servers.data) do
+                    if srv.id ~= game.JobId and srv.playing < srv.maxPlayers then
+                        TeleportService:TeleportToPlaceInstance(game.PlaceId, srv.id, player)
+                        break
+                    end
+                end
+            
+        end
+    }, "Toggle")
+
+    -- 🔹 Server Small (ищет сервер с минимальным числом игроков)
+    local ToggleSmall = TeleportTab:CreateButton({
+        Name = "Server Small",
+        Description = "Join server with fewest players",
+        CurrentValue = false,
+        Callback = function(Value)
+            
+                Luna:Notification({
+                    Title = "Notification",
+                    Icon = "info",
+                    ImageSource = "Material",
+                    Content = "Teleporting to smallest server..."
+                })
+                task.wait(2)
+
+                local servers = HttpService:JSONDecode(game:HttpGetAsync(
+                    "https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100"
+                ))
+
+                local bestServer = nil
+                for _, srv in ipairs(servers.data) do
+                    if srv.id ~= game.JobId then
+                        if not bestServer or srv.playing < bestServer.playing then
+                            bestServer = srv
+                        end
+                    end
+                end
+
+                if bestServer then
+                    TeleportService:TeleportToPlaceInstance(game.PlaceId, bestServer.id, player)
+                else
+                    warn("Не нашёл маленький сервер!")
+                end
+            
+        end
+    }, "Toggle")
+
+    -- 🔹 Server Private (через сторонний скрипт)
+    local TogglePrivate = TeleportTab:CreateButton({
+        Name = "Server Private",
+        Description = "Join private server [BETA]",
+        CurrentValue = false,
+        Callback = function(Value)
+            
+                Luna:Notification({
+                    Title = "Notification",
+                    Icon = "info",
+                    ImageSource = "Material",
+                    Content = "Teleporting to private server..."
+                })
+                task.wait(2)
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/veil0x14/LocalScripts/refs/heads/main/pg.lua"))()
+            
+        end
+    }, "")
+
+
+    local AimTab = Window:CreateTab({
+        Name = "Aimbot",
+        Icon = "gps_not_fixed",
+        ImageSource = "Material",
+        ShowTitle = true
+    })
+    
+    AimTab:CreateDropdown({
+        Name = "Target Aim",
+        Description = "Choose which body part to aim at.",
+        Options = {"Head", "Torso"},
+        CurrentOption = {"Head"},
+        MultipleOptions = false,
+        Callback = function(option)
+            AimTargetPartName = (option == "Torso") and "Torso" or "Head"
+            notification_loadingscript:Play()
+            Luna:Notification({
+                Title = "Success!",
+                Icon = "notifications_active",
+                ImageSource = "Material",
+                Content = "Target Aim Changed to " .. AimTargetPartName
+            })
+        end
+    }, "Dropdown")
+
+    -- Toggle Aimbot
+    AimTab:CreateToggle({
+        Name = "Aimbot",
+        Description = "Toggle Aimbot On/Off",
+        CurrentValue = false,
+        Callback = function(Value)
+            AimbotEnabled = Value
+            notification_loadingscript:Play()
+            Luna:Notification({
+                Title = "Success!",
+                Icon = "notifications_active",
+                ImageSource = "Material",
+                Content = Value and "Enabled Aimbot" or "Disabled Aimbot"
+            })
+        end
+    }, "Toggle")
+
+    -- Toggle AimWall
+    AimTab:CreateToggle({
+        Name = "Aim Wall",
+        Description = "Can through aim wall",
+        CurrentValue = false,
+        Callback = function(Value)
+            AimWallEnabled = Value
+            notification_loadingscript:Play()
+            Luna:Notification({
+                Title = "Success!",
+                Icon = "notifications_active",
+                ImageSource = "Material",
+                Content = Value and "Enabled Aim Wall" or "Disabled Aim Wall"
+            })
+        end
+    }, "Toggle")
+
+    -- Слайдер зоны
+    AimTab:CreateSlider({
+        Name = "Zone of Aimbot",
+        Range = {0, 1000},
+        Increment = 1,
+        CurrentValue = 100,
+        Callback = function(Value)
+            AimRadius = Value
+        end
+    }, "Slider")
+
+    -- Поле ввода игрока
+    local Input1 = AimTab:CreateInput({
+        Name = "Player Aimbot",
+        Description = "Aim only at specific player",
+        PlaceholderText = "Put here player nickname",
+        CurrentValue = "",
+        Numeric = false,
+        MaxCharacters = nil,
+        Enter = false,
+        Callback = function(Text)
+            if Text == "" then
+                TargetPlayerName = ""
+                notification_success:Play()
+                Luna:Notification({
+                    Title = "Selected!",
+                    Icon = "notifications_active",
+                    ImageSource = "Material",
+                    Content = "None player"
+                })
+            else
+                local target = Players:FindFirstChild(Text)
+                if target then
+                    TargetPlayerName = Text
+                    notification_success:Play()
+                    Luna:Notification({
+                        Title = "Selected!",
+                        Icon = "notifications_active",
+                        ImageSource = "Material",
+                        Content = TargetPlayerName
+                    })
+                
+                else
+                    notification_error:Play()
+                    Luna:Notification({
+                        Title = "Can't Found this player!",
+                        Icon = "notifications_active",
+                        ImageSource = "Material",
+                        Content = "Text box is reseted."
+                    })
+                    TargetPlayerName = "" -- сбрасываем, чтобы аимбот работал обычно
+                end
+            end
+        end
+    }, "Input")
+
+    -- Слайдер Smooth Aim
+    local Slider2 = AimTab:CreateSlider({
+        Name = "Smooth Aim",
+        Range = {0.01, 2},
+        Increment = 0.01,
+        CurrentValue = 0.15,
+        Callback = function(Value)
+            Smoothness = Value
+        end
+    }, "Slider")
+
+    -- Проверка видимости
+    local function IsVisible(origin, targetPart)
+        if AimWallEnabled then return true end
+        
+        local ignoreList = {LocalPlayer.Character, targetPart.Parent}
+        local parts = Camera:GetPartsObscuringTarget({origin, targetPart.Position}, ignoreList)
+        return #parts == 0
+    end
+
+    -- Поиск цели
+    local function GetClosestPlayer()
+        local closestPlayer = nil
+        local shortestScreenDist = AimRadius
+        local origin = Camera.CFrame.Position
+        local mouseLocation = UserInputService:GetMouseLocation()
+
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                -- Если введён ник → пропускаем всех, кроме нужного
+                if TargetPlayerName ~= "" and player.Name ~= TargetPlayerName then
+                    continue
+                end
+
+                local character = player.Character
+                local part = character:FindFirstChild(AimTargetPartName) or character:FindFirstChild("LowerTorso")
+
+                if part then
+                    local screenPoint, onScreen = Camera:WorldToViewportPoint(part.Position)
+                    local screenDist = (Vector2.new(mouseLocation.X, mouseLocation.Y) - Vector2.new(screenPoint.X, screenPoint.Y)).Magnitude
+                    local distance3D = (part.Position - origin).Magnitude
+
+                    if onScreen and screenDist <= AimRadius and distance3D <= 1000 then
+                        if IsVisible(origin, part) then
+                            if screenDist < shortestScreenDist then
+                                shortestScreenDist = screenDist
+                                closestPlayer = player
+                            end
+                        end
+                    end
+                end
+            end
+        end
+
+        return closestPlayer
+    end
+
+    -- Плавное наведение камеры
+    local function SmoothAim(targetPos, smoothness)
+        local camPos = Camera.CFrame.Position
+        local newCFrame = CFrame.new(camPos, targetPos)
+        Camera.CFrame = Camera.CFrame:Lerp(newCFrame, smoothness)
+    end
+
+    -- Основной цикл
+    RunService.RenderStepped:Connect(function()
+        if not AimbotEnabled then return end
+
+        local targetPlayer = GetClosestPlayer()
+        if targetPlayer and targetPlayer.Character then
+            local part = targetPlayer.Character:FindFirstChild(AimTargetPartName) or targetPlayer.Character:FindFirstChild("LowerTorso")
+
+            if part then
+                SmoothAim(part.Position, Smoothness) -- теперь регулируется слайдером
+            end
+        end
+    end)
+
+    local ESPTab = Window:CreateTab({
+        Name = "ESP",
+        Icon = "visibility",
+        ImageSource = "Material",
+        ShowTitle = true
+    })
+
+    local plr = Players.LocalPlayer
+
+    local yourHitboxColor = Color3.fromRGB(86, 171, 128)
+    local playersHitboxColor = Color3.fromRGB(86, 171, 128)
+    local yourHitboxTransparency = 0.7
+    local playersHitboxTransparency = 0.7
+
+    -- Функция создания хитбокса для персонажа
+    local function addHitbox(character, isPlayer)
+        local hrp = character:FindFirstChild("HumanoidRootPart")
+        if not hrp then return end
+
+        if hrp:FindFirstChild("Hitbox") then return end
+
+        local hitboxPart = Instance.new("Part")
+        hitboxPart.Name = "Hitbox"
+        hitboxPart.Size = Vector3.new(2.55, 3.45, 2.05)
+        hitboxPart.CanCollide = false
+        hitboxPart.Anchored = false
+        hitboxPart.Transparency = isPlayer and playersHitboxTransparency or yourHitboxTransparency
+        hitboxPart.Position = hrp.Position
+        hitboxPart.Parent = hrp
+
+        local highlight = Instance.new("Highlight")
+        highlight.Parent = hitboxPart
+        highlight.FillColor = isPlayer and playersHitboxColor or yourHitboxColor
+        highlight.OutlineColor = isPlayer and playersHitboxColor or yourHitboxColor
+        highlight.FillTransparency = isPlayer and playersHitboxTransparency or yourHitboxTransparency
+
+        local weld = Instance.new("WeldConstraint")
+        weld.Part0 = hitboxPart
+        weld.Part1 = hrp
+        weld.Parent = hitboxPart
+    end
+
+    local function removeHitbox(character)
+        local hrp = character:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            local hitbox = hrp:FindFirstChild("Hitbox")
+            if hitbox then
+                hitbox:Destroy()
+            end
+        end
+    end
+
+    -- Управление твоим хитбоксом
+    local yourHitboxToggle = ESPTab:CreateToggle({
+        Name = "Local Hitbox",
+        CurrentValue = false,
+        Callback = function(value)
+            if value then
+                if plr.Character then
+                    addHitbox(plr.Character, false)
+                end
+            else
+                if plr.Character then
+                    removeHitbox(plr.Character)
+                end
+            end
+        end
+    })
+
+    -- Управление хитбоксами всех игроков
+    local playersHitboxToggle
+    local playerConnections = {}
+    local characterConnections = {}
+
+    local function connectPlayer(player)
+        local charConn = player.CharacterAdded:Connect(function(character)
+            addHitbox(character, true)
+        end)
+        table.insert(characterConnections, charConn)
+
+        if player.Character then
+            addHitbox(player.Character, true)
+        end
+    end
+
+    local function disconnectAll()
+        for _, conn in pairs(playerConnections) do
+            conn:Disconnect()
+        end
+        for _, conn in pairs(characterConnections) do
+            conn:Disconnect()
+        end
+        playerConnections = {}
+        characterConnections = {}
+    end
+
+    local function removeHitboxesFromAll()
+        for _, player in pairs(Players:GetPlayers()) do
+            if player.Character then
+                removeHitbox(player.Character)
+            end
+        end
+    end
+
+    playersHitboxToggle = ESPTab:CreateToggle({
+        Name = "Players Hitbox",
+        CurrentValue = false,
+        Callback = function(value)
+            if value then
+                -- Подключаем существующих игроков
+                for _, player in pairs(Players:GetPlayers()) do
+                    connectPlayer(player)
+                end
+                -- Подписываемся на новых игроков
+                local playerConn = Players.PlayerAdded:Connect(function(player)
+                    connectPlayer(player)
+                end)
+                table.insert(playerConnections, playerConn)
+            else
+                disconnectAll()
+                removeHitboxesFromAll()
+            end
+        end
+    })
+
+    -- Цвета и прозрачность для твоего хитбокса
+    ESPTab:CreateColorPicker({
+        Name = "Local Hitbox Color",
+        Color = yourHitboxColor,
+        Callback = function(value)
+            yourHitboxColor = value
+            if plr.Character then
+                local hrp = plr.Character:FindFirstChild("HumanoidRootPart")
+                if hrp and hrp:FindFirstChild("Hitbox") then
+                    local highlight = hrp.Hitbox:FindFirstChildOfClass("Highlight")
+                    if highlight then
+                        highlight.FillColor = yourHitboxColor
+                        highlight.OutlineColor = yourHitboxColor
+                    end
+                end
+            end
+        end
+    })
+
+    ESPTab:CreateSlider({
+        Name = "Local Hitbox Transparency",
+        Range = {0, 1},
+        Increment = 0.05,
+        CurrentValue = yourHitboxTransparency,
+        Callback = function(value)
+            yourHitboxTransparency = value
+            if plr.Character then
+                local hrp = plr.Character:FindFirstChild("HumanoidRootPart")
+                if hrp and hrp:FindFirstChild("Hitbox") then
+                    hrp.Hitbox.Transparency = yourHitboxTransparency
+                    local highlight = hrp.Hitbox:FindFirstChildOfClass("Highlight")
+                    if highlight then
+                        highlight.FillTransparency = yourHitboxTransparency
+                    end
+                end
+            end
+        end
+    })
+
+    -- Цвета и прозрачность для игроков
+    ESPTab:CreateColorPicker({
+        Name = "Players Hitbox Color",
+        Color = playersHitboxColor,
+        Callback = function(value)
+            playersHitboxColor = value
+            for _, player in pairs(Players:GetPlayers()) do
+                if player.Character then
+                    local hrp = player.Character:FindFirstChild("HumanoidRootPart")
+                    if hrp and hrp:FindFirstChild("Hitbox") then
+                        local highlight = hrp.Hitbox:FindFirstChildOfClass("Highlight")
+                        if highlight then
+                            highlight.FillColor = playersHitboxColor
+                            highlight.OutlineColor = playersHitboxColor
+                        end
+                    end
+                end
+            end
+        end
+    })
+
+    ESPTab:CreateSlider({
+        Name = "Players Hitbox Transparency",
+        Range = {0, 1},
+        Increment = 0.05,
+        CurrentValue = playersHitboxTransparency,
+        Callback = function(value)
+            playersHitboxTransparency = value
+            for _, player in pairs(Players:GetPlayers()) do
+                if player.Character then
+                    local hrp = player.Character:FindFirstChild("HumanoidRootPart")
+                    if hrp and hrp:FindFirstChild("Hitbox") then
+                        hrp.Hitbox.Transparency = playersHitboxTransparency
+                        local highlight = hrp.Hitbox:FindFirstChildOfClass("Highlight")
+                        if highlight then
+                            highlight.FillTransparency = playersHitboxTransparency
+                        end
+                    end
+                end
+            end
+        end
+    })
+
+    local Players = game:GetService("Players")
+    local RunService = game:GetService("RunService")
+
+    local playerConnections = {}
+    local billboardObjects = {}
+
+    local function createNameTag(player)
+        if not player.Character or not player.Character:FindFirstChild("Head") then return end
+        if billboardObjects[player] then return end
+
+        local head = player.Character.Head
+
+        local billboard = Instance.new("BillboardGui")
+        billboard.Name = "NameTag"
+        billboard.AlwaysOnTop = true
+        billboard.Size = UDim2.new(0, 200, 0, 50)
+        billboard.StudsOffset = Vector3.new(0, 3, 0)
+        billboard.MaxDistance = 50000  -- дальность видимости
+        billboard.Parent = head
+
+        local nameLabel = Instance.new("TextLabel")
+        nameLabel.BackgroundTransparency = 1
+        nameLabel.Size = UDim2.new(1, 0, 1, 0)
+        nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        nameLabel.TextStrokeTransparency = 0.3
+        nameLabel.TextScaled = true
+        nameLabel.Font = Enum.Font.SourceSansBold
+        nameLabel.Text = player.DisplayName .. " (" .. player.Name .. ")"
+        nameLabel.Parent = billboard
+
+        billboardObjects[player] = billboard
+    end
+
+    local function removeNameTag(player)
+        if billboardObjects[player] then
+            billboardObjects[player]:Destroy()
+            billboardObjects[player] = nil
+        end
+    end
+
+    local function connectPlayer(player)
+        if player.Character then
+            createNameTag(player)
+        end
+
+        local charAdded = player.CharacterAdded:Connect(function(char)
+            char:WaitForChild("Head", 10)
+            createNameTag(player)
+        end)
+
+        table.insert(playerConnections, charAdded)
+    end
+
+    local function disconnectAll()
+        for _, conn in ipairs(playerConnections) do
+            conn:Disconnect()
+        end
+        playerConnections = {}
+
+        for player, tag in pairs(billboardObjects) do
+            tag:Destroy()
+        end
+        billboardObjects = {}
+    end
+
+    -- 🔘 Создаём Toggle:
+    playersNamesToggle = ESPTab:CreateToggle({
+        Name = "Name of Players",
+        CurrentValue = false,
+        Callback = function(value)
+            if value then
+                for _, player in ipairs(Players:GetPlayers()) do
+                    if player ~= Players.LocalPlayer then
+                        connectPlayer(player)
+                    end
+                end
+
+                -- подключение новых игроков
+                local newConn = Players.PlayerAdded:Connect(function(player)
+                    connectPlayer(player)
+                end)
+                table.insert(playerConnections, newConn)
+
+                -- удаление тегов, если игрок уходит
+                local removeConn = Players.PlayerRemoving:Connect(function(player)
+                    removeNameTag(player)
+                end)
+                table.insert(playerConnections, removeConn)
+
+            else
+                disconnectAll()
+            end
+        end
+    })
+
+
+
+    -- Автоматически добавлять хитбокс на твой персонаж при спавне, если включен toggle
+    plr.CharacterAdded:Connect(function(character)
+        if yourHitboxToggle.CurrentValue then
+            addHitbox(character, false)
+        end
+    end)
+
+    -- Автоматически добавлять хитбоксы для других игроков при спавне, если включен toggle
+    Players.PlayerAdded:Connect(function(player)
+        if playersHitboxToggle.CurrentValue then
+            local charConn = player.CharacterAdded:Connect(function(character)
+                addHitbox(character, true)
+            end)
+            table.insert(characterConnections, charConn)
+        end
+    end)
+
+    if plr.Character and yourHitboxToggle.CurrentValue then
+        addHitbox(plr.Character, false)
+    end
+
+    for _, player in pairs(Players:GetPlayers()) do
+        if player.Character and playersHitboxToggle.CurrentValue then
+            addHitbox(player.Character, true)
+        end
+    end
+
+    
+
+    -- [[ TAB Misc ]] --
+
+    local MiscTab = Window:CreateTab({
+        Name = "Misc",
+        Icon = "extension",
+        ImageSource = "Material",
+        ShowTitle = true
+    })
+
+    local Label = MiscTab:CreateLabel({
+        Text = "Server   ",
+        Style = 2
+    })
+
+   local ToggleHop = MiscTab:CreateToggle({
+        Name = "Server Hop",
+        Description = "Join another random server",
+        CurrentValue = false,
+        Callback = function(Value)
+            if Value then
+                Luna:Notification({
+                    Title = "Notification",
+                    Icon = "info",
+                    ImageSource = "Material",
+                    Content = "Teleporting to another server..."
+                })
+                task.wait(2)
+
+                -- получаем список серверов
+                local servers = HttpService:JSONDecode(game:HttpGetAsync(
+                    "https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100"
+                ))
+
+                for _, srv in ipairs(servers.data) do
+                    if srv.id ~= game.JobId and srv.playing < srv.maxPlayers then
+                        TeleportService:TeleportToPlaceInstance(game.PlaceId, srv.id, player)
+                        break
+                    end
+                end
+            end
+        end
+    }, "Toggle")
+
+    -- 🔹 Server Small (ищет сервер с минимальным числом игроков)
+    local ToggleSmall = MiscTab:CreateToggle({
+        Name = "Server Small",
+        Description = "Join server with fewest players",
+        CurrentValue = false,
+        Callback = function(Value)
+            if Value then
+                Luna:Notification({
+                    Title = "Notification",
+                    Icon = "info",
+                    ImageSource = "Material",
+                    Content = "Teleporting to smallest server..."
+                })
+                task.wait(2)
+
+                local servers = HttpService:JSONDecode(game:HttpGetAsync(
+                    "https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100"
+                ))
+
+                local bestServer = nil
+                for _, srv in ipairs(servers.data) do
+                    if srv.id ~= game.JobId then
+                        if not bestServer or srv.playing < bestServer.playing then
+                            bestServer = srv
+                        end
+                    end
+                end
+
+                if bestServer then
+                    TeleportService:TeleportToPlaceInstance(game.PlaceId, bestServer.id, player)
+                else
+                    warn("Не нашёл маленький сервер!")
+                end
+            end
+        end
+    }, "Toggle")
+
+    -- 🔹 Server Private (через сторонний скрипт)
+    local TogglePrivate = MiscTab:CreateToggle({
+        Name = "Server Private",
+        Description = "Join private server [BETA]",
+        CurrentValue = false,
+        Callback = function(Value)
+            if Value then
+                Luna:Notification({
+                    Title = "Notification",
+                    Icon = "info",
+                    ImageSource = "Material",
+                    Content = "Teleporting to private server..."
+                })
+                task.wait(2)
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/veil0x14/LocalScripts/refs/heads/main/pg.lua"))()
+            end
+        end
+    }, "Toggle")
+
+    local Label = MiscTab:CreateLabel({
+        Text = "Player",
+        Style = 2
+    })
+
+    MiscTab:CreateSlider({
+        Name = "Speed",
+        Range = {1, 500},
+        Increment = 1,
+        CurrentValue = 16,
+        Callback = function(Value)
+            player.Character.Humanoid.WalkSpeed = Value
+        end
+    })
+
+    MiscTab:CreateSlider({
+        Name = "Jump",
+        Range = {1, 500},
+        Increment = 1,
+        CurrentValue = 50,
+        Callback = function(Value)
+            player.Character.Humanoid.JumpPower = Value
+        end
+    })
+
+    local gravityplr = player.Character.Humanoid:FindFirstChild("Gravity")
+
+
+    if gravityplr then
+        MiscTab:CreateSlider({
+            Name = "Gravity",
+            Range = {1, 500},
+            Increment = 1,
+            CurrentValue = 196,
+            Callback = function(Value)
+                player.Character.Humanoid.Gravity = Value    
+            end
+        })
+    else
+        Luna:Notification({
+            Title = "Error",
+            Icon = "error",
+            ImageSource = "Material",
+            Content = "Failed to find gravity"
+        })
+        notification_error:Play()
+    end
+
+    local Label = MiscTab:CreateLabel({
+        Text = "Camera",
+        Style = 2
+    })
+
+    MiscTab:CreateSlider({
+        Name = "Field of View",
+        Range = {1, 120},
+        Increment = 1,
+        CurrentValue = 70,
+        Callback = function(Value)
+            workspace.CurrentCamera.FieldOfView = Value
+        end
+    })
+
+    local Label = MiscTab:CreateLabel({
+        Text = "Developers Tools (Use at your own risk)",
+        Style = 2
+    })
+
+    local MiscButton = MiscTab:CreateButton({
+        Name = "Btools",
+        Description = "PC",
+        Callback = function()
+            Luna:Notification({
+                Title = "Notification",
+                Icon = "info",
+                ImageSource = "Material",
+                Content = "Executing Btools..."
+            })
+            notification_loadingscript:Play()
+            loadstring(game:HttpGet("https://cdn.wearedevs.net/scripts/BTools.txt"))()
+            if success then
+                notification_success:Play()
+                Luna:Notification({
+                    Title = "Success",
+                    Icon = "check_circle",
+                    ImageSource = "Material",
+                    Content = "btools executed successfully."
+                })
+                notification_success:Play()
+            else
+                Luna:Notification({
+                    Title = "Error",
+                    Icon = "error",
+                    ImageSource = "Material",
+                    Content = "Failed to execute btools"
+                })
+                notification_error:Play()
+            end
+        end
+    })
+
+    local MiscButton = MiscTab:CreateButton({
+        Name = "F3X tools",
+        Description = "PC",
+        Callback = function()
+            Luna:Notification({
+                Title = "Notification",
+                Icon = "info",
+                ImageSource = "Material",
+                Content = "Executing F3X tools..."
+            })
+            notification_loadingscript:Play()
+            loadstring(game:GetObjects("rbxassetid://6695644299")[1].Source)()
+            if success then
+                notification_success:Play()
+                Luna:Notification({
+                    Title = "Success",
+                    Icon = "check_circle",
+                    ImageSource = "Material",
+                    Content = "F3X tools executed successfully."
+                })
+                notification_success:Play()
+            else
+                Luna:Notification({
+                    Title = "Error",
+                    Icon = "error",
+                    ImageSource = "Material",
+                    Content = "Failed to execute F3X tools"
+                })
+                notification_error:Play()
+            end
+        end
+    })
+
+    local Label = MiscTab:CreateLabel({
+        Text = "Admin Panel",
+        Style = 2
+    })
+
+    MiscTab:CreateButton({
+        Name = "Infinite Yield",
+        Callback = function()
+            notification_loadingscript:Play()
+            Luna:Notification({
+                Title = "Notification",
+                Icon = "info",
+                ImageSource = "Material",
+                Content = "Executing Infinite Yield..."
+            })
+            notification_loadingscript:Play()
+            loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+            if success then
+                notification_success:Play()
+                Luna:Notification({
+                    Title = "Success",
+                    Icon = "check_circle",
+                    ImageSource = "Material",
+                    Content = "Infinite yield executed successfully."
+                })
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Icon = "error",
+                    ImageSource = "Material",
+                    Content = "Failed to execute Infinite yield."
+                })
+            end
+        end
+    })
+
+    local Label = MiscTab:CreateLabel({
+        Text = "Explorer",
+        Style = 2
+    })
+
+    MiscTab:CreateButton({
+        Name = "Dex V2",
+        Callback = function()
+            notification_loadingscript:Play()
+            Luna:Notification({
+                Title = "Notification",
+                Icon = "info",
+                ImageSource = "Material",
+                Content = "Executing Dex v2..."
+            })
+            notification_loadingscript:Play()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/MariyaFurmanova/Library/main/dex2.0", true))()
+            if succes then
+
+                Luna:Notification({
+                    Title = "Success",
+                    Icon = "check_circle",
+                    ImageSource = "Material",
+                    Content = "Dex v2 executed successfully."
+                })
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Icon = "error",
+                    ImageSource = "Material",
+                    Content = "Failed to execute Dex v2."
+                })
+            end
+        end
+    })
+
+    MiscTab:CreateButton({
+        Name = "Dex V4",
+        Callback = function()
+            notification_loadingscript:Play()
+            Luna:Notification({
+                Title = "Notification",
+                Icon = "info",
+                ImageSource = "Material",
+                Content = "Executing Dex v4..."
+            })
+            notification_loadingscript:Play()
+            loadstring(game:HttpGet("https://gist.githubusercontent.com/dannythehacker/1781582ab545302f2b34afc4ec53e811/raw/ee5324771f017073fc30e640323ac2a9b3bfc550/dark%2520dex%2520v4"))()
+            if succes then
+                Luna:Notification({
+                    Title = "Success",
+                    Icon = "check_circle",
+                    ImageSource = "Material",
+                    Content = "Dex v4 executed successfully."
+                })
+            else
+                notification_error:Play()
+                Luna:Notification({
+                    Title = "Error",
+                    Icon = "error",
+                    ImageSource = "Material",
+                    Content = "Failed to execute Dex v4."
+                })
+            end
+        end
+    })
+
+    local Label = MiscTab:CreateLabel({
+        Text = "Kill Gui",
+        Style = 2
+    })
+
+    MiscTab:CreateButton({
+        Name = "Destroy GUI",
+        Callback = function()
+            Luna:Notification({
+                Title = "Warning",
+                Content = "GUI will be destroyed in 5 seconds.",
+                Duration = 5,
+                Icon = "info",
+                ImageSource = "Material",
+            })
+            notification_loadingscript:Play()
+            task.wait(5)
+            Luna:Destroy()
+        end
+    })
+
+    -- [[ TAB Settings ]] --
+    local SettingsTab = Window:CreateTab({
+        Name = "Settings",
+        Icon = "settings",
+        ImageSource = "Material",
+        ShowTitle = true
+    })
+    SettingsTab:BuildConfigSection()
+
+    -- [[ TAB FAQ ]] --
+    local FAQTab = Window:CreateTab({
+        Name = "FAQ",
+        Icon = "help_outline",
+        ImageSource = "Material",
+        ShowTitle = true
+    })
+
+    local Label = FAQTab:CreateLabel({
+        Text = "Terms of Using gui",
+        Style = 2
+    })
+
+    FAQTab:CreateParagraph({
+        Title = "How to use?",
+        Text = "1. Home tab → Info\n2. Games tab → Scripts\n3. Misc → Extra features\n4. Settings → Config\n5. FAQ → Help\n6. Credits → Authors"
+    })
+
+    FAQTab:CreateParagraph({
+        Title = "Why functions not working?",
+        Text = "1. Game not supported\n2. Script outdated\n3. Bad internet\n4. Missing permissions\n5. Script in beta"
+    })
+
+    FAQTab:CreateParagraph({
+        Title = "Why updates soo laatee??",
+        Text = "1. The developer cannot always do this, because he has other things to do.\n2. The developer is only one and he does everything alone.\n3. The developer sometimes gets tired and needs a break."
+    })
+
+    -- [[ TAB Credits ]] --
+    local CreditsTab = Window:CreateTab({
+        Name = "Credits",
+        Icon = "star",
+        ImageSource = "Material",
+        ShowTitle = true
+    })
+
+    CreditsTab:CreateParagraph({
+        Title = "Our Telegram",
+        Text = "t.me/@universalscriptsroblox | Made by @Rob4ikOnly"
+    })
+
+    CreditsTab:CreateParagraph({
+        Title = "Our YouTube",
+        Text = "youtube.com/@02rob4ik | Channel"
+    })
+
+    CreditsTab:CreateParagraph({
+        Title = "Special Thanks",
+        Text = "Nebula Softworks (Luna UI), Testers: @RobTopBot_01, @kiecsy, @Bac0nchikgg"
+    })
+
+    loadedgui_notification:Play()
+    Luna:Notification({
+        Title = "Global Script's",
+        Icon = "notifications_active",
+        ImageSource = "Material",
+        Content = "Script loaded successfully! | @universalscriptsroblox | Premium Plus "
+    })
+
