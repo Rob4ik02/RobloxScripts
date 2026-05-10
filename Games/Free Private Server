@@ -1,0 +1,41 @@
+-- Oxygen 02 | Silent Private Server Teleporter
+local placeId = game.PlaceId
+local HttpService = game:GetService("HttpService")
+local TeleportService = game:GetService("TeleportService")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- Скрываем активность
+local oldNamecall
+oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
+    local method = getnamecallmethod()
+    if method == "Teleport" then
+        wait(1)  -- имитируем обычную задержку
+    end
+    return oldNamecall(self, ...)
+end)
+
+-- Получаем список серверов (включая приватные без кода)
+local function getServers()
+    local url = "https://games.roblox.com/v1/games/"..placeId.."/servers/Public?limit=100&sortOrder=Asc"
+    local response = syn.request({Url = url, Method = "GET"})
+    local data = HttpService:JSONDecode(response.Body)
+    return data.data
+end
+
+-- Ищем сервер с пустым кодом (бесплатный приват) или с кодом
+for _, server in ipairs(getServers()) do
+    if server.playing and server.playerCount < server.maxPlayers then
+        if server.accessCode == nil or server.accessCode == "" then
+            -- Телепорт без кода
+            TeleportService:TeleportToPlaceInstance(placeId, server.id)
+            break
+        elseif server.accessCode then
+            -- Приват с кодом – вытаскиваем для друзей
+            print("[KEY]: "..server.accessCode)
+            setclipboard(server.accessCode)
+            TeleportService:TeleportToPrivateServer(placeId, server.accessCode)
+            break
+        end
+    end
+end
