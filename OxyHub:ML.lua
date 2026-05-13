@@ -1,0 +1,302 @@
+-- // Oxygen Hub 02: Muscle Legends \\ --
+
+local LibraryUi = loadstring(game:HttpGet("https://raw.githubusercontent.com/4lpaca-pin/CompKiller/refs/heads/main/src/source.luau"))();
+
+-- //  Instance's of library \\ --
+local Notifier = LibraryUi.newNotify();
+
+-- Create Config Mamager --
+local ConfigManager = LibraryUi:ConfigManager({
+	Directory = "Oxygen-UI",
+	Config = "Configs"
+});
+
+-- Loading UI (Icon <string> , Duration <number>) --
+LibraryUi:Loader("rbxassetid://102643647961511" , 3).yield();
+
+-- Creating Window --
+local Window = LibraryUi.new({
+	Name = "| 𝙊𝙭𝙮𝙜𝙚𝙣 𝙃𝙪𝙗",
+	Keybind = "LeftAlt",
+	Logo = "rbxassetid://102643647961511",
+	Scale = LibraryUi.Scale.Window, -- Leave blank if you want automatic scale [PC, Mobile].
+	TextSize = 15,
+});
+
+local Watermark = Window:Watermark();
+
+Watermark:AddText({
+	Icon = "user",
+	Text = "Tester",
+});
+
+local Star = Watermark:AddText({
+	Icon = "star",
+	Text = "Premium",
+});
+
+-- // Category \\ --
+
+Window:DrawCategory({
+	Name = "Muscle Legends"
+});
+
+-- // Tabs \\ --
+
+local HomeTab = Window:DrawContainerTab({
+	Name = "Home",
+	Icon = "house",
+});
+
+local MainTab = Window:DrawContainerTab({
+	Name = "Main",
+	Icon = "scroll",
+});
+
+local AutoTab = Window:DrawContainerTab({
+	Name = "Automation",
+	Icon = "repeat",
+});
+
+local ShopTab = Window:DrawContainerTab({
+	Name = "Shop",
+	Icon = "shopping-cart",
+});
+
+local KillTab = Window:DrawContainerTab({
+	Name = "Kill",
+	Icon = "skull",
+});
+
+local StatusTab = Window:DrawContainerTab({
+	Name = "Status",
+	Icon = "info",
+});
+
+local MiscellaneousTab = Window:DrawContainerTab({
+	Name = "Miscellaneous",
+	Icon = "cog",
+});
+
+local SettingsTab = Window:DrawTab({
+	Name = "Settings",
+	Icon = "gear",
+});
+
+-- // Home Tab \\ --
+
+
+local CreditsExtractTab = HomeTab:DrawTab({
+	Name = "Credits Tab",
+	Type = "Single"
+});
+
+local TextSection1 = CreditsExtractTab:DrawSection({
+	Name = "Special Thanks To:",
+	Position = 'middle'	
+});
+
+TextSection1:AddParagraph({
+	Title = "Ai",
+	Content = "Gemini, ChatGpt."
+})
+
+TextSection1:AddParagraph({
+	Title = "Developer of UiLibrary",
+	Content = "4lpaca-pin"
+})
+
+TextSection1:AddParagraph({
+	Title = "Players (Helped in coding and testing)",
+	Content = "Axearoz, My4Back, 8h8ph."
+})
+
+local FAQExtractTab = HomeTab:DrawTab({
+	Name = "FAQ",
+	Type = "Single"
+});
+
+local TextSection1 = FAQExtractTab:DrawSection({
+	Name = "Why devs used this library Ui?",
+	Position = 'middle'	
+});
+
+TextSection1:AddParagraph({
+	Title = "( 1 )",
+	Content = [[
+The ui library is very easy to use and has a lot of features
+that can be used to create
+a great ui for the script.
+    ]]
+})
+
+local TextSection2 = FAQExtractTab:DrawSection({
+	Name = "Why the script is not working on other exploits?",
+	Position = 'middle'	
+});
+
+TextSection2:AddParagraph({
+	Title = "( 2 . 1 )",
+	Content = [[
+If it doesn't work, the exploit is not capable of supporting 
+a script that uses more complex details.
+    ]]
+})
+
+TextSection2:AddParagraph({
+	Title = "( 2 . 2 )",
+	Content = [[
+Either the exploit is outdated and 
+does not work on current versions.
+    ]]
+})
+
+TextSection2:AddParagraph({
+	Title = "( 2 . 3 )",
+	Content = [[
+The script works with the following exploits:
+ Delta, JJsploit, Velocity, Arceus x neo
+    ]]
+})
+
+
+local KeySystemExtractTab = HomeTab:DrawTab({
+	Name = "Key System",
+	Type = "Single"
+});
+
+local TextSection1 = KeySystemExtractTab:DrawSection({
+	Name = "Key Time Status:",
+	Position = 'middle'	
+});
+
+TextSection1:AddParagraph({
+	Title = "Lifetime",
+	Content = [[
+The key is lifetime, cuz the script in
+the development stage, and the devs want to add more features in the future.
+    ]]
+})
+
+-- // Main Tab \\ --
+
+local GymExtractTab = MainTab:DrawTab({
+	Name = "Gym Farm",
+	Type = "Single"
+});
+
+local GeneralFarmExtractTab = MainTab:DrawTab({
+	Name = "Farm General",
+	Type = "Single"
+});
+
+-- // Auto Tab \\ --
+
+local RebirthsExtractTab = AutoTab:DrawTab({
+	Name = "Rebirths",
+	Type = "Double"
+});
+
+local SpinExtractTab = AutoTab:DrawTab({
+	Name = "Spin Wheel",
+	Type = "Single"
+});
+
+local GiftExtractTab = AutoTab:DrawTab({
+	Name = "Gift Box",
+	Type = "Double"
+});
+
+local QuestsExtractTab = AutoTab:DrawTab({
+	Name = "Quests",
+	Type = "Single"
+});
+
+local AutoEatExtractTab = AutoTab:DrawTab({
+	Name = "Auto Eat",
+	Type = "Single"
+});
+
+-- // Shop Tab \\ --
+
+local CrystalExtractTab = ShopTab:DrawTab({
+	Name = "Crystal",
+	Type = "Single"
+});
+
+local PetExtractTab = ShopTab:DrawTab({
+	Name = "Pets",
+	Type = "Single"
+});
+
+local AuraExtractTab = ShopTab:DrawTab({
+	Name = "Aura",
+	Type = "Single"
+});
+
+local UltimateExtractTab = ShopTab:DrawTab({
+	Name = "Ultimate",
+	Type = "Single"
+});
+
+-- // Kill Tab \\ --
+
+local KillingExtractTab = KillTab:DrawTab({
+    Name = "Killing",
+    Type = "Single"
+});
+
+local WhitelistExtractTab = KillTab:DrawTab({
+    Name = "Whitelist",
+    Type = "Single"
+});
+
+local BlackListExtractTab = KillTab:DrawTab({
+    Name = "Blacklist",
+    Type = "Single"
+});
+
+-- // Status Tab \\ --
+
+local LocalPlrExtractTab = StatusTab:DrawTab({
+    Name = "Yourself",
+    Type = "Single"
+});
+
+local OtherPlrExtractTab = StatusTab:DrawTab({
+    Name = "Other Players",
+    Type = "Single"
+});
+
+--// Miscellaneous Tab \\ --
+
+local FpsBoosterExtractTab = MiscellaneousTab:DrawTab({
+    Name = "FPS",
+    Type = "Single"
+});
+
+local ServerExtractTab = MiscellaneousTab:DrawTab({
+    Name = "Server",
+    Type = "Single"
+});
+
+local PlayerModifyExtractTab = MiscellaneousTab:DrawTab({
+    Name = "Player",
+    Type = "Single"
+});
+
+-- // Settings Tab \\ --
+
+
+
+-- // Notifications \\ --
+
+
+
+Notifier.new({
+	Title = "02: Notification",
+	Content = "The script has been succesfuly loaded for use!",
+	Duration = 6,
+	Icon = "rbxassetid://102643647961511"
+});
+
