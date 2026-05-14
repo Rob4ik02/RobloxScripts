@@ -263,8 +263,7 @@ local NormalSection2 = GymExtractTab:DrawSection({
 local AutoPunchRockActive = false
 local StandPosition = Vector3.new(-2591.58105, 7.263731, -244.106873)
 
--- Тот самый Remote, который мы нашли на твоем скриншоте
-local MachineRemote = game:GetService("ReplicatedStorage"):WaitForChild("rfEvents"):WaitForChild("machineInteractRemote")
+local MachineRemote = game:GetService("ReplicatedStorage"):WaitForChild("rEvents"):WaitForChild("machineInteractRemote")
 
 local AutoPunchRock = NormalSection2:AddToggle({
     Name = "Auto Punch Rock",
