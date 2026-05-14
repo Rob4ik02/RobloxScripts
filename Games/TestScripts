@@ -258,16 +258,15 @@ local NormalSection2 = GymExtractTab:DrawSection({
 	Position = 'middle'	
 });
 
--- Уникальная переменная для этого камня
 local AutoPunchRockActive = false
--- Твои координаты точки, где должен стоять игрок
-local StandPosition = Vector3.new(-2591.58, 7.26, -244.1)
+-- Твоя точка, где стоит игрок
+local StandPosition = Vector3.new(-2591.58105, 7.263731, -244.106873)
 
 local AutoPunchRock = NormalSection2:AddToggle({
     Name = "Auto Punch Rock",
     Flag = "Toggle_PunchFrozenRock", 
     Default = false,
-    Callback = function(v) -- ИСПРАВЛЕНО: теперь здесь function(v), ошибка исчезнет
+    Callback = function(v) -- ИСПРАВЛЕНО: строго через function(v)
         playInterfaceSound("ButtonClick")
         AutoPunchRockActive = v
         
@@ -278,38 +277,42 @@ local AutoPunchRock = NormalSection2:AddToggle({
             playInterfaceSound("NotificationSound")
             Notifier.new({
                 Title = "Farming",
-                Content = "Teleporting to Frozen Rock...",
+                Content = "Teleporting and Aiming at Rock...",
                 Duration = 3,
                 Icon = "rbxassetid://102643647961511"
             })
 
             if hrp then
-                -- Пытаемся найти сам объект камня в Workspace, чтобы посмотреть на него
-                -- Если имя в Explorer другое, замени "Frozen Rock" на нужное
-                local targetRock = workspace:FindFirstChild("Frozen Rock") or workspace:FindFirstChild("Rock")
-                
+                -- Находим именно визуальную часть камня по твоему пути
+                -- Используем pcall, чтобы скрипт не вылетел, если папки нет
+                local success, targetPart = pcall(function()
+                    return workspace.machinesFolder["Frozen Rock"]:FindFirstChild("Rock")
+                end)
+
                 local TargetCFrame
-                if targetRock then
-                    -- Создаем CFrame: стоим в StandPosition, смотрим на центр камня
-                    TargetCFrame = CFrame.lookAt(StandPosition, targetRock.Position)
+                if success and targetPart then
+                    -- lookAt(откуда смотрим, куда смотрим)
+                    -- Это заставит персонажа повернуться лицом к мешу Rock
+                    TargetCFrame = CFrame.lookAt(StandPosition, targetPart.Position)
                 else
-                    -- Если камень не найден, используем старый метод поворота, но исправленный
-                    TargetCFrame = CFrame.new(StandPosition) * CFrame.Angles(0, math.rad(180), 0)
+                    -- Если путь не найден, просто встаем в позицию (запасной вариант)
+                    TargetCFrame = CFrame.new(StandPosition)
                 end
 
                 local TweenService = game:GetService("TweenService")
-                local info = TweenInfo.new(1.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+                local info = TweenInfo.new(1.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
                 local tween = TweenService:Create(hrp, info, {CFrame = TargetCFrame})
                 
                 tween:Play()
                 tween.Completed:Wait()
                 
+                -- Замораживаем после прилета и поворота
                 if AutoPunchRockActive then 
                     hrp.Anchored = true 
                 end
             end
 
-            -- Цикл битья
+            -- Цикл атаки
             task.spawn(function()
                 while AutoPunchRockActive do
                     if player.Character then
@@ -325,7 +328,7 @@ local AutoPunchRock = NormalSection2:AddToggle({
                 end
             end)
         else
-            -- Выключение
+            -- Разморозка и остановка
             if hrp then hrp.Anchored = false end
             if player.Character and player.Character:FindFirstChild("Humanoid") then
                 player.Character.Humanoid:UnequipTools()
