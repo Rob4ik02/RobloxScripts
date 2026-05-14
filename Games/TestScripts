@@ -81,7 +81,7 @@ local MiscellaneousTab = Window:DrawContainerTab({
 	Icon = "cog",
 });
 
-local SettingsTab = Window:DrawTab({
+local SettingsTab = Window:DrawContainerTab({
 	Name = "Settings",
 	Icon = "gear",
 });
