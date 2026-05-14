@@ -367,7 +367,7 @@ NormalSection1:AddColorPicker({
 	end,
 });
 
-SettiNormalSection1:AddColorPicker({
+NormalSection1:AddColorPicker({
 	Name = "Background Color",
 	Default = LibraryUi.Colors.BGDBColor,
 	Callback = function(v)
