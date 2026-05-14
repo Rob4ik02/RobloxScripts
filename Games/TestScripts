@@ -1,6 +1,6 @@
 -- // localization \\ --
-
-local StarterGui = game:GetService("StarterGui")
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
 
 
 
@@ -20,35 +20,26 @@ local sounds = {
 
 -- Используем pairs для перебора словаря (ключ-значение)
 for soundName, assetId in pairs(sounds) do
-    
-    local existingSound = StarterGui:FindFirstChild(soundName)
-    
+    local existingSound = playerGui:FindFirstChild(soundName)
     if not existingSound then
-        
         local newSound = Instance.new("Sound")
         newSound.Name = soundName
         newSound.SoundId = assetId
-        newSound.Volume = 1
+        newSound.Volume = 0.6
         newSound.PlayOnRemove = false
-        newSound.Parent = StarterGui
-
+        newSound.Parent = playerGui
     else
-        
         existingSound.SoundId = assetId
-        existingSound.Volume = 1
-
+        existingSound.Volume = 0.6
     end
 end
-
-local player = game.Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
 
 local function playInterfaceSound(soundName)
     local sound = playerGui:FindFirstChild(soundName)
     if sound and sound:IsA("Sound") then
         sound:Play()
     else
-        warn("Sound '" .. soundName .. "' not found in PlayerGui.")
+        warn("Sound '" .. tostring(soundName) .. "' not found in PlayerGui.")
     end
 end
 
@@ -367,28 +358,18 @@ NormalSection1:AddToggle({
 	end,
 });
 
+-- Применение твоих цветов
 LibraryUi.Colors.Highlight = Color3.fromRGB(0, 239, 255);
-
 LibraryUi.Colors.Toggle = Color3.fromRGB(12, 106, 111);
-
 LibraryUi.Colors.DropColor = Color3.fromRGB(23, 41, 76);
-
 LibraryUi.Colors.Risky = Color3.fromRGB(255, 0, 0);
-
 LibraryUi.Colors.MouseEnter = Color3.fromRGB(17, 44, 107);
-
 LibraryUi.Colors.BlockColor = Color3.fromRGB(18, 28, 77);
-
 LibraryUi.Colors.BGDBColor = Color3.fromRGB(6, 20, 53);
-
 LibraryUi.Colors.BlockBackground = Color3.fromRGB(4, 15, 93);
-
 LibraryUi.Colors.StrokeColor = Color3.fromRGB(31, 123, 139);
-
 LibraryUi.Colors.HighStrokeColor = Color3.fromRGB(10, 84, 106);
-
 LibraryUi.Colors.SwitchColor = Color3.fromRGB(22, 174, 209);
-
 LibraryUi.Colors.LineColor = Color3.fromRGB(0, 239, 240);
 
 local NormalSection2 = UiSettingExtractTab:DrawSection({
