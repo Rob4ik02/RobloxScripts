@@ -259,9 +259,8 @@ local NormalSection2 = GymExtractTab:DrawSection({
 });
 
 local AutoPunchRockActive = false
-local StandPosition = Vector3.new(-2591.58105, 7.263731, -244.106873)
-
--- Исправленный путь: rEvents и использование InvokeServer (так как это RemoteFunction)
+-- Базовая позиция (от которой начинаем проверку)
+local BasePosition = Vector3.new(-2591.58, 7.26, -244.1)
 local MachineRemote = game:GetService("ReplicatedStorage"):WaitForChild("rEvents"):WaitForChild("machineInteractRemote")
 
 local AutoPunchRock = NormalSection2:AddToggle({
@@ -274,54 +273,68 @@ local AutoPunchRock = NormalSection2:AddToggle({
         
         local character = player.Character
         local hrp = character and character:FindFirstChild("HumanoidRootPart")
+        local rockModel = workspace.machinesFolder:FindFirstChild("Frozen Rock")
+        local targetRock = rockModel and rockModel:FindFirstChild("Rock")
 
-        if AutoPunchRockActive then
-            if hrp then
-                local success, targetPart = pcall(function()
-                    return workspace.machinesFolder["Frozen Rock"]:FindFirstChild("Rock")
-                end)
-                
-                local TargetCFrame = success and targetPart and CFrame.lookAt(StandPosition, targetPart.Position) or CFrame.new(StandPosition)
-                
-                local TweenService = game:GetService("TweenService")
-                local info = TweenInfo.new(1.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-                local tween = TweenService:Create(hrp, info, {CFrame = TargetCFrame})
-                
-                tween:Play()
-                tween.Completed:Wait()
+        if AutoPunchRockActive and hrp and targetRock then
+            -- 1. Первоначальный телепорт к базе и разворот к камню
+            hrp.CFrame = CFrame.lookAt(BasePosition, targetRock.Position)
+            task.wait(0.2)
+
+            -- 2. Динамическое сближение (нащупываем хитбокс)
+            task.spawn(function()
+                local distanceShift = 0
+                -- Идем вперед по чуть-чуть, пока не коснемся или не пройдем 5 шагов
+                while AutoPunchRockActive and distanceShift < 5 do
+                    local parts = hrp:GetTouchingParts()
+                    local touching = false
+                    for _, p in pairs(parts) do
+                        if p:IsDescendantOf(rockModel) then
+                            touching = true
+                            break
+                        end
+                    end
+
+                    if touching then
+                        -- Если коснулись, чуть-чуть отходим назад для идеальной позиции
+                        hrp.CFrame = hrp.CFrame * CFrame.new(0, 0, 0.2)
+                        break
+                    else
+                        -- Идем вперед к камню
+                        distanceShift = distanceShift + 0.1
+                        hrp.CFrame = hrp.CFrame * CFrame.new(0, 0, -0.1)
+                    end
+                    task.wait(0.01)
+                end
                 
                 if AutoPunchRockActive then 
                     hrp.Anchored = true 
                 end
-            end
+            end)
 
-            -- ЦИКЛ ФАРМА
+            -- 3. Цикл фарма (Remote + Tool)
             task.spawn(function()
-                local rockObject = workspace.machinesFolder:FindFirstChild("Frozen Rock")
-                
                 while AutoPunchRockActive do
-                    -- Для RemoteFunction используем InvokeServer вместо FireServer
+                    -- Проверка на прочность (если есть данные в модели)
+                    local needed = rockModel:FindFirstChild("neededDurability")
+                    -- Если нужно 150к, а у нас меньше — бить бесполезно
+                    
                     pcall(function()
-                        MachineRemote:InvokeServer(rockObject)
+                        MachineRemote:InvokeServer(rockModel)
                     end)
                     
-                    -- Визуальный удар кулаком
-                    local punch = player.Character:FindFirstChild("Punch") or player.Backpack:FindFirstChild("Punch")
+                    local punch = character:FindFirstChild("Punch") or player.Backpack:FindFirstChild("Punch")
                     if punch then
                         if punch.Parent == player.Backpack then
-                            player.Character.Humanoid:EquipTool(punch)
+                            character.Humanoid:EquipTool(punch)
                         end
                         punch:Activate()
                     end
-                    
-                    task.wait(0.05) 
+                    task.wait(0.05)
                 end
             end)
         else
             if hrp then hrp.Anchored = false end
-            if player.Character and player.Character:FindFirstChild("Humanoid") then
-                player.Character.Humanoid:UnequipTools()
-            end
         end
     end,
 })
