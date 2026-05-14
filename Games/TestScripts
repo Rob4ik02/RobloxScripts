@@ -307,21 +307,45 @@ local AutoLiftToggle = NormalSection1:AddToggle({
 });
 
 local NormalSection2 = GeneralFarmExtractTab:DrawSection({
-	Name = "Rep Time Editor",
-	Position = 'right'	
+    Name = "Rep Time Editor",
+    Position = 'right'  
 });
 
 local ToggleFastPunch = NormalSection2:AddToggle({
-	Name = "Fast Punch Speed",
-	Flag = "Toggle_FastPunch", -- Leave it blank will not save to config (ALL ELEMENTS)
-	Default = false,
-	Callback = function(v)
+    Name = "Fast Punch Speed",
+    Flag = "Toggle_FastPunch", -- Leave it blank will not save to config (ALL ELEMENTS)
+    Default = false,
+    Callback = function(v)
         playInterfaceSound("ButtonClick")
         
         local character = player.Character or player.CharacterAdded:Wait()
         local Item_Punch = character:FindFirstChild("Punch") or player:WaitForChild("Backpack"):FindFirstChild("Punch")
 
-        local Rep_Time = Item_Punch:WaitForChild("attackTime") -- Убедимся, что объект существует
+        -- БЕЗОПАСНОСТЬ: Проверяем, существует ли предмет вообще
+        if not Item_Punch then
+            playInterfaceSound("ErrorSound")
+            Notifier.new({
+                Title = "02: Error",
+                Content = "Item 'Punch' not found in inventory or hands!",
+                Duration = 4,
+                Icon = "rbxassetid://102643647961511"
+            });
+            return -- Выходим из функции, чтобы избежать краша
+        end
+
+        -- Используем FindFirstChild вместо WaitForChild, чтобы избежать бесконечного зависания
+        local Rep_Time = Item_Punch:FindFirstChild("attackTime") 
+
+        if not Rep_Time then
+            playInterfaceSound("ErrorSound")
+            Notifier.new({
+                Title = "02: Error",
+                Content = "'attackTime' not found in Punch!",
+                Duration = 4,
+                Icon = "rbxassetid://102643647961511"
+            });
+            return
+        end
 
         if v then
             Rep_Time.Value = 0.05
@@ -344,19 +368,43 @@ local ToggleFastPunch = NormalSection2:AddToggle({
                 Icon = "rbxassetid://102643647961511"
             });
         end
+    end, -- ИСПРАВЛЕНО: Добавлен недостающий end и запятая
 });
 
 local ToggleFastWeight = NormalSection2:AddToggle({
-	Name = "Fast Weight Speed",
-	Flag = "Toggle_FastWeight", -- Leave it blank will not save to config (ALL ELEMENTS)
-	Default = false,
-	Callback = function(v)
+    Name = "Fast Weight Speed",
+    Flag = "Toggle_FastWeight", -- Leave it blank will not save to config (ALL ELEMENTS)
+    Default = false,
+    Callback = function(v)
         playInterfaceSound("ButtonClick")
         
         local character = player.Character or player.CharacterAdded:Wait()
         local Item_Weight = character:FindFirstChild("Weight") or player:WaitForChild("Backpack"):FindFirstChild("Weight")
 
-        local Rep_Time = Item_Weight:WaitForChild("repTime") -- Убедимся, что объект существует
+        -- БЕЗОПАСНОСТЬ: Проверяем, существует ли предмет
+        if not Item_Weight then
+            playInterfaceSound("ErrorSound")
+            Notifier.new({
+                Title = "02: Error",
+                Content = "Item 'Weight' not found in inventory or hands!",
+                Duration = 4,
+                Icon = "rbxassetid://102643647961511"
+            });
+            return
+        end
+
+        local Rep_Time = Item_Weight:FindFirstChild("repTime")
+
+        if not Rep_Time then
+            playInterfaceSound("ErrorSound")
+            Notifier.new({
+                Title = "02: Error",
+                Content = "'repTime' not found in Weight!",
+                Duration = 4,
+                Icon = "rbxassetid://102643647961511"
+            });
+            return
+        end
 
         if v then
             Rep_Time.Value = 0.05
@@ -379,6 +427,7 @@ local ToggleFastWeight = NormalSection2:AddToggle({
                 Icon = "rbxassetid://102643647961511"
             });
         end
+    end, -- ИСПРАВЛЕНО: Добавлен недостающий end и запятая
 });
 
 -- // Auto Tab \\ --
