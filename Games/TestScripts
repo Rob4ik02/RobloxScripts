@@ -310,120 +310,120 @@ NormalSection1:AddToggle({
 
 NormalSection1:AddColorPicker({
 	Name = "Highlight",
-	Default = Compkiller.Colors.Highlight,
+	Default = LibraryUi.Colors.Highlight,
 	Callback = function(v)
-		Compkiller.Colors.Highlight = v;
-		Compkiller:RefreshCurrentColor();
+		LibraryUi.Colors.Highlight = v;
+		LibraryUi:RefreshCurrentColor();
 	end,
 });
 
 NormalSection1:AddColorPicker({
 	Name = "Toggle Color",
-	Default = Compkiller.Colors.Toggle,
+	Default = LibraryUi.Colors.Toggle,
 	Callback = function(v)
-		Compkiller.Colors.Toggle = v;
+		LibraryUi.Colors.Toggle = v;
 		
-		Compkiller:RefreshCurrentColor(v);
+		LibraryUi:RefreshCurrentColor(v);
 	end,
 });
 
 NormalSection1:AddColorPicker({
 	Name = "Drop Color",
-	Default = Compkiller.Colors.DropColor,
+	Default = LibraryUi.Colors.DropColor,
 	Callback = function(v)
-		Compkiller.Colors.DropColor = v;
+		LibraryUi.Colors.DropColor = v;
 
-		Compkiller:RefreshCurrentColor(v);
+		LibraryUi:RefreshCurrentColor(v);
 	end,
 });
 
 NormalSection1:AddColorPicker({
 	Name = "Risky",
-	Default = Compkiller.Colors.Risky,
+	Default = LibraryUi.Colors.Risky,
 	Callback = function(v)
-		Compkiller.Colors.Risky = v;
+		LibraryUi.Colors.Risky = v;
 
-		Compkiller:RefreshCurrentColor(v);
+		LibraryUi:RefreshCurrentColor(v);
 	end,
 });
 
 NormalSection1:AddColorPicker({
 	Name = "Mouse Enter",
-	Default = Compkiller.Colors.MouseEnter,
+	Default = LibraryUi.Colors.MouseEnter,
 	Callback = function(v)
-		Compkiller.Colors.MouseEnter = v;
+		LibraryUi.Colors.MouseEnter = v;
 
-		Compkiller:RefreshCurrentColor(v);
+		LibraryUi:RefreshCurrentColor(v);
 	end,
 });
 
 NormalSection1:AddColorPicker({
 	Name = "Block Color",
-	Default = Compkiller.Colors.BlockColor,
+	Default = LibraryUi.Colors.BlockColor,
 	Callback = function(v)
-		Compkiller.Colors.BlockColor = v;
+		LibraryUi.Colors.BlockColor = v;
 
-		Compkiller:RefreshCurrentColor(v);
+		LibraryUi:RefreshCurrentColor(v);
 	end,
 });
 
 SettiNormalSection1:AddColorPicker({
 	Name = "Background Color",
-	Default = Compkiller.Colors.BGDBColor,
+	Default = LibraryUi.Colors.BGDBColor,
 	Callback = function(v)
-		Compkiller.Colors.BGDBColor = v;
+		LibraryUi.Colors.BGDBColor = v;
 
-		Compkiller:RefreshCurrentColor(v);
+		LibraryUi:RefreshCurrentColor(v);
 	end,
 });
 
 NormalSection1:AddColorPicker({
 	Name = "Block Background Color",
-	Default = Compkiller.Colors.BlockBackground,
+	Default = LibraryUi.Colors.BlockBackground,
 	Callback = function(v)
-		Compkiller.Colors.BlockBackground = v;
+		LibraryUi.Colors.BlockBackground = v;
 
-		Compkiller:RefreshCurrentColor(v);
+		LibraryUi:RefreshCurrentColor(v);
 	end,
 });
 
 NormalSection1:AddColorPicker({
 	Name = "Stroke Color",
-	Default = Compkiller.Colors.StrokeColor,
+	Default = LibraryUi.Colors.StrokeColor,
 	Callback = function(v)
-		Compkiller.Colors.StrokeColor = v;
+		LibraryUi.Colors.StrokeColor = v;
 
-		Compkiller:RefreshCurrentColor(v);
+		LibraryUi:RefreshCurrentColor(v);
 	end,
 });
 
 NormalSection1:AddColorPicker({
 	Name = "High Stroke Color",
-	Default = Compkiller.Colors.HighStrokeColor,
+	Default = LibraryUi.Colors.HighStrokeColor,
 	Callback = function(v)
-		Compkiller.Colors.HighStrokeColor = v;
+		LibraryUi.Colors.HighStrokeColor = v;
 
-		Compkiller:RefreshCurrentColor(v);
+		LibraryUi:RefreshCurrentColor(v);
 	end,
 });
 
 NormalSection1:AddColorPicker({
 	Name = "Switch Color",
-	Default = Compkiller.Colors.SwitchColor,
+	Default = LibraryUi.Colors.SwitchColor,
 	Callback = function(v)
-		Compkiller.Colors.SwitchColor = v;
+		LibraryUi.Colors.SwitchColor = v;
 
-		Compkiller:RefreshCurrentColor(v);
+		LibraryUi:RefreshCurrentColor(v);
 	end,
 });
 
 NormalSection1:AddColorPicker({
 	Name = "Line Color",
-	Default = Compkiller.Colors.LineColor,
+	Default = LibraryUi.Colors.LineColor,
 	Callback = function(v)
-		Compkiller.Colors.LineColor = v;
+		LibraryUi.Colors.LineColor = v;
 
-		Compkiller:RefreshCurrentColor(v);
+		LibraryUi:RefreshCurrentColor(v);
 	end,
 });
 
@@ -454,7 +454,7 @@ NormalSection2:AddButton({
 				elseif Window.Destroy then
 					Window:Destroy();
 				end
-				
+
 			end)
 		end
 	end,
@@ -475,11 +475,10 @@ local executor = identifyexecutor();
 local supportedExploits = {"JJsploit", "Delta", "Velocity", "Arceus x neo"};
 local isSupported = false;
 
-
 Notifier.new({
-	Title = "02: Notification",
-	-- Мы должны предупредить игроку что хороший у него ли эксплойт или нет, иначе скрипт будет плохо работать.
-	Content = isSupported and ("Your exploit (%s) is supported!"):format(executor) or ("Your exploit (%s) is not supported! Supported exploits are: %s"):format(executor, table.concat(supportedExploits, ", ")),
-	Duration = 10,
-	Icon = "rbxassetid://102643647961511"
+    Title = "Exploit Check",
+    Content = isSupported and ("Your exploit (%s) is supported!"):format(executor) 
+               or ("Your exploit (%s) is not supported! Errors may occur."):format(executor),
+    Duration = 10,
+    Icon = "rbxassetid://102643647961511"
 });
