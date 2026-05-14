@@ -48,6 +48,21 @@ end
 
 local LibraryUi = loadstring(game:HttpGet("https://raw.githubusercontent.com/4lpaca-pin/CompKiller/refs/heads/main/src/source.luau"))();
 
+-- // Color Custom \\ --
+
+LibraryUi.Colors.Highlight = Color3.fromRGB(0, 239, 255);
+LibraryUi.Colors.Toggle = Color3.fromRGB(12, 106, 111);
+LibraryUi.Colors.DropColor = Color3.fromRGB(23, 41, 76);
+LibraryUi.Colors.Risky = Color3.fromRGB(255, 0, 0);
+LibraryUi.Colors.MouseEnter = Color3.fromRGB(17, 44, 107);
+LibraryUi.Colors.BlockColor = Color3.fromRGB(18, 28, 77);
+LibraryUi.Colors.BGDBColor = Color3.fromRGB(6, 20, 53);
+LibraryUi.Colors.BlockBackground = Color3.fromRGB(4, 15, 93);
+LibraryUi.Colors.StrokeColor = Color3.fromRGB(31, 123, 139);
+LibraryUi.Colors.HighStrokeColor = Color3.fromRGB(10, 84, 106);
+LibraryUi.Colors.SwitchColor = Color3.fromRGB(22, 174, 209);
+LibraryUi.Colors.LineColor = Color3.fromRGB(0, 239, 240);
+
 -- //  Instance's of library \\ --
 local Notifier = LibraryUi.newNotify();
 
@@ -359,18 +374,6 @@ NormalSection1:AddToggle({
 });
 
 -- Применение твоих цветов
-LibraryUi.Colors.Highlight = Color3.fromRGB(0, 239, 255);
-LibraryUi.Colors.Toggle = Color3.fromRGB(12, 106, 111);
-LibraryUi.Colors.DropColor = Color3.fromRGB(23, 41, 76);
-LibraryUi.Colors.Risky = Color3.fromRGB(255, 0, 0);
-LibraryUi.Colors.MouseEnter = Color3.fromRGB(17, 44, 107);
-LibraryUi.Colors.BlockColor = Color3.fromRGB(18, 28, 77);
-LibraryUi.Colors.BGDBColor = Color3.fromRGB(6, 20, 53);
-LibraryUi.Colors.BlockBackground = Color3.fromRGB(4, 15, 93);
-LibraryUi.Colors.StrokeColor = Color3.fromRGB(31, 123, 139);
-LibraryUi.Colors.HighStrokeColor = Color3.fromRGB(10, 84, 106);
-LibraryUi.Colors.SwitchColor = Color3.fromRGB(22, 174, 209);
-LibraryUi.Colors.LineColor = Color3.fromRGB(0, 239, 240);
 
 local NormalSection2 = UiSettingExtractTab:DrawSection({
 	Name = "Edition",
