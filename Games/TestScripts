@@ -258,18 +258,17 @@ local NormalSection2 = GymExtractTab:DrawSection({
 	Position = 'middle'	
 });
 
--- В начало скрипта, где все переменные
--- Уникальная переменная
 local AutoPunchRockActive = false
 local StandPosition = Vector3.new(-2591.58105, 7.263731, -244.106873)
 
+-- Исправленный путь: rEvents и использование InvokeServer (так как это RemoteFunction)
 local MachineRemote = game:GetService("ReplicatedStorage"):WaitForChild("rEvents"):WaitForChild("machineInteractRemote")
 
 local AutoPunchRock = NormalSection2:AddToggle({
     Name = "Auto Punch Rock",
     Flag = "Toggle_PunchFrozenRock", 
     Default = false,
-    Callback = function(v) -- Исправлено: теперь точно nil value не будет
+    Callback = function(v)
         playInterfaceSound("ButtonClick")
         AutoPunchRockActive = v
         
@@ -277,7 +276,6 @@ local AutoPunchRock = NormalSection2:AddToggle({
         local hrp = character and character:FindFirstChild("HumanoidRootPart")
 
         if AutoPunchRockActive then
-            -- 1. Сначала плавно летим и поворачиваемся к камню
             if hrp then
                 local success, targetPart = pcall(function()
                     return workspace.machinesFolder["Frozen Rock"]:FindFirstChild("Rock")
@@ -297,17 +295,17 @@ local AutoPunchRock = NormalSection2:AddToggle({
                 end
             end
 
-            -- 2. Запускаем "бешеный" фарм через Remote
+            -- ЦИКЛ ФАРМА
             task.spawn(function()
-                -- Находим сам объект камня для передачи в Remote
                 local rockObject = workspace.machinesFolder:FindFirstChild("Frozen Rock")
                 
                 while AutoPunchRockActive do
-                    -- Шлем сигнал напрямую на сервер
-                    -- Передаем объект камня, чтобы игра знала, что мы фармим именно его
-                    MachineRemote:FireServer(rockObject)
+                    -- Для RemoteFunction используем InvokeServer вместо FireServer
+                    pcall(function()
+                        MachineRemote:InvokeServer(rockObject)
+                    end)
                     
-                    -- Также активируем кулаки для анимации (визуально)
+                    -- Визуальный удар кулаком
                     local punch = player.Character:FindFirstChild("Punch") or player.Backpack:FindFirstChild("Punch")
                     if punch then
                         if punch.Parent == player.Backpack then
@@ -316,11 +314,10 @@ local AutoPunchRock = NormalSection2:AddToggle({
                         punch:Activate()
                     end
                     
-                    task.wait(0.05) -- Скорость ударов (можно настроить)
+                    task.wait(0.05) 
                 end
             end)
         else
-            -- 3. Выключение
             if hrp then hrp.Anchored = false end
             if player.Character and player.Character:FindFirstChild("Humanoid") then
                 player.Character.Humanoid:UnequipTools()
