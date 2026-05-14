@@ -275,6 +275,7 @@ local function createMegaHitbox(character)
 end
 
 -- Универсальная функция фарма с плавным телепортом
+-- // УНИВЕРСАЛЬНАЯ ФУНКЦИЯ С КОРРЕКЦИЕЙ РАЗМЕРА \\ --
 local function SetupAutoFarm(targetName, targetPos)
     CurrentActiveRock = targetName
     
@@ -287,8 +288,8 @@ local function SetupAutoFarm(targetName, targetPos)
             -- Поиск модели камня
             local rockModel = nil
             for _, v in pairs(workspace.machinesFolder:GetChildren()) do
-                if v.Name:find(targetName) and (v:FindFirstChild("Rock") or v:IsA("MeshPart")) then
-                    if (v:GetModelCFrame().Position - targetPos).Magnitude < 50 then
+                if v.Name:find(targetName) then
+                    if (v:GetModelCFrame().Position - targetPos).Magnitude < 60 then
                         rockModel = v
                         break
                     end
@@ -298,27 +299,36 @@ local function SetupAutoFarm(targetName, targetPos)
             local targetPart = rockModel and (rockModel:FindFirstChild("Rock") or rockModel:FindFirstChildOfClass("MeshPart"))
 
             if hrp and targetPart then
+                -- 1. УВЕЛИЧИВАЕМ ХИТБОКС КАМНЯ (локально)
+                -- Это гарантирует, что ты дотянешься до него даже огромным персонажем
+                if targetPart:IsA("BasePart") then
+                    targetPart.CanCollide = false -- Чтобы не выталкивало
+                    -- Если ты очень большой, можно чуть увеличить размер парта для надежности
+                    -- targetPart.Size = targetPart.Size * 1.5 
+                end
+
                 createMegaHitbox(character)
                 hrp.Anchored = false
                 
-                -- ПЛАВНЫЙ ТЕЛЕПОРТ
-                local distance = (hrp.Position - targetPos).Magnitude
-                local speed = 50 -- Скорость (чем выше, тем быстрее летит)
-                local duration = distance / speed
+                -- 2. КОРРЕКЦИЯ ВЫСОТЫ (Y) ПОД РАЗМЕР ИГРОКА
+                -- Вычисляем смещение: чем выше персонаж, тем выше должна быть точка телепорта
+                local heightOffset = (hum.HipHeight > 2) and (hum.HipHeight - 2) or 0
+                local correctedPos = targetPos + Vector3.new(0, heightOffset, 0)
                 
-                local info = TweenInfo.new(duration, Enum.EasingStyle.Linear)
-                local targetCFrame = CFrame.lookAt(targetPos, targetPart.Position)
+                -- 3. ПЛАВНЫЙ ТЕЛЕПОРТ
+                local distance = (hrp.Position - correctedPos).Magnitude
+                local info = TweenInfo.new(distance / 50, Enum.EasingStyle.Linear)
+                local targetCFrame = CFrame.lookAt(correctedPos, targetPart.Position)
+                
                 local tween = TweenService:Create(hrp, info, {CFrame = targetCFrame})
-                
                 tween:Play()
-                tween.Completed:Wait() -- Ждем окончания полета
+                tween.Completed:Wait()
                 
-                -- Фиксация после прилета
                 if CurrentActiveRock == targetName then
                     hrp.Anchored = true
                 end
 
-                -- Поток для FireTouchInterest
+                -- Поток касаний (firetouchinterest)
                 local touchThread = task.spawn(function()
                     while CurrentActiveRock == targetName and character.Parent do
                         if currentHitbox and targetPart then
@@ -349,6 +359,7 @@ local function SetupAutoFarm(targetName, targetPos)
         end
     end)
 end
+
 local NormalSection1 = GymExtractTab:DrawSection({
 	Name = "Beach Gym",
 	Position = 'middle'	
