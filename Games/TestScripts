@@ -296,67 +296,171 @@ local UiSettingExtractTab = SettingsTab:DrawTab({
 });
 
 local NormalSection1 = UiSettingExtractTab:DrawSection({
-	Name = "Destroyer",
+	Name = "Customization",
 	Position = 'middle'	
 });
 
-NormalSection1:AddButton({
-    Name = "Destroy Gui",
-    Callback = function()
-        Notifier.new({
-            Title = "02: Notification",
-            Content = "Starting deep clean of CoreGui...",
-            Duration = 3,
-            Icon = "rbxassetid://102643647961511"
-        });
+NormalSection1:AddToggle({
+	Name = "Alway Show Frame",
+	Default = false,
+	Callback = function(v)
+		Window.AlwayShowTab = v;
+	end,
+});
 
-        -- Ждем 5 секунд как в оригинале
-        task.wait(5)
+NormalSection1:AddColorPicker({
+	Name = "Highlight",
+	Default = Compkiller.Colors.Highlight,
+	Callback = function(v)
+		Compkiller.Colors.Highlight = v;
+		Compkiller:RefreshCurrentColor();
+	end,
+});
 
-        -- Пытаемся закрыть через саму библиотеку (на всякий случай)
-        pcall(function()
-            if Window and Window.Destroy then
-                Window:Destroy()
-            end
-        end)
+NormalSection1:AddColorPicker({
+	Name = "Toggle Color",
+	Default = Compkiller.Colors.Toggle,
+	Callback = function(v)
+		Compkiller.Colors.Toggle = v;
+		
+		Compkiller:RefreshCurrentColor(v);
+	end,
+});
 
-        -- Глубокая очистка CoreGui
-        local CoreGui = game:GetService("CoreGui")
-        local found = false
+NormalSection1:AddColorPicker({
+	Name = "Drop Color",
+	Default = Compkiller.Colors.DropColor,
+	Callback = function(v)
+		Compkiller.Colors.DropColor = v;
 
-        for _, object in ipairs(CoreGui:GetChildren()) do
-            -- Ищем совпадение в названии (регистр не важен)
-            if string.find(string.lower(object.Name), "compkiller") then
-                local success, err = pcall(function()
-                    object:Destroy()
-                end)
-                
-                if success then
-                    found = true
-                    print("[Cleaner]: Удален объект: " .. object.Name)
-                else
-                    warn("[Cleaner Error]: Не удалось удалить " .. object.Name .. " | " .. tostring(err))
-                end
-            end
-        end
+		Compkiller:RefreshCurrentColor(v);
+	end,
+});
 
-        -- Финальное уведомление
-        if found then
-            print("[Cleaner]: Все связанные GUI удалены.")
-        else
-            -- Если по имени не нашли, попробуем удалить твой конкретный GUI, 
-            -- который мы видим на скриншоте (u?name=compkiller...)
-            for _, object in ipairs(CoreGui:GetChildren()) do
-                 if object:IsA("ScreenGui") and string.len(object.Name) > 20 then -- Обычно у них длинные имена
-                    object:Destroy()
-                 end
-            end
-        end
-    end,
+NormalSection1:AddColorPicker({
+	Name = "Risky",
+	Default = Compkiller.Colors.Risky,
+	Callback = function(v)
+		Compkiller.Colors.Risky = v;
+
+		Compkiller:RefreshCurrentColor(v);
+	end,
+});
+
+NormalSection1:AddColorPicker({
+	Name = "Mouse Enter",
+	Default = Compkiller.Colors.MouseEnter,
+	Callback = function(v)
+		Compkiller.Colors.MouseEnter = v;
+
+		Compkiller:RefreshCurrentColor(v);
+	end,
+});
+
+NormalSection1:AddColorPicker({
+	Name = "Block Color",
+	Default = Compkiller.Colors.BlockColor,
+	Callback = function(v)
+		Compkiller.Colors.BlockColor = v;
+
+		Compkiller:RefreshCurrentColor(v);
+	end,
+});
+
+SettiNormalSection1:AddColorPicker({
+	Name = "Background Color",
+	Default = Compkiller.Colors.BGDBColor,
+	Callback = function(v)
+		Compkiller.Colors.BGDBColor = v;
+
+		Compkiller:RefreshCurrentColor(v);
+	end,
+});
+
+NormalSection1:AddColorPicker({
+	Name = "Block Background Color",
+	Default = Compkiller.Colors.BlockBackground,
+	Callback = function(v)
+		Compkiller.Colors.BlockBackground = v;
+
+		Compkiller:RefreshCurrentColor(v);
+	end,
+});
+
+NormalSection1:AddColorPicker({
+	Name = "Stroke Color",
+	Default = Compkiller.Colors.StrokeColor,
+	Callback = function(v)
+		Compkiller.Colors.StrokeColor = v;
+
+		Compkiller:RefreshCurrentColor(v);
+	end,
+});
+
+NormalSection1:AddColorPicker({
+	Name = "High Stroke Color",
+	Default = Compkiller.Colors.HighStrokeColor,
+	Callback = function(v)
+		Compkiller.Colors.HighStrokeColor = v;
+
+		Compkiller:RefreshCurrentColor(v);
+	end,
+});
+
+NormalSection1:AddColorPicker({
+	Name = "Switch Color",
+	Default = Compkiller.Colors.SwitchColor,
+	Callback = function(v)
+		Compkiller.Colors.SwitchColor = v;
+
+		Compkiller:RefreshCurrentColor(v);
+	end,
+});
+
+NormalSection1:AddColorPicker({
+	Name = "Line Color",
+	Default = Compkiller.Colors.LineColor,
+	Callback = function(v)
+		Compkiller.Colors.LineColor = v;
+
+		Compkiller:RefreshCurrentColor(v);
+	end,
+});
+
+local NormalSection2 = UiSettingExtractTab:DrawSection({
+	Name = "Edition",
+	Position = 'middle'	
+});
+
+NormalSection2:AddButton({
+	Name = "Destroy Gui",
+	Callback = function()
+		Notifier.new({
+			Title = "02: Notification",
+			Content = "The ui will be destroyed after 5 seconds.",
+			Duration = 4,
+			Icon = "rbxassetid://102643647961511"
+		});
+		wait(5);
+		pcall(function()
+				if type(Window) == "table" and Window.SetVisible then
+					Window:SetVisible(false);
+				end
+
+				task.wait(0.25);
+
+				if type(Window) == "table" and Window.Root and Window.Root.Destroy then
+					Window.Root:Destroy();
+				elseif Window.Destroy then
+					Window:Destroy();
+				end
+				
+			end)
+		end
+	end,
 })
+
 -- // Notifications \\ --
-
-
 
 Notifier.new({
 	Title = "02: Notification",
