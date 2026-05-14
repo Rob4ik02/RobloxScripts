@@ -2,8 +2,6 @@
 local player = game.Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
-
-
 -- // Instances \\ --
 
 local sounds = {
@@ -16,7 +14,6 @@ local sounds = {
     ["LoadingSound"] = "rbxassetid://3320590485",
     ["PowerUpSound"] = "rbxassetid://3320590485"
 }
-
 
 -- Используем pairs для перебора словаря (ключ-значение)
 for soundName, assetId in pairs(sounds) do
