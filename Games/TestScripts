@@ -277,12 +277,14 @@ local function createMegaHitbox(character)
     return part
 end
 
+-- // УНИВЕРСАЛЬНАЯ ФУНКЦИЯ ПОИСКА (ЖЕСТКИЙ РАДИУС) \\ --
 local function getClosestRock(pos)
     local closest = nil
-    local dist = math.huge
+    local maxDistance = 10 -- МИНИМАЛЬНЫЙ РАДИУС (только то, что рядом)
+    local dist = maxDistance
     
     for _, v in pairs(workspace.machinesFolder:GetChildren()) do
-        -- Ищем внутри модели часть, по которой можно бить (Rock или MeshPart)
+        -- Ищем целевую часть внутри модели
         local target = v:FindFirstChild("Rock") or v:FindFirstChildOfClass("MeshPart")
         if target then
             local magnitude = (target.Position - pos).Magnitude
@@ -295,11 +297,19 @@ local function getClosestRock(pos)
     return closest
 end
 
--- // ОБНОВЛЕННЫЙ SETUP AUTOFARM \\ --
+-- // УНИВЕРСАЛЬНЫЙ SETUP С ПРЕДОХРАНИТЕЛЕМ \\ --
 local function SetupAutoFarm(targetPos)
+    -- Сначала находим камень в ОЧЕНЬ маленьком радиусе
     local rockModel = getClosestRock(targetPos)
+    
     if not rockModel then 
-        warn("Камень поблизости не найден!") 
+        warn("АШИБКА: Камень не найден в радиусе 10 единиц! Телепорт отменен.")
+        -- Нотификация в игре, чтобы ты понял, почему не сработало
+        Notifier.new({
+            Title = "Error",
+            Content = "Rock not found nearby! Check coordinates.",
+            Duration = 5
+        })
         return 
     end
     
@@ -309,42 +319,41 @@ local function SetupAutoFarm(targetPos)
     task.spawn(function()
         while CurrentActiveRock == rockName do
             local character = player.Character or player.CharacterAdded:Wait()
-            local hrp = character:WaitForChild("HumanoidRootPart", 10)
-            local hum = character:WaitForChild("Humanoid", 10)
+            local hrp = character:WaitForChild("HumanoidRootPart", 5)
             local targetPart = rockModel:FindFirstChild("Rock") or rockModel:FindFirstChildOfClass("MeshPart")
 
-            if hrp and hum and targetPart then
+            if hrp and targetPart then
                 createMegaHitbox(character)
                 
-                -- Устанавливаем позицию и разворот
+                -- Жёстко ставим в точку без лишних движений
+                hrp.Anchored = false
                 hrp.CFrame = CFrame.lookAt(targetPos, targetPart.Position)
-                task.wait(0.2)
+                task.wait(0.1)
                 
                 if CurrentActiveRock == rockName then
-                    hrp.Anchored = true
+                    hrp.Anchored = true -- Сразу морозим, чтобы не улетел
                 end
 
-                -- Поток касаний (firetouchinterest)
+                -- Очищаем старые потоки касаний перед запуском новых
                 local touchThread = task.spawn(function()
                     while CurrentActiveRock == rockName and character.Parent do
                         if currentHitbox and targetPart then
                             firetouchinterest(currentHitbox, targetPart, 0)
-                            task.wait()
                             firetouchinterest(currentHitbox, targetPart, 1)
                         end
-                        RunService.RenderStepped:Wait()
+                        task.wait(0.1) -- Не спамим слишком часто в секунду
                     end
                 end)
 
                 -- Цикл ударов
-                while CurrentActiveRock == rockName and hum.Health > 0 do
+                while CurrentActiveRock == rockName and character:FindFirstChild("Humanoid") and character.Humanoid.Health > 0 do
                     pcall(function()
                         MachineRemote:InvokeServer(rockModel)
                     end)
                     
                     local punch = character:FindFirstChild("Punch") or player.Backpack:FindFirstChild("Punch")
                     if punch then
-                        if punch.Parent == player.Backpack then hum:EquipTool(punch) end
+                        if punch.Parent == player.Backpack then character.Humanoid:EquipTool(punch) end
                         punch:Activate()
                     end
                     task.wait(0.05)
