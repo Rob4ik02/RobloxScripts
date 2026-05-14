@@ -311,200 +311,127 @@ local NormalSection2 = GeneralFarmExtractTab:DrawSection({
     Position = 'right'  
 });
 
+-- ВЫНОСИМ ПЕРЕМЕННЫЕ НАРУЖУ (чтобы циклы могли их видеть и останавливаться)
+local AutoEquipWeightActive = false
+local AutoEquipPushupsActive = false
+local AutoEquipSitupsActive = false
+
+-- 1. ТУМБЛЕР: WEIGHT
 local AutoEquipToggle1 = NormalSection2:AddToggle({
     Name = "Auto Equip Weight",
     Flag = "Toggle_AutoEquipWeight",
     Default = false,
-    Callback = function(AutoEguipWeight)
+    Callback = function(v)
         playInterfaceSound("ButtonClick")
-        local isAutoEquippingWeight = false
-        -- Синхронизируем состояние переменной с тумблером
-        isAutoEquipping = AutoEguipWeight
+        AutoEquipWeightActive = v -- Обновляем внешнюю переменную
         
-        if isAutoEquippingWeight then
+        if AutoEquipWeightActive then
             playInterfaceSound("NotificationSound")
             Notifier.new({
-                Title = "02: Notification",
-                Content = "Auto Equip Loop Started!",
+                Title = "Equipment",
+                Content = "Auto Equip Weight Started!",
                 Duration = 3,
                 Icon = "rbxassetid://102643647961511"
-            });
+            })
 
-            -- Создаем изолированный фоновый процесс
             task.spawn(function()
-                -- Цикл работает только тогда, когда isAutoEquippingWeight равно true
-                while isAutoEquippingWeight do
+                while AutoEquipWeightActive do
                     local character = player.Character
-                    
                     if character then
                         local humanoid = character:FindFirstChild("Humanoid")
-                        -- Ищем предмет в инвентаре (рюкзаке) игрока
                         local tool = player.Backpack:FindFirstChild("Weight") 
-                        
-                        -- Если предмет найден и персонаж жив, надеваем его
                         if humanoid and tool and humanoid.Health > 0 then
                             humanoid:EquipTool(tool)
                         end
                     end
-                    
-                    -- ВАЖНО: Задержка цикла. Без task.wait() игра намертво зависнет (Crash)
-                    task.wait(0.2) 
+                    task.wait(0.5) -- Оптимальная задержка
                 end
             end)
-            
         else
-            -- Когда v == false (тумблер выключен), цикл while автоматически остановится
-            playInterfaceSound("NotificationSound")
-            Notifier.new({
-                Title = "02: Notification",
-                Content = "Auto Equip Loop Stopped!",
-                Duration = 3,
-                Icon = "rbxassetid://102643647961511"
-            });
-            
-            -- Опционально: автоматически снимаем предмет с рук при выключении
             local character = player.Character
-            if character then
-                local humanoid = character:FindFirstChild("Humanoid")
-                if humanoid then
-                    humanoid:UnequipTools()
-                end
+            if character and character:FindFirstChild("Humanoid") then
+                character.Humanoid:UnequipTools()
             end
         end
     end,
 })
 
+-- 2. ТУМБЛЕР: PUSHUPS
 local AutoEquipToggle2 = NormalSection2:AddToggle({
     Name = "Auto Equip Pushups",
     Flag = "Toggle_AutoEquipPushups",
     Default = false,
     Callback = function(v)
         playInterfaceSound("ButtonClick")
-        local isAutoEquippingPushups = false
-        -- Синхронизируем состояние переменной с тумблером
-        isAutoEquippingPushups = v
+        AutoEquipPushupsActive = v
         
-        if isAutoEquippingPushups then
+        if AutoEquipPushupsActive then
             playInterfaceSound("NotificationSound")
             Notifier.new({
-                Title = "02: Notification",
-                Content = "Auto Equip Loop Started!",
+                Title = "Equipment",
+                Content = "Auto Equip Pushups Started!",
                 Duration = 3,
                 Icon = "rbxassetid://102643647961511"
-            });
+            })
 
-            -- Создаем изолированный фоновый процесс
             task.spawn(function()
-                -- Цикл работает только тогда, когда isAutoEquippingPushups равно true
-                while isAutoEquippingPushups do
+                while AutoEquipPushupsActive do
                     local character = player.Character
-                    
                     if character then
                         local humanoid = character:FindFirstChild("Humanoid")
-                        -- Ищем предмет в инвентаре (рюкзаке) игрока
                         local tool = player.Backpack:FindFirstChild("Pushups") 
-                        
-                        -- Если предмет найден и персонаж жив, надеваем его
                         if humanoid and tool and humanoid.Health > 0 then
                             humanoid:EquipTool(tool)
                         end
                     end
-                    
-                    -- ВАЖНО: Задержка цикла. Без task.wait() игра намертво зависнет (Crash)
-                    task.wait(0.2) 
+                    task.wait(0.5)
                 end
             end)
-            
         else
-            -- Когда v == false (тумблер выключен), цикл while автоматически остановится
-            playInterfaceSound("NotificationSound")
-            Notifier.new({
-                Title = "02: Notification",
-                Content = "Auto Equip Loop Stopped!",
-                Duration = 3,
-                Icon = "rbxassetid://102643647961511"
-            });
-            
-            -- Опционально: автоматически снимаем предмет с рук при выключении
             local character = player.Character
-            if character then
-                local humanoid = character:FindFirstChild("Humanoid")
-                if humanoid then
-                    humanoid:UnequipTools()
-                end
+            if character and character:FindFirstChild("Humanoid") then
+                character.Humanoid:UnequipTools()
             end
         end
     end,
 })
 
+-- 3. ТУМБЛЕР: SITUPS
 local AutoEquipToggle3 = NormalSection2:AddToggle({
     Name = "Auto Equip Situps",
     Flag = "Toggle_AutoEquipSitups",
     Default = false,
     Callback = function(v)
         playInterfaceSound("ButtonClick")
-        local isAutoEquippingSitups = false
-        -- Синхронизируем состояние переменной с тумблером
-        isAutoEquippingSitups = v
+        AutoEquipSitupsActive = v
         
-        if isAutoEquippingSitups then
+        if AutoEquipSitupsActive then
             playInterfaceSound("NotificationSound")
             Notifier.new({
-                Title = "02: Notification",
-                Content = "Auto Equip Loop Started!",
+                Title = "Equipment",
+                Content = "Auto Equip Situps Started!",
                 Duration = 3,
                 Icon = "rbxassetid://102643647961511"
-            });
+            })
 
-            -- Создаем изолированный фоновый процесс
             task.spawn(function()
-                -- Цикл работает только тогда, когда isAutoEquippingSitups равно true
-                while isAutoEquippingSitups do
+                while AutoEquipSitupsActive do
                     local character = player.Character
-                    
                     if character then
                         local humanoid = character:FindFirstChild("Humanoid")
-                        -- Ищем предмет в инвентаре (рюкзаке) игрока
-                        local tool = player.Backpack:FindFirstChild("Pushups") 
-                        
-                        -- Если предмет найден и персонаж жив, надеваем его
+                        -- Исправил название предмета на Situps (у вас в коде стояло Pushups)
+                        local tool = player.Backpack:FindFirstChild("Situps") 
                         if humanoid and tool and humanoid.Health > 0 then
                             humanoid:EquipTool(tool)
-                        else
-                            -- Если предмет не найден, выводим уведомление об ошибке и отключаем тумблер
-                            playInterfaceSound("ErrorSound")
-                            Notifier.new({
-                                Title = "02: Error",
-                                Content = "Item 'Pushups' not found in inventory! Auto Equip will be disabled.",
-                                Duration = 6,
-                                Icon = "rbxassetid://102643647961511"
-                            });
-                            isAutoEquippingSitups = false
                         end
                     end
-                    
-                    -- ВАЖНО: Задержка цикла. Без task.wait() игра намертво зависнет (Crash)
-                    task.wait(0.2) 
+                    task.wait(0.5)
                 end
             end)
-            
         else
-            -- Когда v == false (тумблер выключен), цикл while автоматически остановится
-            playInterfaceSound("NotificationSound")
-            Notifier.new({
-                Title = "02: Notification",
-                Content = "Auto Equip Loop Stopped!",
-                Duration = 3,
-                Icon = "rbxassetid://102643647961511"
-            });
-            
-            -- Опционально: автоматически снимаем предмет с рук при выключении
             local character = player.Character
-            if character then
-                local humanoid = character:FindFirstChild("Humanoid")
-                if humanoid then
-                    humanoid:UnequipTools()
-                end
+            if character and character:FindFirstChild("Humanoid") then
+                character.Humanoid:UnequipTools()
             end
         end
     end,
