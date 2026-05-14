@@ -258,13 +258,59 @@ local NormalSection2 = GymExtractTab:DrawSection({
 	Position = 'middle'	
 });
 
+-- // Уникальные переменные \\ --
 local AutoPunchRockActive = false
-local StandPosition = Vector3.new(-2591.58, 7.26, -244.1)
+-- Немного отдаленная позиция, чтобы не быть вплотную
+local StandPosition = Vector3.new(-2591.58, 7.26, -243.5)
 local MachineRemote = game:GetService("ReplicatedStorage"):WaitForChild("rEvents"):WaitForChild("machineInteractRemote")
+local RunService = game:GetService("RunService")
 
+-- Переменная для хранения хитбокса
+local currentHitbox = nil
+
+-- // Оптимизированная функция создания хитбокса \\ --
+local function createMegaHitbox(character)
+    -- Удаляем старый хитбокс, если он есть
+    if currentHitbox then pcall(function() currentHitbox:Destroy() end) end
+    
+    local root = character:FindFirstChild("HumanoidRootPart")
+    if not root then return nil end
+    
+    -- Создаем огромную невидимую часть
+    local part = Instance.new("Part")
+    part.Name = "MegaPunchHitbox"
+    part.Size = Vector3.new(25, 25, 25) -- ОГРОМНЫЙ РАЗМЕР
+    part.Transparency = 1 -- Невидимый
+    part.CanCollide = false
+    part.Anchored = false
+    part.Material = Enum.Material.ForceField -- Часто игнорируется простыми проверками
+    
+    -- Прикрепляем к HumanoidRootPart через Weld
+    local weld = Instance.new("Weld")
+    weld.Part0 = root
+    weld.Part1 = part
+    weld.C0 = CFrame.new(0, 0, -5) -- Смещаем немного вперед
+    weld.Parent = part
+    
+    part.Parent = character
+    currentHitbox = part
+    return part
+end
+
+-- // Функция для симуляции реального касания (для античита) \\ --
+local function simulateTouch(hitbox, target)
+    if hitbox and target and target:IsA("BasePart") then
+        -- Шлем сигнал касания серверу (TouchInterest)
+        firetouchinterest(hitbox, target, 0) -- Начать касание
+        task.wait()
+        firetouchinterest(hitbox, target, 1) -- Закончить касание
+    end
+end
+
+-- // ТВОЙ ОБНОВЛЕННЫЙ ТУМБЛЕР \\ --
 local AutoPunchRock = NormalSection2:AddToggle({
-    Name = "Auto Punch Rock",
-    Flag = "Toggle_PunchFrozenRock", 
+    Name = "Auto Punch Rock (Mega Hitbox)",
+    Flag = "Toggle_PunchFrozenRock_Hitbox", 
     Default = false,
     Callback = function(v)
         playInterfaceSound("ButtonClick")
@@ -276,28 +322,35 @@ local AutoPunchRock = NormalSection2:AddToggle({
         local targetRock = rockModel and rockModel:FindFirstChild("Rock")
 
         if AutoPunchRockActive and hrp and targetRock then
-            -- Плавный полет к камню
-            local TweenService = game:GetService("TweenService")
-            local TargetCFrame = CFrame.lookAt(StandPosition, targetRock.Position)
-            TweenService:Create(hrp, info, {CFrame = TargetCFrame}):Play()
+            -- 1. Создаем огромный хитбокс
+            createMegaHitbox(character)
             
-            task.wait(1.2)
+            -- 2. Телепорт к отдаленной позиции и разворот
+            local TargetCFrame = CFrame.lookAt(StandPosition, targetRock.Position)
+            hrp.CFrame = TargetCFrame
+            task.wait(0.2)
 
-            -- ОСНОВНОЙ ЦИКЛ
+            -- 3. ЦИКЛ ОБНОВЛЕНИЯ ХИТБОКСА (Каждый кадр)
             task.spawn(function()
-                local step = 0
-                while AutoPunchRockActive do
-                    -- 1. Микро-движение для обновления хитбокса (персонаж будет чуть-чуть дрожать)
-                    step = step + 1
-                    local shift = math.sin(step) * 0.05 -- Движение на 0.05 пикселя
-                    hrp.CFrame = TargetCFrame * CFrame.new(0, 0, shift)
+                while AutoPunchRockActive and currentHitbox do
+                    -- Шлем сигнал касания каждые несколько кадров
+                    simulateTouch(currentHitbox, targetRock)
+                    RunService.RenderStepped:Wait()
+                end
+            end)
 
-                    -- 2. Отправка сигнала на сервер (RemoteFunction)
+            -- 4. ГЛАВНЫЙ ЦИКЛ ФАРМА (Remote + Tool Reset)
+            task.spawn(function()
+                local loopCount = 0
+                while AutoPunchRockActive do
+                    loopCount = loopCount + 1
+                    
+                    -- Сигнал серверу (RemoteFunction)
                     pcall(function()
                         MachineRemote:InvokeServer(rockModel)
                     end)
                     
-                    -- 3. Удар предметом
+                    -- Активация инструмента
                     local punch = character:FindFirstChild("Punch") or player.Backpack:FindFirstChild("Punch")
                     if punch then
                         if punch.Parent == player.Backpack then
@@ -306,18 +359,26 @@ local AutoPunchRock = NormalSection2:AddToggle({
                         punch:Activate()
                     end
                     
-                    -- 4. Если урон перестал идти, пробуем перенадеть тулз раз в 5 секунд
-                    if step % 100 == 0 then
+                    -- Каждые 60 циклов (около 3 секунд) — ПОЛНЫЙ СБРОС
+                    if loopCount % 60 == 0 then
                         character.Humanoid:UnequipTools()
                         task.wait(0.1)
+                        -- Восстанавливаем хитбокс, если он вдруг пропал
+                        if not currentHitbox then createMegaHitbox(character) end
                     end
 
                     task.wait(0.05)
                 end
             end)
         else
-            -- При выключении просто даем свободу движений
-            if hrp then hrp.Anchored = false end
+            -- 5. Полная очистка при выключении
+            if currentHitbox then
+                pcall(function() currentHitbox:Destroy() end)
+                currentHitbox = nil
+            end
+            if character and character:FindFirstChild("Humanoid") then
+                character.Humanoid:UnequipTools()
+            end
         end
     end,
 })
