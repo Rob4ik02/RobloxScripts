@@ -489,7 +489,6 @@ local ToggleFastPushups = NormalSection2:AddToggle({
     end, -- ИСПРАВЛЕНО: Добавлен недостающий end и запятая
 });
 
-game:GetService("Players").LocalPlayer.Backpack.Pushups
 -- // Auto Tab \\ --
 
 local RebirthsExtractTab = AutoTab:DrawTab({
