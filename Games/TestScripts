@@ -2,21 +2,18 @@
 
 local StarterGui = game:GetService("StarterGui")
 
-
-
 -- // Instances \\ --
 
 local sounds = {
     ["ButtonClick"] = "rbxassetid://140387697208266",
     ["WarnSound"] = "rbxassetid://136001454409424",
     ["NotificationSound"] = "rbxassetid://134195160579609",
-    ["CompleteSound"] = "rbxassetid://102643647961511",
+    ["CompleteSound"] = "rbxassetid://3320590485",
     ["LoadedSound"] = "rbxassetid://117683281438895",
     ["ErrorSound"] = "rbxassetid://131039887376992",
     ["LoadingSound"] = "rbxassetid://3320590485",
-    ["PowerUpSound"] = "rbxassetid://102643647961511"
+    ["PowerUpSound"] = "rbxassetid://3320590485"
 }
-
 
 -- Используем pairs для перебора словаря (ключ-значение)
 for soundName, assetId in pairs(sounds) do
@@ -362,7 +359,7 @@ NormalSection1:AddToggle({
 	Default = false,
 	Callback = function(v)
 		playInterfaceSound(ButtonClick)
-		
+
 		Window.AlwayShowTab = v;
 	end,
 });
