@@ -250,8 +250,6 @@ local GymExtractTab = MainTab:DrawTab({
 
 local MachineRemote = game:GetService("ReplicatedStorage"):WaitForChild("rEvents"):WaitForChild("machineInteractRemote")
 local RunService = game:GetService("RunService")
-
--- Переменная для текущего активного камня (чтобы не включать два сразу)
 local CurrentActiveRock = nil
 local currentHitbox = nil
 
@@ -263,7 +261,7 @@ local function createMegaHitbox(character)
     
     local part = Instance.new("Part")
     part.Name = "MegaPunchHitbox"
-    part.Size = Vector3.new(25, 25, 25)
+    part.Size = Vector3.new(20, 20, 20)
     part.Transparency = 1
     part.CanCollide = false
     part.Parent = character
@@ -277,83 +275,74 @@ local function createMegaHitbox(character)
     return part
 end
 
--- // УНИВЕРСАЛЬНАЯ ФУНКЦИЯ ПОИСКА (ЖЕСТКИЙ РАДИУС) \\ --
-local function getClosestRock(pos)
+-- // Функция поиска конкретного камня по имени в радиусе \\ --
+local function findSpecificRock(targetName, pos)
     local closest = nil
-    local maxDistance = 10 -- МИНИМАЛЬНЫЙ РАДИУС (только то, что рядом)
-    local dist = maxDistance
+    local dist = 50 -- Увеличили радиус для стабильности
     
     for _, v in pairs(workspace.machinesFolder:GetChildren()) do
-        -- Ищем целевую часть внутри модели
-        local target = v:FindFirstChild("Rock") or v:FindFirstChildOfClass("MeshPart")
-        if target then
-            local magnitude = (target.Position - pos).Magnitude
-            if magnitude < dist then
-                dist = magnitude
-                closest = v
+        -- Проверяем, содержит ли имя камня нужную строку (например "Frozen")
+        if v.Name:find(targetName) then 
+            local target = v:FindFirstChild("Rock") or v:FindFirstChildOfClass("MeshPart")
+            if target then
+                local d = (target.Position - pos).Magnitude
+                if d < dist then
+                    dist = d
+                    closest = v
+                end
             end
         end
     end
     return closest
 end
 
--- // УНИВЕРСАЛЬНЫЙ SETUP С ПРЕДОХРАНИТЕЛЕМ \\ --
-local function SetupAutoFarm(targetPos)
-    -- Сначала находим камень в ОЧЕНЬ маленьком радиусе
-    local rockModel = getClosestRock(targetPos)
-    
-    if not rockModel then 
-        warn("АШИБКА: Камень не найден в радиусе 10 единиц! Телепорт отменен.")
-        -- Нотификация в игре, чтобы ты понял, почему не сработало
-        Notifier.new({
-            Title = "Error",
-            Content = "Rock not found nearby! Check coordinates.",
-            Duration = 5
-        })
-        return 
-    end
-    
-    local rockName = rockModel.Name
-    CurrentActiveRock = rockName
+-- // УНИВЕРСАЛЬНЫЙ SETUP С АВТО-РЕСПАВНОМ \\ --
+local function SetupAutoFarm(targetName, targetPos)
+    CurrentActiveRock = targetName
     
     task.spawn(function()
-        while CurrentActiveRock == rockName do
+        while CurrentActiveRock == targetName do
             local character = player.Character or player.CharacterAdded:Wait()
-            local hrp = character:WaitForChild("HumanoidRootPart", 5)
-            local targetPart = rockModel:FindFirstChild("Rock") or rockModel:FindFirstChildOfClass("MeshPart")
+            local hrp = character:WaitForChild("HumanoidRootPart", 10)
+            local hum = character:WaitForChild("Humanoid", 10)
+            
+            -- Ищем камень
+            local rockModel = findSpecificRock(targetName, targetPos)
+            local targetPart = rockModel and (rockModel:FindFirstChild("Rock") or rockModel:FindFirstChildOfClass("MeshPart"))
 
             if hrp and targetPart then
                 createMegaHitbox(character)
                 
-                -- Жёстко ставим в точку без лишних движений
+                -- Мгновенная установка позиции
                 hrp.Anchored = false
                 hrp.CFrame = CFrame.lookAt(targetPos, targetPart.Position)
-                task.wait(0.1)
+                task.wait(0.2)
                 
-                if CurrentActiveRock == rockName then
-                    hrp.Anchored = true -- Сразу морозим, чтобы не улетел
+                if CurrentActiveRock == targetName then
+                    hrp.Anchored = true 
                 end
 
-                -- Очищаем старые потоки касаний перед запуском новых
+                -- Поток для касаний (firetouchinterest)
                 local touchThread = task.spawn(function()
-                    while CurrentActiveRock == rockName and character.Parent do
+                    while CurrentActiveRock == targetName and character.Parent do
                         if currentHitbox and targetPart then
                             firetouchinterest(currentHitbox, targetPart, 0)
                             firetouchinterest(currentHitbox, targetPart, 1)
                         end
-                        task.wait(0.1) -- Не спамим слишком часто в секунду
+                        task.wait(0.1)
                     end
                 end)
 
                 -- Цикл ударов
-                while CurrentActiveRock == rockName and character:FindFirstChild("Humanoid") and character.Humanoid.Health > 0 do
+                while CurrentActiveRock == targetName and hum.Health > 0 do
                     pcall(function()
+                        -- Используем InvokeServer, так как это RemoteFunction
                         MachineRemote:InvokeServer(rockModel)
                     end)
                     
                     local punch = character:FindFirstChild("Punch") or player.Backpack:FindFirstChild("Punch")
                     if punch then
-                        if punch.Parent == player.Backpack then character.Humanoid:EquipTool(punch) end
+                        if punch.Parent == player.Backpack then hum:EquipTool(punch) end
                         punch:Activate()
                     end
                     task.wait(0.05)
@@ -361,7 +350,7 @@ local function SetupAutoFarm(targetPos)
                 
                 if touchThread then task.cancel(touchThread) end
             end
-            task.wait(1)
+            task.wait(1) -- Ждем перед попыткой после смерти
         end
     end)
 end
@@ -375,8 +364,8 @@ NormalSection1:AddToggle({
     Name = "Auto Punch Rock",
     Callback = function(v)
         if v then
-            -- Просто передаем координаты, скрипт сам найдет ближайший к ним камень
-            SetupAutoFarm(Vector3.new(183.919, 14.507, -153.653))
+            -- Ищем камень, в имени которого есть "Rock" рядом с Beach
+            SetupAutoFarm("Rock", Vector3.new(183.919, 14.507, -153.653))
         else
             CurrentActiveRock = nil
             if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
@@ -387,7 +376,6 @@ NormalSection1:AddToggle({
     end
 })
 
-
 local NormalSection2 = GymExtractTab:DrawSection({
 	Name = "Frost Gym",
 	Position = 'middle'	
@@ -397,7 +385,8 @@ NormalSection2:AddToggle({
     Name = "Auto Punch Rock",
     Callback = function(v)
         if v then
-            SetupAutoFarm(Vector3.new(-2591.58, 7.26, -243.5))
+            -- Ищем именно "Frozen" в названии
+            SetupAutoFarm("Frozen", Vector3.new(-2591.58, 7.26, -243.5))
         else
             CurrentActiveRock = nil
             if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
