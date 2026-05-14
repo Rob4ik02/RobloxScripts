@@ -433,31 +433,30 @@ local NormalSection2 = UiSettingExtractTab:DrawSection({
 });
 
 NormalSection2:AddButton({
-	Name = "Destroy Gui",
-	Callback = function()
-		Notifier.new({
-			Title = "02: Notification",
-			Content = "The ui will be destroyed after 5 seconds.",
-			Duration = 4,
-			Icon = "rbxassetid://102643647961511"
-		});
-		wait(5);
-		pcall(function()
-				if type(Window) == "table" and Window.SetVisible then
-					Window:SetVisible(false);
-				end
+    Name = "Destroy Gui",
+    Callback = function()
+        Notifier.new({
+            Title = "02: Notification",
+            Content = "The UI and CoreGui elements will be destroyed in 5 seconds.",
+            Duration = 4,
+            Icon = "rbxassetid://102643647961511"
+        });
+        
+        task.wait(5);
+        
+        -- Попытка закрыть через Window
+        pcall(function()
+            if Window.Destroy then Window:Destroy() end
+        end)
 
-				task.wait(0.25);
-
-				if type(Window) == "table" and Window.Root and Window.Root.Destroy then
-					Window.Root:Destroy();
-				elseif Window.Destroy then
-					Window:Destroy();
-				end
-
-			end)
-		
-	end,
+        -- Глубокая очистка CoreGui от следов compkiller
+        local CoreGui = game:GetService("CoreGui")
+        for _, object in ipairs(CoreGui:GetChildren()) do
+            if string.find(string.lower(object.Name), "compkiller") then
+                pcall(function() object:Destroy() end)
+            end
+        end
+    end,
 })
 
 -- // Notifications \\ --
@@ -471,9 +470,16 @@ Notifier.new({
 
 wait(0.5)
 
-local executor = identifyexecutor();
-local supportedExploits = {"JJsploit", "Delta", "Velocity", "Arceus x neo"};
+local executor = (identifyexecutor and identifyexecutor()) or "Unknown"
+local supportedExploits = {"JJsploit", "Delta", "Velocity", "Arceus", "Neo"}
 local isSupported = false;
+
+for _, s in ipairs(supportedExploits) do
+    if string.find(string.lower(executor), string.lower(s)) then
+        isSupported = true
+        break
+    end
+end
 
 Notifier.new({
     Title = "Exploit Check",
