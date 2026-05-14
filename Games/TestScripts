@@ -307,11 +307,215 @@ local AutoLiftToggle = NormalSection1:AddToggle({
 });
 
 local NormalSection2 = GeneralFarmExtractTab:DrawSection({
+    Name = "Eguipment",
+    Position = 'right'  
+});
+
+local AutoEquipToggle1 = NormalSection2:AddToggle({
+    Name = "Auto Equip Weight",
+    Flag = "Toggle_AutoEquipWeight",
+    Default = false,
+    Callback = function(v)
+        playInterfaceSound("ButtonClick")
+        local isAutoEquippingWeight = false
+        -- Синхронизируем состояние переменной с тумблером
+        isAutoEquipping = v
+        
+        if isAutoEquippingWeight then
+            playInterfaceSound("NotificationSound")
+            Notifier.new({
+                Title = "02: Notification",
+                Content = "Auto Equip Loop Started!",
+                Duration = 3,
+                Icon = "rbxassetid://102643647961511"
+            });
+
+            -- Создаем изолированный фоновый процесс
+            task.spawn(function()
+                -- Цикл работает только тогда, когда isAutoEquippingWeight равно true
+                while isAutoEquippingWeight do
+                    local character = player.Character
+                    
+                    if character then
+                        local humanoid = character:FindFirstChild("Humanoid")
+                        -- Ищем предмет в инвентаре (рюкзаке) игрока
+                        local tool = player.Backpack:FindFirstChild("Weight") 
+                        
+                        -- Если предмет найден и персонаж жив, надеваем его
+                        if humanoid and tool and humanoid.Health > 0 then
+                            humanoid:EquipTool(tool)
+                        end
+                    end
+                    
+                    -- ВАЖНО: Задержка цикла. Без task.wait() игра намертво зависнет (Crash)
+                    task.wait(0.2) 
+                end
+            end)
+            
+        else
+            -- Когда v == false (тумблер выключен), цикл while автоматически остановится
+            playInterfaceSound("NotificationSound")
+            Notifier.new({
+                Title = "02: Notification",
+                Content = "Auto Equip Loop Stopped!",
+                Duration = 3,
+                Icon = "rbxassetid://102643647961511"
+            });
+            
+            -- Опционально: автоматически снимаем предмет с рук при выключении
+            local character = player.Character
+            if character then
+                local humanoid = character:FindFirstChild("Humanoid")
+                if humanoid then
+                    humanoid:UnequipTools()
+                end
+            end
+        end
+    end,
+})
+
+local AutoEquipToggle2 = NormalSection2:AddToggle({
+    Name = "Auto Equip Pushups",
+    Flag = "Toggle_AutoEquipPushups",
+    Default = false,
+    Callback = function(v)
+        playInterfaceSound("ButtonClick")
+        local isAutoEquippingPushups = false
+        -- Синхронизируем состояние переменной с тумблером
+        isAutoEquippingPushups = v
+        
+        if isAutoEquippingPushups then
+            playInterfaceSound("NotificationSound")
+            Notifier.new({
+                Title = "02: Notification",
+                Content = "Auto Equip Loop Started!",
+                Duration = 3,
+                Icon = "rbxassetid://102643647961511"
+            });
+
+            -- Создаем изолированный фоновый процесс
+            task.spawn(function()
+                -- Цикл работает только тогда, когда isAutoEquippingPushups равно true
+                while isAutoEquippingPushups do
+                    local character = player.Character
+                    
+                    if character then
+                        local humanoid = character:FindFirstChild("Humanoid")
+                        -- Ищем предмет в инвентаре (рюкзаке) игрока
+                        local tool = player.Backpack:FindFirstChild("Pushups") 
+                        
+                        -- Если предмет найден и персонаж жив, надеваем его
+                        if humanoid and tool and humanoid.Health > 0 then
+                            humanoid:EquipTool(tool)
+                        end
+                    end
+                    
+                    -- ВАЖНО: Задержка цикла. Без task.wait() игра намертво зависнет (Crash)
+                    task.wait(0.2) 
+                end
+            end)
+            
+        else
+            -- Когда v == false (тумблер выключен), цикл while автоматически остановится
+            playInterfaceSound("NotificationSound")
+            Notifier.new({
+                Title = "02: Notification",
+                Content = "Auto Equip Loop Stopped!",
+                Duration = 3,
+                Icon = "rbxassetid://102643647961511"
+            });
+            
+            -- Опционально: автоматически снимаем предмет с рук при выключении
+            local character = player.Character
+            if character then
+                local humanoid = character:FindFirstChild("Humanoid")
+                if humanoid then
+                    humanoid:UnequipTools()
+                end
+            end
+        end
+    end,
+})
+
+local AutoEquipToggle3 = NormalSection2:AddToggle({
+    Name = "Auto Equip Situps",
+    Flag = "Toggle_AutoEquipSitups",
+    Default = false,
+    Callback = function(v)
+        playInterfaceSound("ButtonClick")
+        local isAutoEquippingSitups = false
+        -- Синхронизируем состояние переменной с тумблером
+        isAutoEquippingSitups = v
+        
+        if isAutoEquippingSitups then
+            playInterfaceSound("NotificationSound")
+            Notifier.new({
+                Title = "02: Notification",
+                Content = "Auto Equip Loop Started!",
+                Duration = 3,
+                Icon = "rbxassetid://102643647961511"
+            });
+
+            -- Создаем изолированный фоновый процесс
+            task.spawn(function()
+                -- Цикл работает только тогда, когда isAutoEquippingSitups равно true
+                while isAutoEquippingSitups do
+                    local character = player.Character
+                    
+                    if character then
+                        local humanoid = character:FindFirstChild("Humanoid")
+                        -- Ищем предмет в инвентаре (рюкзаке) игрока
+                        local tool = player.Backpack:FindFirstChild("Pushups") 
+                        
+                        -- Если предмет найден и персонаж жив, надеваем его
+                        if humanoid and tool and humanoid.Health > 0 then
+                            humanoid:EquipTool(tool)
+                        else
+                            -- Если предмет не найден, выводим уведомление об ошибке и отключаем тумблер
+                            playInterfaceSound("ErrorSound")
+                            Notifier.new({
+                                Title = "02: Error",
+                                Content = "Item 'Pushups' not found in inventory! Auto Equip will be disabled.",
+                                Duration = 6,
+                                Icon = "rbxassetid://102643647961511"
+                            });
+                            isAutoEquippingSitups = false
+                        end
+                    end
+                    
+                    -- ВАЖНО: Задержка цикла. Без task.wait() игра намертво зависнет (Crash)
+                    task.wait(0.2) 
+                end
+            end)
+            
+        else
+            -- Когда v == false (тумблер выключен), цикл while автоматически остановится
+            playInterfaceSound("NotificationSound")
+            Notifier.new({
+                Title = "02: Notification",
+                Content = "Auto Equip Loop Stopped!",
+                Duration = 3,
+                Icon = "rbxassetid://102643647961511"
+            });
+            
+            -- Опционально: автоматически снимаем предмет с рук при выключении
+            local character = player.Character
+            if character then
+                local humanoid = character:FindFirstChild("Humanoid")
+                if humanoid then
+                    humanoid:UnequipTools()
+                end
+            end
+        end
+    end,
+})
+
+local NormalSection3 = GeneralFarmExtractTab:DrawSection({
     Name = "Rep Time Editor",
     Position = 'right'  
 });
 
-local ToggleFastPunch = NormalSection2:AddToggle({
+local ToggleFastPunch = NormalSection3:AddToggle({
     Name = "Fast Punch Speed",
     Flag = "Toggle_FastPunch", -- Leave it blank will not save to config (ALL ELEMENTS)
     Default = false,
@@ -371,7 +575,7 @@ local ToggleFastPunch = NormalSection2:AddToggle({
     end, -- ИСПРАВЛЕНО: Добавлен недостающий end и запятая
 });
 
-local ToggleFastWeight = NormalSection2:AddToggle({
+local ToggleFastWeight = NormalSection3:AddToggle({
     Name = "Fast Weight Speed",
     Flag = "Toggle_FastWeight", -- Leave it blank will not save to config (ALL ELEMENTS)
     Default = false,
@@ -430,7 +634,7 @@ local ToggleFastWeight = NormalSection2:AddToggle({
     end, -- ИСПРАВЛЕНО: Добавлен недостающий end и запятая
 });
 
-local ToggleFastPushups = NormalSection2:AddToggle({
+local ToggleFastPushups = NormalSection3:AddToggle({
     Name = "Fast Pushups Speed",
     Flag = "Toggle_FastPushups", -- Leave it blank will not save to config (ALL ELEMENTS)
     Default = false,
@@ -489,7 +693,7 @@ local ToggleFastPushups = NormalSection2:AddToggle({
     end, -- ИСПРАВЛЕНО: Добавлен недостающий end и запятая
 });
 
-local ToggleFastSitups = NormalSection2:AddToggle({
+local ToggleFastSitups = NormalSection3:AddToggle({
     Name = "Fast Situps Speed",
     Flag = "Toggle_FastSitups", -- Leave it blank will not save to config (ALL ELEMENTS)
     Default = false,
@@ -548,7 +752,7 @@ local ToggleFastSitups = NormalSection2:AddToggle({
     end, -- ИСПРАВЛЕНО: Добавлен недостающий end и запятая
 });
 
-local ToggleFastHandstands = NormalSection2:AddToggle({
+local ToggleFastHandstands = NormalSection3:AddToggle({
     Name = "Fast Handstands Speed",
     Flag = "Toggle_FastHandstands", -- Leave it blank will not save to config (ALL ELEMENTS)
     Default = false,
@@ -607,7 +811,7 @@ local ToggleFastHandstands = NormalSection2:AddToggle({
     end, -- ИСПРАВЛЕНО: Добавлен недостающий end и запятая
 });
 
-local ToggleFastGroundSlam = NormalSection2:AddToggle({
+local ToggleFastGroundSlam = NormalSection3:AddToggle({
     Name = "Fast Ground Slam Speed",
     Flag = "Toggle_FastHandstands", -- Leave it blank will not save to config (ALL ELEMENTS)
     Default = false,
