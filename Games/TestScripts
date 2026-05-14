@@ -248,23 +248,18 @@ local GymExtractTab = MainTab:DrawTab({
 	Type = "Single"
 });
 
-local TweenService = game:GetService("TweenService")
 local VirtualUser = game:GetService("VirtualUser")
 local MachineRemote = game:GetService("ReplicatedStorage"):WaitForChild("rEvents"):WaitForChild("machineInteractRemote")
 
 local CurrentActiveRock = nil
-local currentHitbox = nil
 
--- Функция для принудительного экипирования кулака
-local function ensurePunchEquipped(character)
-    local tool = character:FindFirstChild("Punch") or player.Backpack:FindFirstChild("Punch")
-    if tool then
-        if tool.Parent == player.Backpack then
-            character.Humanoid:EquipTool(tool)
-        end
-        return tool
+-- Самая простая функция экипировки
+local function equipPunch(char)
+    local p = char:FindFirstChild("Punch") or player.Backpack:FindFirstChild("Punch")
+    if p and p.Parent == player.Backpack then
+        char.Humanoid:EquipTool(p)
     end
-    return nil
+    return p
 end
 
 local function SetupAutoFarm(targetName, targetPos)
@@ -272,68 +267,55 @@ local function SetupAutoFarm(targetName, targetPos)
     
     task.spawn(function()
         while CurrentActiveRock == targetName do
-            local character = player.Character or player.CharacterAdded:Wait()
-            local hrp = character:WaitForChild("HumanoidRootPart", 10)
-            local hum = character:WaitForChild("Humanoid", 10)
+            local char = player.Character or player.CharacterAdded:Wait()
+            local hrp = char:WaitForChild("HumanoidRootPart", 5)
+            local hum = char:WaitForChild("Humanoid", 5)
             
-            -- Поиск модели камня
-            local rockModel = nil
-            for _, v in pairs(workspace.machinesFolder:GetChildren()) do
-                if v.Name:find(targetName) then
-                    if (v:GetModelCFrame().Position - targetPos).Magnitude < 100 then
-                        rockModel = v
-                        break
-                    end
-                end
-            end
-
+            -- Находим модель камня просто по имени в папке
+            local rockModel = workspace.machinesFolder:FindFirstChild(targetName)
             local targetPart = rockModel and (rockModel:FindFirstChild("Rock") or rockModel:FindFirstChildOfClass("MeshPart"))
 
             if hrp and targetPart then
-                hrp.Anchored = false
+                -- МГНОВЕННЫЙ ПЕРЕЛЕТ
+                -- Корректируем высоту: для размера 4 приподнимаем чуть меньше, чтобы кулаки доставали
+                local offset = (hum.HipHeight > 2) and (hum.HipHeight * 0.3) or 0
+                hrp.CFrame = CFrame.lookAt(targetPos + Vector3.new(0, offset, 0), targetPart.Position)
                 
-                -- УСКОРЕННЫЙ ТЕЛЕПОРТ (Скорость 250 вместо 50)
-                local distance = (hrp.Position - targetPos).Magnitude
-                local speed = 250 -- ЛЕТИТ ОЧЕНЬ БЫСТРО
-                local duration = distance / speed
-                
-                -- Коррекция высоты под размер 4 и больше
-                local heightOffset = (hum.HipHeight > 2) and (hum.HipHeight - 1.5) or 0
-                local correctedPos = targetPos + Vector3.new(0, heightOffset, 0)
-                
-                local info = TweenInfo.new(duration, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-                local tween = TweenService:Create(hrp, info, {CFrame = CFrame.lookAt(correctedPos, targetPart.Position)})
-                
-                tween:Play()
-                tween.Completed:Wait()
-                
-                if CurrentActiveRock == targetName then hrp.Anchored = true end
+                -- Вместо Anchored используем маленькую платформу под ногами, чтобы не падать
+                local plat = Instance.new("Part", char)
+                plat.Size = Vector3.new(4, 0.5, 4)
+                plat.Anchored = true
+                plat.Transparency = 1
+                plat.CFrame = hrp.CFrame * CFrame.new(0, -3.5, 0)
 
-                -- Цикл Фарма
+                -- ЦИКЛ ФАРМА
                 while CurrentActiveRock == targetName and hum.Health > 0 do
-                    -- 1. Вызываем Remote (Урон серверу)
+                    -- 1. Берем кулак
+                    local punch = equipPunch(char)
+                    
+                    -- 2. Физический клик через VirtualUser
+                    VirtualUser:CaptureController()
+                    VirtualUser:ClickButton1(Vector2.new(0,0))
+                    
+                    if punch then 
+                        punch:Activate() 
+                    end
+
+                    -- 3. Прямой сигнал (пробуем реже, чтобы не палиться)
                     pcall(function()
                         MachineRemote:InvokeServer(rockModel)
                     end)
-                    
-                    -- 2. Проверяем кулак и бьем
-                    local punch = ensurePunchEquipped(character)
-                    if punch then
-                        punch:Activate()
-                        -- Эмуляция клика (чтобы сервер видел активность)
-                        VirtualUser:Button1Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
-                    end
-                    
-                    -- 3. Хитбокс касания
-                    if currentHitbox then
-                        firetouchinterest(currentHitbox, targetPart, 0)
-                        firetouchinterest(currentHitbox, targetPart, 1)
-                    end
-                    
-                    task.wait(0.05)
+
+                    -- 4. Искусственное касание
+                    firetouchinterest(hrp, targetPart, 0)
+                    task.wait(0.01)
+                    firetouchinterest(hrp, targetPart, 1)
+
+                    task.wait(0.1) -- Чуть медленнее, чтобы сервер успевал считать урон
                 end
+                plat:Destroy()
             end
-            task.wait(0.5)
+            task.wait(1)
         end
     end)
 end
