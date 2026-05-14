@@ -288,7 +288,7 @@ local AutoPunchRock = NormalSection2:AddToggle({
             if hrp then
                 local TweenService = game:GetService("TweenService")
                 local info = TweenInfo.new(1.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-                local tween = TweenService:Create(hrp, info, {CFrame = RockCFrame})
+                local tween = TweenService:Create(hrp, info, {CFrame = RockCFrame, Rotation = Vector3.new(180, 0, 180)})
                 
                 tween:Play()
                 tween.Completed:Wait() -- Ждем завершения полета
