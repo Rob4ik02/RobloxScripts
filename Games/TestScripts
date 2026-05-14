@@ -16,7 +16,10 @@ LibraryUi:Loader("rbxassetid://102643647961511" , 3).yield();
 
 -- Creating Window --
 local Window = LibraryUi.new({
-	Name = "| 𝙊𝙭𝙮𝙜𝙚𝙣 𝙃𝙪𝙗",
+	Name = [[
+	| Oxygen Hub
+	| Muscle Legends
+	]],
 	Keybind = "LeftAlt",
 	Logo = "rbxassetid://102643647961511",
 	Scale = LibraryUi.Scale.Window, -- Leave blank if you want automatic scale [PC, Mobile].
@@ -300,3 +303,17 @@ Notifier.new({
 	Icon = "rbxassetid://102643647961511"
 });
 
+wait(0.5)
+
+local executor = identifyexecutor();
+local supportedExploits = {"JJsploit", "Delta", "Velocity", "Arceus x neo"};
+local isSupported = false;
+
+
+Notifier.new({
+	Title = "02: Notification",
+	-- Мы должны предупредить игроку что хороший у него ли эксплойт или нет, иначе скрипт будет плохо работать.
+	Content = isSupported and ("Your exploit (%s) is supported!"):format(executor) or ("Your exploit (%s) is not supported! Supported exploits are: %s"):format(executor, table.concat(supportedExploits, ", ")),
+	Duration = 6,
+	Icon = "rbxassetid://102643647961511"
+});
