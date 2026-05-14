@@ -259,21 +259,18 @@ local NormalSection2 = GymExtractTab:DrawSection({
 });
 
 -- В начало скрипта, где все переменные
-local VirtualUser = game:GetService("VirtualUser")
+-- Уникальная переменная
 local AutoPunchRockActive = false
 local StandPosition = Vector3.new(-2591.58105, 7.263731, -244.106873)
 
--- Функция для симуляции клика (чтобы не писать каждый раз)
-local function simulateClick()
-    VirtualUser:CaptureController()
-    VirtualUser:ClickButton1(Vector2.new(0, 0)) -- Симулирует нажатие левой кнопки мыши
-end
+-- Тот самый Remote, который мы нашли на твоем скриншоте
+local MachineRemote = game:GetService("ReplicatedStorage"):WaitForChild("rfEvents"):WaitForChild("machineInteractRemote")
 
 local AutoPunchRock = NormalSection2:AddToggle({
     Name = "Auto Punch Rock",
     Flag = "Toggle_PunchFrozenRock", 
     Default = false,
-    Callback = function(v)
+    Callback = function(v) -- Исправлено: теперь точно nil value не будет
         playInterfaceSound("ButtonClick")
         AutoPunchRockActive = v
         
@@ -281,26 +278,14 @@ local AutoPunchRock = NormalSection2:AddToggle({
         local hrp = character and character:FindFirstChild("HumanoidRootPart")
 
         if AutoPunchRockActive then
-            playInterfaceSound("NotificationSound")
-            Notifier.new({
-                Title = "Farming",
-                Content = "Teleporting and Aiming...",
-                Duration = 3,
-                Icon = "rbxassetid://102643647961511"
-            })
-
+            -- 1. Сначала плавно летим и поворачиваемся к камню
             if hrp then
                 local success, targetPart = pcall(function()
                     return workspace.machinesFolder["Frozen Rock"]:FindFirstChild("Rock")
                 end)
-
-                local TargetCFrame
-                if success and targetPart then
-                    TargetCFrame = CFrame.lookAt(StandPosition, targetPart.Position)
-                else
-                    TargetCFrame = CFrame.new(StandPosition)
-                end
-
+                
+                local TargetCFrame = success and targetPart and CFrame.lookAt(StandPosition, targetPart.Position) or CFrame.new(StandPosition)
+                
                 local TweenService = game:GetService("TweenService")
                 local info = TweenInfo.new(1.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
                 local tween = TweenService:Create(hrp, info, {CFrame = TargetCFrame})
@@ -313,25 +298,30 @@ local AutoPunchRock = NormalSection2:AddToggle({
                 end
             end
 
-            -- ОБНОВЛЕННЫЙ ЦИКЛ АТАКИ
+            -- 2. Запускаем "бешеный" фарм через Remote
             task.spawn(function()
+                -- Находим сам объект камня для передачи в Remote
+                local rockObject = workspace.machinesFolder:FindFirstChild("Frozen Rock")
+                
                 while AutoPunchRockActive do
-                    if player.Character then
-                        local punch = player.Backpack:FindFirstChild("Punch") or player.Character:FindFirstChild("Punch")
-                        if punch then
-                            -- Надеваем кулаки
-                            if punch.Parent == player.Backpack then
-                                player.Character.Humanoid:EquipTool(punch)
-                            end
-                            
-                            -- Вместо простого Activate() используем симуляцию клика
-                            simulateClick() 
+                    -- Шлем сигнал напрямую на сервер
+                    -- Передаем объект камня, чтобы игра знала, что мы фармим именно его
+                    MachineRemote:FireServer(rockObject)
+                    
+                    -- Также активируем кулаки для анимации (визуально)
+                    local punch = player.Character:FindFirstChild("Punch") or player.Backpack:FindFirstChild("Punch")
+                    if punch then
+                        if punch.Parent == player.Backpack then
+                            player.Character.Humanoid:EquipTool(punch)
                         end
+                        punch:Activate()
                     end
-                    task.wait(0.1) -- Можешь попробовать 0.05 для максимальной скорости
+                    
+                    task.wait(0.05) -- Скорость ударов (можно настроить)
                 end
             end)
         else
+            -- 3. Выключение
             if hrp then hrp.Anchored = false end
             if player.Character and player.Character:FindFirstChild("Humanoid") then
                 player.Character.Humanoid:UnequipTools()
