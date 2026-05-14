@@ -248,55 +248,33 @@ local GymExtractTab = MainTab:DrawTab({
 	Type = "Single"
 });
 
+local TweenService = game:GetService("TweenService")
 local MachineRemote = game:GetService("ReplicatedStorage"):WaitForChild("rEvents"):WaitForChild("machineInteractRemote")
 local RunService = game:GetService("RunService")
+
 local CurrentActiveRock = nil
 local currentHitbox = nil
 
--- // Функция создания хитбокса \\ --
+-- Функция создания хитбокса (без изменений)
 local function createMegaHitbox(character)
     if currentHitbox then pcall(function() currentHitbox:Destroy() end) end
     local root = character:WaitForChild("HumanoidRootPart", 5)
     if not root then return nil end
-    
     local part = Instance.new("Part")
     part.Name = "MegaPunchHitbox"
     part.Size = Vector3.new(20, 20, 20)
     part.Transparency = 1
     part.CanCollide = false
     part.Parent = character
-    
     local weld = Instance.new("WeldConstraint")
     weld.Part0 = root
     weld.Part1 = part
     weld.Parent = part
-    
     currentHitbox = part
     return part
 end
 
--- // Функция поиска конкретного камня по имени в радиусе \\ --
-local function findSpecificRock(targetName, pos)
-    local closest = nil
-    local dist = 50 -- Увеличили радиус для стабильности
-    
-    for _, v in pairs(workspace.machinesFolder:GetChildren()) do
-        -- Проверяем, содержит ли имя камня нужную строку (например "Frozen")
-        if v.Name:find(targetName) then 
-            local target = v:FindFirstChild("Rock") or v:FindFirstChildOfClass("MeshPart")
-            if target then
-                local d = (target.Position - pos).Magnitude
-                if d < dist then
-                    dist = d
-                    closest = v
-                end
-            end
-        end
-    end
-    return closest
-end
-
--- // УНИВЕРСАЛЬНЫЙ SETUP С АВТО-РЕСПАВНОМ \\ --
+-- Универсальная функция фарма с плавным телепортом
 local function SetupAutoFarm(targetName, targetPos)
     CurrentActiveRock = targetName
     
@@ -306,23 +284,41 @@ local function SetupAutoFarm(targetName, targetPos)
             local hrp = character:WaitForChild("HumanoidRootPart", 10)
             local hum = character:WaitForChild("Humanoid", 10)
             
-            -- Ищем камень
-            local rockModel = findSpecificRock(targetName, targetPos)
+            -- Поиск модели камня
+            local rockModel = nil
+            for _, v in pairs(workspace.machinesFolder:GetChildren()) do
+                if v.Name:find(targetName) and (v:FindFirstChild("Rock") or v:IsA("MeshPart")) then
+                    if (v:GetModelCFrame().Position - targetPos).Magnitude < 50 then
+                        rockModel = v
+                        break
+                    end
+                end
+            end
+
             local targetPart = rockModel and (rockModel:FindFirstChild("Rock") or rockModel:FindFirstChildOfClass("MeshPart"))
 
             if hrp and targetPart then
                 createMegaHitbox(character)
-                
-                -- Мгновенная установка позиции
                 hrp.Anchored = false
-                hrp.CFrame = CFrame.lookAt(targetPos, targetPart.Position)
-                task.wait(0.2)
                 
+                -- ПЛАВНЫЙ ТЕЛЕПОРТ
+                local distance = (hrp.Position - targetPos).Magnitude
+                local speed = 50 -- Скорость (чем выше, тем быстрее летит)
+                local duration = distance / speed
+                
+                local info = TweenInfo.new(duration, Enum.EasingStyle.Linear)
+                local targetCFrame = CFrame.lookAt(targetPos, targetPart.Position)
+                local tween = TweenService:Create(hrp, info, {CFrame = targetCFrame})
+                
+                tween:Play()
+                tween.Completed:Wait() -- Ждем окончания полета
+                
+                -- Фиксация после прилета
                 if CurrentActiveRock == targetName then
-                    hrp.Anchored = true 
+                    hrp.Anchored = true
                 end
 
-                -- Поток для касаний (firetouchinterest)
+                -- Поток для FireTouchInterest
                 local touchThread = task.spawn(function()
                     while CurrentActiveRock == targetName and character.Parent do
                         if currentHitbox and targetPart then
@@ -333,10 +329,9 @@ local function SetupAutoFarm(targetName, targetPos)
                     end
                 end)
 
-                -- Цикл ударов
+                -- Цикл фарма
                 while CurrentActiveRock == targetName and hum.Health > 0 do
                     pcall(function()
-                        -- Используем InvokeServer, так как это RemoteFunction
                         MachineRemote:InvokeServer(rockModel)
                     end)
                     
@@ -350,11 +345,10 @@ local function SetupAutoFarm(targetName, targetPos)
                 
                 if touchThread then task.cancel(touchThread) end
             end
-            task.wait(1) -- Ждем перед попыткой после смерти
+            task.wait(1)
         end
     end)
 end
-
 local NormalSection1 = GymExtractTab:DrawSection({
 	Name = "Beach Gym",
 	Position = 'middle'	
