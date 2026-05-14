@@ -248,34 +248,28 @@ local GymExtractTab = MainTab:DrawTab({
 	Type = "Single"
 });
 
-local TweenService = game:GetService("TweenService")
+local VirtualUser = game:GetService("VirtualUser")
 local MachineRemote = game:GetService("ReplicatedStorage"):WaitForChild("rEvents"):WaitForChild("machineInteractRemote")
-local RunService = game:GetService("RunService")
 
-local CurrentActiveRock = nil
-local currentHitbox = nil
-
--- Функция создания хитбокса (без изменений)
-local function createMegaHitbox(character)
-    if currentHitbox then pcall(function() currentHitbox:Destroy() end) end
-    local root = character:WaitForChild("HumanoidRootPart", 5)
-    if not root then return nil end
-    local part = Instance.new("Part")
-    part.Name = "MegaPunchHitbox"
-    part.Size = Vector3.new(20, 20, 20)
-    part.Transparency = 1
-    part.CanCollide = false
-    part.Parent = character
-    local weld = Instance.new("WeldConstraint")
-    weld.Part0 = root
-    weld.Part1 = part
-    weld.Parent = part
-    currentHitbox = part
-    return part
+-- // Функция усиленного хитбокса инструмента \\ --
+local function enhancePunchTool(character)
+    local punch = character:FindFirstChild("Punch") or player.Backpack:FindFirstChild("Punch")
+    if punch and punch:FindFirstChild("Handle") then
+        local handle = punch.Handle
+        -- Делаем хитбокс самого кулака огромным
+        handle.Size = Vector3.new(15, 15, 15) 
+        handle.Transparency = 1
+        handle.CanCollide = false
+        
+        -- Удаляем ограничители, если они есть
+        local touchInterest = handle:FindFirstChildOfClass("TouchTransmitter")
+        if not touchInterest then
+            -- Force trigger touch
+        end
+    end
 end
 
--- Универсальная функция фарма с плавным телепортом
--- // УНИВЕРСАЛЬНАЯ ФУНКЦИЯ С КОРРЕКЦИЕЙ РАЗМЕРА \\ --
+-- // ОБНОВЛЕННАЯ ФУНКЦИЯ ФАРМА \\ --
 local function SetupAutoFarm(targetName, targetPos)
     CurrentActiveRock = targetName
     
@@ -285,11 +279,12 @@ local function SetupAutoFarm(targetName, targetPos)
             local hrp = character:WaitForChild("HumanoidRootPart", 10)
             local hum = character:WaitForChild("Humanoid", 10)
             
-            -- Поиск модели камня
+            -- Поиск модели камня (по имени и дистанции)
             local rockModel = nil
             for _, v in pairs(workspace.machinesFolder:GetChildren()) do
                 if v.Name:find(targetName) then
-                    if (v:GetModelCFrame().Position - targetPos).Magnitude < 60 then
+                    local p = v:GetModelCFrame().Position
+                    if (p - targetPos).Magnitude < 60 then
                         rockModel = v
                         break
                     end
@@ -299,61 +294,45 @@ local function SetupAutoFarm(targetName, targetPos)
             local targetPart = rockModel and (rockModel:FindFirstChild("Rock") or rockModel:FindFirstChildOfClass("MeshPart"))
 
             if hrp and targetPart then
-                -- 1. УВЕЛИЧИВАЕМ ХИТБОКС КАМНЯ (локально)
-                -- Это гарантирует, что ты дотянешься до него даже огромным персонажем
-                if targetPart:IsA("BasePart") then
-                    targetPart.CanCollide = false -- Чтобы не выталкивало
-                    -- Если ты очень большой, можно чуть увеличить размер парта для надежности
-                    -- targetPart.Size = targetPart.Size * 1.5 
-                end
-
+                -- Усиливаем кулаки под размер
+                enhancePunchTool(character)
                 createMegaHitbox(character)
-                hrp.Anchored = false
                 
-                -- 2. КОРРЕКЦИЯ ВЫСОТЫ (Y) ПОД РАЗМЕР ИГРОКА
-                -- Вычисляем смещение: чем выше персонаж, тем выше должна быть точка телепорта
-                local heightOffset = (hum.HipHeight > 2) and (hum.HipHeight - 2) or 0
+                -- Коррекция высоты под размер персонажа
+                local heightOffset = (hum.HipHeight > 2) and (hum.HipHeight - 1.5) or 0
                 local correctedPos = targetPos + Vector3.new(0, heightOffset, 0)
                 
-                -- 3. ПЛАВНЫЙ ТЕЛЕПОРТ
-                local distance = (hrp.Position - correctedPos).Magnitude
-                local info = TweenInfo.new(distance / 50, Enum.EasingStyle.Linear)
-                local targetCFrame = CFrame.lookAt(correctedPos, targetPart.Position)
+                hrp.Anchored = false
+                hrp.CFrame = CFrame.lookAt(correctedPos, targetPart.Position)
+                task.wait(0.2)
                 
-                local tween = TweenService:Create(hrp, info, {CFrame = targetCFrame})
-                tween:Play()
-                tween.Completed:Wait()
-                
-                if CurrentActiveRock == targetName then
-                    hrp.Anchored = true
-                end
+                if CurrentActiveRock == targetName then hrp.Anchored = true end
 
-                -- Поток касаний (firetouchinterest)
-                local touchThread = task.spawn(function()
-                    while CurrentActiveRock == targetName and character.Parent do
-                        if currentHitbox and targetPart then
-                            firetouchinterest(currentHitbox, targetPart, 0)
-                            firetouchinterest(currentHitbox, targetPart, 1)
-                        end
-                        task.wait(0.1)
-                    end
-                end)
-
-                -- Цикл фарма
+                -- Цикл ударов с эмуляцией клика
                 while CurrentActiveRock == targetName and hum.Health > 0 do
+                    -- 1. Сигнал RemoteFunction (Основной урон)
                     pcall(function()
                         MachineRemote:InvokeServer(rockModel)
                     end)
                     
+                    -- 2. Работа с инструментом
                     local punch = character:FindFirstChild("Punch") or player.Backpack:FindFirstChild("Punch")
                     if punch then
                         if punch.Parent == player.Backpack then hum:EquipTool(punch) end
                         punch:Activate()
+                        
+                        -- Эмуляция клика мыши для обхода анти-афк и проверок
+                        VirtualUser:Button1Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
                     end
+                    
+                    -- 3. Симуляция касания хитбокса
+                    if currentHitbox then
+                        firetouchinterest(currentHitbox, targetPart, 0)
+                        firetouchinterest(currentHitbox, targetPart, 1)
+                    end
+                    
                     task.wait(0.05)
                 end
-                
-                if touchThread then task.cancel(touchThread) end
             end
             task.wait(1)
         end
