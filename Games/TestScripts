@@ -253,6 +253,66 @@ local GeneralFarmExtractTab = MainTab:DrawTab({
 	Type = "Single"
 });
 
+local NormalSection1 = GeneralFarmExtractTab:DrawSection({
+	Name = "Lifting",
+	Position = 'left'	
+});
+
+local AutoLiftToggle = NormalSection1:AddToggle({
+    Name = "Auto Lift",
+    Flag = "Toggle_AutoLift", 
+    Default = false,
+    Callback = function(v)
+
+        playInterfaceSound("ButtonClick")
+        
+        local player = game:GetService("Players").LocalPlayer
+
+        local gamepass_AutoLift = player:FindFirstChild("autoLiftEnabled")
+
+        if not gamepass_AutoLift then
+            playInterfaceSound("ErrorSound")
+            Notifier.new({
+                Title = "02: Error",
+                Content = "Failed to find Auto Lift object in Player. Feature may not work.",
+                Duration = 6,
+                Icon = "rbxassetid://102643647961511"
+            });
+            return -- Останавливаем выполнение функции
+        end
+
+        if v then
+
+            gamepass_AutoLift.Value = true
+            
+            playInterfaceSound("NotificationSound")
+            Notifier.new({
+                Title = "02: Notification",
+                Content = "Auto Lift has been enabled!",
+                Duration = 3,
+                Icon = "rbxassetid://102643647961511"
+            });
+        else
+            gamepass_AutoLift.Value = false
+            
+            playInterfaceSound("NotificationSound")
+            Notifier.new({
+                Title = "02: Notification",
+                Content = "Auto Lift has been Disabled!",
+                Duration = 3,
+                Icon = "rbxassetid://102643647961511"
+            });
+        end 
+    end, -- Убраны лишние скобки (), теперь это корректная функция
+});
+
+local NormalSection2 = GeneralFarmExtractTab:DrawSection({
+	Name = "Rep Time Editor",
+	Position = 'right'	
+});
+
+
+
 -- // Auto Tab \\ --
 
 local RebirthsExtractTab = AutoTab:DrawTab({
@@ -360,7 +420,7 @@ local FpsToggle = NormalSection1:AddToggle({
                 -- Если элемент еще не создан, создаем его
                 if not FpsMonitoringElement then
                     FpsMonitoringElement = Watermark:AddText({
-                        Icon = "energy",
+                        Icon = "monitor",
                         Text = "FPS: ...",
                     })
                 end
@@ -381,7 +441,7 @@ local FpsToggle = NormalSection1:AddToggle({
                 -- Запускаем цикл постоянного обновления FPS
                 FpsConnection = RunService.RenderStepped:Connect(function(deltaTime)
                     -- Высчитываем актуальный FPS
-                    local currentFPS = math.floor(1 / deltaTime)
+                    local currentFPS = math.floor(2 / deltaTime)
                     
                     if FpsMonitoringElement then
                         -- Проверяем, какой метод использует библиотека для изменения текста
