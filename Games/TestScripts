@@ -28,14 +28,14 @@ for soundName, assetId in pairs(sounds) do
         local newSound = Instance.new("Sound")
         newSound.Name = soundName
         newSound.SoundId = assetId
-        newSound.Volume = 0.6
+        newSound.Volume = 1
         newSound.PlayOnRemove = false
         newSound.Parent = StarterGui
 
     else
         
         existingSound.SoundId = assetId
-        existingSound.Volume = 0.6
+        existingSound.Volume = 1
 
     end
 end
