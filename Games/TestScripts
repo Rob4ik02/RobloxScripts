@@ -279,65 +279,75 @@ end
 
 -- // УНИВЕРСАЛЬНАЯ ФУНКЦИЯ АВТО-ФАРМА \\ --
 local function SetupAutoFarm(rockName, standPos)
-    local rockModel = workspace.machinesFolder:FindFirstChild(rockName)
-    local targetRock = rockModel and rockModel:FindFirstChild("Rock")
+    CurrentActiveRock = rockName
     
-    -- Цикл на случай смерти персонажа
     task.spawn(function()
         while CurrentActiveRock == rockName do
             local character = player.Character or player.CharacterAdded:Wait()
             local hrp = character:WaitForChild("HumanoidRootPart", 10)
             local hum = character:WaitForChild("Humanoid", 10)
             
-            if hrp and hum and targetRock then
-                -- Создаем хитбокс после респавна
+            -- Ищем модель камня
+            local rockModel = workspace.machinesFolder:FindFirstChild(rockName)
+            -- Если по имени не нашли (как в случае с Beach), ищем внутри папки объект с мешем Rock
+            if not rockModel then
+                for _, v in pairs(workspace.machinesFolder:GetChildren()) do
+                    if v.Name:find("Rock") and (v:FindFirstChild("Rock") or v:IsA("BasePart")) then
+                        -- Проверяем дистанцию, чтобы найти именно тот, что в Beach
+                        if (v:FindFirstChild("Rock") and (v.Rock.Position - standPos).Magnitude < 50) then
+                            rockModel = v
+                            break
+                        end
+                    end
+                end
+            end
+
+            local targetPart = rockModel and (rockModel:FindFirstChild("Rock") or rockModel:FindFirstChildOfClass("MeshPart"))
+
+            if hrp and hum and targetPart then
                 createMegaHitbox(character)
                 
-                -- Телепорт и разворот
-                hrp.CFrame = CFrame.lookAt(standPos, targetRock.Position)
-                task.wait(0.5)
+                -- Плавный, но быстрый телепорт (чтобы не кикало за флай)
+                hrp.CFrame = CFrame.lookAt(standPos, targetPart.Position)
+                task.wait(0.3)
+                
+                -- Замораживаем, только если мы все еще хотим фармить этот камень
+                if CurrentActiveRock == rockName then
+                    hrp.Anchored = true
+                end
 
-                -- Поток для FireTouchInterest
+                -- Поток для касаний
                 local touchThread = task.spawn(function()
                     while CurrentActiveRock == rockName and character.Parent do
-                        if currentHitbox and targetRock then
-                            firetouchinterest(currentHitbox, targetRock, 0)
+                        if currentHitbox and targetPart then
+                            firetouchinterest(currentHitbox, targetPart, 0)
                             task.wait()
-                            firetouchinterest(currentHitbox, targetRock, 1)
+                            firetouchinterest(currentHitbox, targetPart, 1)
                         end
                         RunService.RenderStepped:Wait()
                     end
                 end)
 
-                -- Основной цикл ударов
-                local loopCount = 0
+                -- Цикл ударов
                 while CurrentActiveRock == rockName and hum.Health > 0 do
-                    loopCount = loopCount + 1
-                    
-                    -- Сигнал серверу
                     pcall(function()
                         MachineRemote:InvokeServer(rockModel)
                     end)
                     
-                    -- Удар инструментом
                     local punch = character:FindFirstChild("Punch") or player.Backpack:FindFirstChild("Punch")
                     if punch then
                         if punch.Parent == player.Backpack then hum:EquipTool(punch) end
                         punch:Activate()
                     end
-                    
-                    -- Сброс инструмента для античита
-                    if loopCount % 60 == 0 then
-                        hum:UnequipTools()
-                        task.wait(0.1)
-                    end
                     task.wait(0.05)
                 end
                 
-                -- Если умерли или выключили — чистим потоки
-                task.cancel(touchThread)
+                if touchThread then task.cancel(touchThread) end
+            else
+                warn("Камень " .. rockName .. " не найден! Проверь путь в Workspace.")
+                task.wait(2)
             end
-            task.wait(1) -- Пауза перед проверкой после смерти
+            task.wait(1)
         end
     end)
 end
@@ -351,10 +361,13 @@ NormalSection1:AddToggle({
     Name = "Auto Punch Rock",
     Callback = function(v)
         if v then
-            CurrentActiveRock = "Rock"
-            SetupAutoFarm("Frozen Rock", Vector3.new(183.919113, 14.5074539, -153.653336))
+            -- Для Beach используем имя, которое отображается в Dex (обычно просто "Rock")
+            SetupAutoFarm("Rock", Vector3.new(183.919, 14.507, -153.653))
         else
             CurrentActiveRock = nil
+            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                player.Character.HumanoidRootPart.Anchored = false
+            end
             if currentHitbox then currentHitbox:Destroy() end
         end
     end
@@ -370,15 +383,16 @@ NormalSection2:AddToggle({
     Name = "Auto Punch Rock",
     Callback = function(v)
         if v then
-            CurrentActiveRock = "Frozen Rock"
             SetupAutoFarm("Frozen Rock", Vector3.new(-2591.58, 7.26, -243.5))
         else
             CurrentActiveRock = nil
+            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                player.Character.HumanoidRootPart.Anchored = false
+            end
             if currentHitbox then currentHitbox:Destroy() end
         end
     end
 })
-
 local NormalSection3 = GymExtractTab:DrawSection({
 	Name = "Mythical Gym",
 	Position = 'middle'	
