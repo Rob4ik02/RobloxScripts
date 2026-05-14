@@ -315,11 +315,11 @@ local AutoEquipToggle1 = NormalSection2:AddToggle({
     Name = "Auto Equip Weight",
     Flag = "Toggle_AutoEquipWeight",
     Default = false,
-    Callback = function(v)
+    Callback = function(AutoEguipWeight)
         playInterfaceSound("ButtonClick")
         local isAutoEquippingWeight = false
         -- Синхронизируем состояние переменной с тумблером
-        isAutoEquipping = v
+        isAutoEquipping = AutoEguipWeight
         
         if isAutoEquippingWeight then
             playInterfaceSound("NotificationSound")
