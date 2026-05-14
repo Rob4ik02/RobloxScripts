@@ -315,6 +315,7 @@ local NormalSection2 = GeneralFarmExtractTab:DrawSection({
 local AutoEquipWeightActive = false
 local AutoEquipPushupsActive = false
 local AutoEquipSitupsActive = false
+local AutoEquipHandstandsActive = false
 
 -- 1. ТУМБЛЕР: WEIGHT
 local AutoEquipToggle1 = NormalSection2:AddToggle({
@@ -421,6 +422,46 @@ local AutoEquipToggle3 = NormalSection2:AddToggle({
                         local humanoid = character:FindFirstChild("Humanoid")
                         -- Исправил название предмета на Situps (у вас в коде стояло Pushups)
                         local tool = player.Backpack:FindFirstChild("Situps") 
+                        if humanoid and tool and humanoid.Health > 0 then
+                            humanoid:EquipTool(tool)
+                        end
+                    end
+                    task.wait(0.5)
+                end
+            end)
+        else
+            local character = player.Character
+            if character and character:FindFirstChild("Humanoid") then
+                character.Humanoid:UnequipTools()
+            end
+        end
+    end,
+})
+
+local AutoEquipToggle3 = NormalSection2:AddToggle({
+    Name = "Auto Equip Handstands",
+    Flag = "Toggle_AutoEquipHandstands",
+    Default = false,
+    Callback = function(v)
+        playInterfaceSound("ButtonClick")
+        AutoEquipHandstandsActive = v
+        
+        if AutoEquipHandstandsActive then
+            playInterfaceSound("NotificationSound")
+            Notifier.new({
+                Title = "Equipment",
+                Content = "Auto Equip Handstands Started!",
+                Duration = 3,
+                Icon = "rbxassetid://102643647961511"
+            })
+
+            task.spawn(function()
+                while AutoEquipHandstandsActive do
+                    local character = player.Character
+                    if character then
+                        local humanoid = character:FindFirstChild("Humanoid")
+                        -- Исправил название предмета на Situps (у вас в коде стояло Pushups)
+                        local tool = player.Backpack:FindFirstChild("Handstands") 
                         if humanoid and tool and humanoid.Health > 0 then
                             humanoid:EquipTool(tool)
                         end
