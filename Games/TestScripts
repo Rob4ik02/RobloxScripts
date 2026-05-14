@@ -258,15 +258,22 @@ local NormalSection2 = GymExtractTab:DrawSection({
 	Position = 'middle'	
 });
 
+-- В начало скрипта, где все переменные
+local VirtualUser = game:GetService("VirtualUser")
 local AutoPunchRockActive = false
--- Твоя точка, где стоит игрок
 local StandPosition = Vector3.new(-2591.58105, 7.263731, -244.106873)
+
+-- Функция для симуляции клика (чтобы не писать каждый раз)
+local function simulateClick()
+    VirtualUser:CaptureController()
+    VirtualUser:ClickButton1(Vector2.new(0, 0)) -- Симулирует нажатие левой кнопки мыши
+end
 
 local AutoPunchRock = NormalSection2:AddToggle({
     Name = "Auto Punch Rock",
     Flag = "Toggle_PunchFrozenRock", 
     Default = false,
-    Callback = function(v) -- ИСПРАВЛЕНО: строго через function(v)
+    Callback = function(v)
         playInterfaceSound("ButtonClick")
         AutoPunchRockActive = v
         
@@ -277,25 +284,20 @@ local AutoPunchRock = NormalSection2:AddToggle({
             playInterfaceSound("NotificationSound")
             Notifier.new({
                 Title = "Farming",
-                Content = "Teleporting and Aiming at Rock...",
+                Content = "Teleporting and Aiming...",
                 Duration = 3,
                 Icon = "rbxassetid://102643647961511"
             })
 
             if hrp then
-                -- Находим именно визуальную часть камня по твоему пути
-                -- Используем pcall, чтобы скрипт не вылетел, если папки нет
                 local success, targetPart = pcall(function()
                     return workspace.machinesFolder["Frozen Rock"]:FindFirstChild("Rock")
                 end)
 
                 local TargetCFrame
                 if success and targetPart then
-                    -- lookAt(откуда смотрим, куда смотрим)
-                    -- Это заставит персонажа повернуться лицом к мешу Rock
                     TargetCFrame = CFrame.lookAt(StandPosition, targetPart.Position)
                 else
-                    -- Если путь не найден, просто встаем в позицию (запасной вариант)
                     TargetCFrame = CFrame.new(StandPosition)
                 end
 
@@ -306,41 +308,34 @@ local AutoPunchRock = NormalSection2:AddToggle({
                 tween:Play()
                 tween.Completed:Wait()
                 
-                -- Замораживаем после прилета и поворота
                 if AutoPunchRockActive then 
                     hrp.Anchored = true 
                 end
             end
 
-            -- Цикл атаки
+            -- ОБНОВЛЕННЫЙ ЦИКЛ АТАКИ
             task.spawn(function()
                 while AutoPunchRockActive do
                     if player.Character then
                         local punch = player.Backpack:FindFirstChild("Punch") or player.Character:FindFirstChild("Punch")
                         if punch then
+                            -- Надеваем кулаки
                             if punch.Parent == player.Backpack then
                                 player.Character.Humanoid:EquipTool(punch)
                             end
-                            punch:Activate()
+                            
+                            -- Вместо простого Activate() используем симуляцию клика
+                            simulateClick() 
                         end
                     end
-                    task.wait(0.1)
+                    task.wait(0.1) -- Можешь попробовать 0.05 для максимальной скорости
                 end
             end)
         else
-            -- Разморозка и остановка
             if hrp then hrp.Anchored = false end
             if player.Character and player.Character:FindFirstChild("Humanoid") then
                 player.Character.Humanoid:UnequipTools()
             end
-
-            playInterfaceSound("NotificationSound")
-            Notifier.new({
-                Title = "Farming",
-                Content = "Auto Punch Stopped.",
-                Duration = 3,
-                Icon = "rbxassetid://102643647961511"
-            })
         end
     end,
 })
