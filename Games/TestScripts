@@ -489,6 +489,183 @@ local ToggleFastPushups = NormalSection2:AddToggle({
     end, -- ИСПРАВЛЕНО: Добавлен недостающий end и запятая
 });
 
+local ToggleFastSitups = NormalSection2:AddToggle({
+    Name = "Fast Situps Speed",
+    Flag = "Toggle_FastSitups", -- Leave it blank will not save to config (ALL ELEMENTS)
+    Default = false,
+    Callback = function(v)
+        playInterfaceSound("ButtonClick")
+        
+        local character = player.Character or player.CharacterAdded:Wait()
+        local Item_Situps = character:FindFirstChild("Situps") or player:WaitForChild("Backpack"):FindFirstChild("Situps")
+
+        -- БЕЗОПАСНОСТЬ: Проверяем, существует ли предмет
+        if not Item_Situps then
+            playInterfaceSound("ErrorSound")
+            Notifier.new({
+                Title = "02: Error",
+                Content = "Item 'Situps' not found in inventory or hands!",
+                Duration = 4,
+                Icon = "rbxassetid://102643647961511"
+            });
+            return
+        end
+
+        local Rep_Time = Item_Situps:FindFirstChild("repTime")
+
+        if not Rep_Time then
+            playInterfaceSound("ErrorSound")
+            Notifier.new({
+                Title = "02: Error",
+                Content = "'repTime' not found in Situps!",
+                Duration = 4,
+                Icon = "rbxassetid://102643647961511"
+            });
+            return
+        end
+
+        if v then
+            Rep_Time.Value = 0.05
+            
+            playInterfaceSound("NotificationSound")
+            Notifier.new({
+                Title = "02: Notification",
+                Content = "Fast Situps Speed has been enabled!",
+                Duration = 3,
+                Icon = "rbxassetid://102643647961511"
+            });
+        else
+            Rep_Time.Value = 1
+            
+            playInterfaceSound("NotificationSound")
+            Notifier.new({
+                Title = "02: Notification",
+                Content = "Fast Situps Speed has been Disabled!",
+                Duration = 3,
+                Icon = "rbxassetid://102643647961511"
+            });
+        end
+    end, -- ИСПРАВЛЕНО: Добавлен недостающий end и запятая
+});
+
+local ToggleFastHandstands = NormalSection2:AddToggle({
+    Name = "Fast Handstands Speed",
+    Flag = "Toggle_FastHandstands", -- Leave it blank will not save to config (ALL ELEMENTS)
+    Default = false,
+    Callback = function(v)
+        playInterfaceSound("ButtonClick")
+        
+        local character = player.Character or player.CharacterAdded:Wait()
+        local Item_Handstands = character:FindFirstChild("Handstands") or player:WaitForChild("Backpack"):FindFirstChild("Handstands")
+
+        -- БЕЗОПАСНОСТЬ: Проверяем, существует ли предмет
+        if not Item_Handstands then
+            playInterfaceSound("ErrorSound")
+            Notifier.new({
+                Title = "02: Error",
+                Content = "Item 'Handstands' not found in inventory or hands!",
+                Duration = 4,
+                Icon = "rbxassetid://102643647961511"
+            });
+            return
+        end
+
+        local Rep_Time = Item_Handstands:FindFirstChild("repTime")
+
+        if not Rep_Time then
+            playInterfaceSound("ErrorSound")
+            Notifier.new({
+                Title = "02: Error",
+                Content = "'repTime' not found in Handstands!",
+                Duration = 4,
+                Icon = "rbxassetid://102643647961511"
+            });
+            return
+        end
+
+        if v then
+            Rep_Time.Value = 0.05
+            
+            playInterfaceSound("NotificationSound")
+            Notifier.new({
+                Title = "02: Notification",
+                Content = "Fast Handstands Speed has been enabled!",
+                Duration = 3,
+                Icon = "rbxassetid://102643647961511"
+            });
+        else
+            Rep_Time.Value = 1
+            
+            playInterfaceSound("NotificationSound")
+            Notifier.new({
+                Title = "02: Notification",
+                Content = "Fast Handstands Speed has been Disabled!",
+                Duration = 3,
+                Icon = "rbxassetid://102643647961511"
+            });
+        end
+    end, -- ИСПРАВЛЕНО: Добавлен недостающий end и запятая
+});
+
+local ToggleFastGroundSlam = NormalSection2:AddToggle({
+    Name = "Fast Ground Slam Speed",
+    Flag = "Toggle_FastHandstands", -- Leave it blank will not save to config (ALL ELEMENTS)
+    Default = false,
+    Callback = function(v)
+        playInterfaceSound("ButtonClick")
+        
+        local character = player.Character or player.CharacterAdded:Wait()
+        local Item_GroundSlam = character:FindFirstChild("Ground Slam") or player:WaitForChild("Backpack"):FindFirstChild("Ground Slam")
+
+        -- БЕЗОПАСНОСТЬ: Проверяем, существует ли предмет
+        if not Item_GroundSlam then
+            playInterfaceSound("ErrorSound")
+            Notifier.new({
+                Title = "02: Error",
+                Content = "Item 'Ground Slam' not found in inventory or hands!",
+                Duration = 4,
+                Icon = "rbxassetid://102643647961511"
+            });
+            return
+        end
+
+        local Rep_Time = Item_GroundSlam:FindFirstChild("attackTime")
+
+        if not Rep_Time then
+            playInterfaceSound("ErrorSound")
+            Notifier.new({
+                Title = "02: Error",
+                Content = "'attackTime' not found in Handstands!",
+                Duration = 4,
+                Icon = "rbxassetid://102643647961511"
+            });
+            return
+        end
+
+        if v then
+            Rep_Time.Value = 0.05
+            
+            playInterfaceSound("NotificationSound")
+            Notifier.new({
+                Title = "02: Notification",
+                Content = "Fast Ground Slam Speed has been enabled!",
+                Duration = 3,
+                Icon = "rbxassetid://102643647961511"
+            });
+        else
+            Rep_Time.Value = 6
+            
+            playInterfaceSound("NotificationSound")
+            Notifier.new({
+                Title = "02: Notification",
+                Content = "Fast Ground Slam Speed has been Disabled!",
+                Duration = 3,
+                Icon = "rbxassetid://102643647961511"
+            });
+        end
+    end, -- ИСПРАВЛЕНО: Добавлен недостающий end и запятая
+});
+
 -- // Auto Tab \\ --
 
 local RebirthsExtractTab = AutoTab:DrawTab({
