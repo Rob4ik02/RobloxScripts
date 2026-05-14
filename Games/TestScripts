@@ -290,8 +290,29 @@ local PlayerModifyExtractTab = MiscellaneousTab:DrawTab({
 
 -- // Settings Tab \\ --
 
+local UiSettingExtractTab = SettingsTab:DrawTab({
+    Name = "Settings UI",
+    Type = "Single"
+});
 
+local NormalSection1 = UiSettingExtractTab:DrawSection({
+	Name = "Destroyer",
+	Position = 'middle'	
+});
 
+NormalSection1:AddButton({
+	Name = "Destroy Gui",
+	Callback = function()
+		Notifier.new({
+			Title = "02: Notification",
+			Content = "The ui will be destroyed after 5 seconds.",
+			Duration = 4,
+			Icon = "rbxassetid://102643647961511"
+		});
+		wait(5);
+		libraryUi:Destroy();
+	end,
+})
 -- // Notifications \\ --
 
 
