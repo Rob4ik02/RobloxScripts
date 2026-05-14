@@ -1,3 +1,58 @@
+-- // localization \\ --
+
+local StarterGui = game:GetService("StarterGui")
+
+
+
+-- // Instances \\ --
+
+local sounds = {
+    ["ButtonClick"] = "rbxassetid://140387697208266",
+    ["WarnSound"] = "rbxassetid://136001454409424",
+    ["NotificationSound"] = "rbxassetid://134195160579609",
+    ["CompleteSound"] = "rbxassetid://102643647961511",
+    ["LoadedSound"] = "rbxassetid://117683281438895",
+    ["ErrorSound"] = "rbxassetid://131039887376992",
+    ["LoadingSound"] = "rbxassetid://3320590485",
+    ["PowerUpSound"] = "rbxassetid://102643647961511"
+}
+
+
+-- Используем pairs для перебора словаря (ключ-значение)
+for soundName, assetId in pairs(sounds) do
+    
+    local existingSound = StarterGui:FindFirstChild(soundName)
+    
+    if not existingSound then
+        
+        local newSound = Instance.new("Sound")
+        newSound.Name = soundName
+        newSound.SoundId = assetId
+        newSound.Volume = 0.6
+        newSound.PlayOnRemove = false
+        newSound.Parent = StarterGui
+
+    else
+        
+        existingSound.SoundId = assetId
+        existingSound.Volume = 0.6
+
+    end
+end
+
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local function playInterfaceSound(soundName)
+    local sound = playerGui:FindFirstChild(soundName)
+    if sound and sound:IsA("Sound") then
+        sound:Play()
+    else
+        warn("Sound '" .. soundName .. "' not found in PlayerGui.")
+    end
+end
+
+
 -- // Oxygen Hub 02: Muscle Legends \\ --
 
 local LibraryUi = loadstring(game:HttpGet("https://raw.githubusercontent.com/4lpaca-pin/CompKiller/refs/heads/main/src/source.luau"))();
@@ -11,8 +66,10 @@ local ConfigManager = LibraryUi:ConfigManager({
 	Config = "Configs"
 });
 
--- Loading UI (Icon <string> , Duration <number>) --
+playInterfaceSound(LoadingSound)
 LibraryUi:Loader("rbxassetid://102643647961511" , 3).yield();
+wait(3)
+playInterfaceSound(LoadedSound)
 
 -- Creating Window --
 local Window = LibraryUi.new({
@@ -304,6 +361,8 @@ NormalSection1:AddToggle({
 	Name = "Alway Show Frame",
 	Default = false,
 	Callback = function(v)
+		playInterfaceSound(ButtonClick)
+		
 		Window.AlwayShowTab = v;
 	end,
 });
@@ -320,7 +379,7 @@ LibraryUi.Colors.MouseEnter = Color3.fromRGB(17, 44, 107);
 
 LibraryUi.Colors.BlockColor = Color3.fromRGB(18, 28, 77);
 
-ibraryUi.Colors.BGDBColor = Color3.fromRGB(6, 20, 53);
+LibraryUi.Colors.BGDBColor = Color3.fromRGB(6, 20, 53);
 
 LibraryUi.Colors.BlockBackground = Color3.fromRGB(4, 15, 93);
 
@@ -340,6 +399,8 @@ local NormalSection2 = UiSettingExtractTab:DrawSection({
 NormalSection2:AddButton({
     Name = "Destroy Gui",
     Callback = function()
+		playInterfaceSound(ButtonClick)
+		playInterfaceSound(WarnSound)
         Notifier.new({
             Title = "02: Notification",
             Content = "The UI and CoreGui elements will be destroyed in 5 seconds.",
@@ -366,6 +427,7 @@ NormalSection2:AddButton({
 
 -- // Notifications \\ --
 
+playInterfaceSound(NotificationSound)
 Notifier.new({
 	Title = "02: Notification",
 	Content = "The script has been succesfuly loaded for use!",
@@ -386,6 +448,7 @@ for _, s in ipairs(supportedExploits) do
     end
 end
 
+playInterfaceSound(WarnSound)
 Notifier.new({
     Title = "Exploit Check",
     Content = isSupported and ("Your exploit (%s) is supported!"):format(executor) 
