@@ -258,21 +258,16 @@ local NormalSection2 = GymExtractTab:DrawSection({
 	Position = 'middle'	
 });
 
--- Уникальная переменная для этого конкретного камня
--- Уникальные переменные для этого камня
+-- Уникальная переменная для этого камня
 local AutoPunchRockActive = false
--- Координаты из вашего прошлого сообщения
-local RockPos = Vector3.new(-2591.58105, 7.263731, -244.106873)
--- Поворот камня с фото (переводим градусы в радианы для CFrame)
-local RockRot = CFrame.Angles(math.rad(180), math.rad(0), math.rad(180))
--- Соединяем позицию и поворот в один целевой CFrame
-local TargetCFrame = CFrame.new(RockPos) * RockRot
+-- Твои координаты точки, где должен стоять игрок
+local StandPosition = Vector3.new(-2591.58, 7.26, -244.1)
 
 local AutoPunchRock = NormalSection2:AddToggle({
     Name = "Auto Punch Rock",
     Flag = "Toggle_PunchFrozenRock", 
     Default = false,
-    Callback = function(v) -- ИСПРАВЛЕНО: теперь здесь правильная функция, ошибки не будет
+    Callback = function(v) -- ИСПРАВЛЕНО: теперь здесь function(v), ошибка исчезнет
         playInterfaceSound("ButtonClick")
         AutoPunchRockActive = v
         
@@ -280,27 +275,35 @@ local AutoPunchRock = NormalSection2:AddToggle({
         local hrp = character and character:FindFirstChild("HumanoidRootPart")
 
         if AutoPunchRockActive then
-            -- Нотификация
             playInterfaceSound("NotificationSound")
             Notifier.new({
                 Title = "Farming",
-                Content = "Teleporting & Rotating to Rock...",
+                Content = "Teleporting to Frozen Rock...",
                 Duration = 3,
                 Icon = "rbxassetid://102643647961511"
             })
 
             if hrp then
-                -- Плавная телепортация СРАЗУ с нужным поворотом
+                -- Пытаемся найти сам объект камня в Workspace, чтобы посмотреть на него
+                -- Если имя в Explorer другое, замени "Frozen Rock" на нужное
+                local targetRock = workspace:FindFirstChild("Frozen Rock") or workspace:FindFirstChild("Rock")
+                
+                local TargetCFrame
+                if targetRock then
+                    -- Создаем CFrame: стоим в StandPosition, смотрим на центр камня
+                    TargetCFrame = CFrame.lookAt(StandPosition, targetRock.Position)
+                else
+                    -- Если камень не найден, используем старый метод поворота, но исправленный
+                    TargetCFrame = CFrame.new(StandPosition) * CFrame.Angles(0, math.rad(180), 0)
+                end
+
                 local TweenService = game:GetService("TweenService")
                 local info = TweenInfo.new(1.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-                
-                -- Tween переместит и ПОВЕРНЕТ игрока одновременно
                 local tween = TweenService:Create(hrp, info, {CFrame = TargetCFrame})
                 
                 tween:Play()
                 tween.Completed:Wait()
                 
-                -- Замораживаем, когда прилетели
                 if AutoPunchRockActive then 
                     hrp.Anchored = true 
                 end
@@ -310,26 +313,20 @@ local AutoPunchRock = NormalSection2:AddToggle({
             task.spawn(function()
                 while AutoPunchRockActive do
                     if player.Character then
-                        -- Ищем кулаки (Punch)
                         local punch = player.Backpack:FindFirstChild("Punch") or player.Character:FindFirstChild("Punch")
-                        
                         if punch then
                             if punch.Parent == player.Backpack then
                                 player.Character.Humanoid:EquipTool(punch)
                             end
-                            punch:Activate() -- Клик
+                            punch:Activate()
                         end
                     end
                     task.wait(0.1)
                 end
             end)
-
         else
             -- Выключение
-            if hrp then
-                hrp.Anchored = false -- Размораживаем игрока
-            end
-            
+            if hrp then hrp.Anchored = false end
             if player.Character and player.Character:FindFirstChild("Humanoid") then
                 player.Character.Humanoid:UnequipTools()
             end
