@@ -311,7 +311,75 @@ local NormalSection2 = GeneralFarmExtractTab:DrawSection({
 	Position = 'right'	
 });
 
+local ToggleFastPunch = NormalSection2:AddToggle({
+	Name = "Fast Punch Speed",
+	Flag = "Toggle_FastPunch", -- Leave it blank will not save to config (ALL ELEMENTS)
+	Default = false,
+	Callback = function(v)
+        playInterfaceSound("ButtonClick")
+        
+        local character = player.Character or player.CharacterAdded:Wait()
+        local Item_Punch = character:FindFirstChild("Punch") or player:WaitForChild("Backpack"):FindFirstChild("Punch")
 
+        local Rep_Time = Item_Punch:WaitForChild("attackTime") -- Убедимся, что объект существует
+
+        if v then
+            Rep_Time.Value = 0.05
+            
+            playInterfaceSound("NotificationSound")
+            Notifier.new({
+                Title = "02: Notification",
+                Content = "Fast Punch Speed has been enabled!",
+                Duration = 3,
+                Icon = "rbxassetid://102643647961511"
+            });
+        else
+            Rep_Time.Value = 0.35
+            
+            playInterfaceSound("NotificationSound")
+            Notifier.new({
+                Title = "02: Notification",
+                Content = "Fast Punch Speed has been Disabled!",
+                Duration = 3,
+                Icon = "rbxassetid://102643647961511"
+            });
+        end
+});
+
+local ToggleFastWeight = NormalSection2:AddToggle({
+	Name = "Fast Weight Speed",
+	Flag = "Toggle_FastWeight", -- Leave it blank will not save to config (ALL ELEMENTS)
+	Default = false,
+	Callback = function(v)
+        playInterfaceSound("ButtonClick")
+        
+        local character = player.Character or player.CharacterAdded:Wait()
+        local Item_Weight = character:FindFirstChild("Weight") or player:WaitForChild("Backpack"):FindFirstChild("Weight")
+
+        local Rep_Time = Item_Weight:WaitForChild("repTime") -- Убедимся, что объект существует
+
+        if v then
+            Rep_Time.Value = 0.05
+            
+            playInterfaceSound("NotificationSound")
+            Notifier.new({
+                Title = "02: Notification",
+                Content = "Fast Weight Speed has been enabled!",
+                Duration = 3,
+                Icon = "rbxassetid://102643647961511"
+            });
+        else
+            Rep_Time.Value = 1
+            
+            playInterfaceSound("NotificationSound")
+            Notifier.new({
+                Title = "02: Notification",
+                Content = "Fast Weight Speed has been Disabled!",
+                Duration = 3,
+                Icon = "rbxassetid://102643647961511"
+            });
+        end
+});
 
 -- // Auto Tab \\ --
 
