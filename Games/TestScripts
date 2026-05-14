@@ -277,8 +277,33 @@ local function createMegaHitbox(character)
     return part
 end
 
--- // УНИВЕРСАЛЬНАЯ ФУНКЦИЯ АВТО-ФАРМА \\ --
-local function SetupAutoFarm(rockName, standPos)
+local function getClosestRock(pos)
+    local closest = nil
+    local dist = math.huge
+    
+    for _, v in pairs(workspace.machinesFolder:GetChildren()) do
+        -- Ищем внутри модели часть, по которой можно бить (Rock или MeshPart)
+        local target = v:FindFirstChild("Rock") or v:FindFirstChildOfClass("MeshPart")
+        if target then
+            local magnitude = (target.Position - pos).Magnitude
+            if magnitude < dist then
+                dist = magnitude
+                closest = v
+            end
+        end
+    end
+    return closest
+end
+
+-- // ОБНОВЛЕННЫЙ SETUP AUTOFARM \\ --
+local function SetupAutoFarm(targetPos)
+    local rockModel = getClosestRock(targetPos)
+    if not rockModel then 
+        warn("Камень поблизости не найден!") 
+        return 
+    end
+    
+    local rockName = rockModel.Name
     CurrentActiveRock = rockName
     
     task.spawn(function()
@@ -286,37 +311,20 @@ local function SetupAutoFarm(rockName, standPos)
             local character = player.Character or player.CharacterAdded:Wait()
             local hrp = character:WaitForChild("HumanoidRootPart", 10)
             local hum = character:WaitForChild("Humanoid", 10)
-            
-            -- Ищем модель камня
-            local rockModel = workspace.machinesFolder:FindFirstChild(rockName)
-            -- Если по имени не нашли (как в случае с Beach), ищем внутри папки объект с мешем Rock
-            if not rockModel then
-                for _, v in pairs(workspace.machinesFolder:GetChildren()) do
-                    if v.Name:find("Rock") and (v:FindFirstChild("Rock") or v:IsA("BasePart")) then
-                        -- Проверяем дистанцию, чтобы найти именно тот, что в Beach
-                        if (v:FindFirstChild("Rock") and (v.Rock.Position - standPos).Magnitude < 50) then
-                            rockModel = v
-                            break
-                        end
-                    end
-                end
-            end
-
-            local targetPart = rockModel and (rockModel:FindFirstChild("Rock") or rockModel:FindFirstChildOfClass("MeshPart"))
+            local targetPart = rockModel:FindFirstChild("Rock") or rockModel:FindFirstChildOfClass("MeshPart")
 
             if hrp and hum and targetPart then
                 createMegaHitbox(character)
                 
-                -- Плавный, но быстрый телепорт (чтобы не кикало за флай)
-                hrp.CFrame = CFrame.lookAt(standPos, targetPart.Position)
-                task.wait(0.3)
+                -- Устанавливаем позицию и разворот
+                hrp.CFrame = CFrame.lookAt(targetPos, targetPart.Position)
+                task.wait(0.2)
                 
-                -- Замораживаем, только если мы все еще хотим фармить этот камень
                 if CurrentActiveRock == rockName then
                     hrp.Anchored = true
                 end
 
-                -- Поток для касаний
+                -- Поток касаний (firetouchinterest)
                 local touchThread = task.spawn(function()
                     while CurrentActiveRock == rockName and character.Parent do
                         if currentHitbox and targetPart then
@@ -343,9 +351,6 @@ local function SetupAutoFarm(rockName, standPos)
                 end
                 
                 if touchThread then task.cancel(touchThread) end
-            else
-                warn("Камень " .. rockName .. " не найден! Проверь путь в Workspace.")
-                task.wait(2)
             end
             task.wait(1)
         end
@@ -361,8 +366,8 @@ NormalSection1:AddToggle({
     Name = "Auto Punch Rock",
     Callback = function(v)
         if v then
-            -- Для Beach используем имя, которое отображается в Dex (обычно просто "Rock")
-            SetupAutoFarm("Rock", Vector3.new(183.919, 14.507, -153.653))
+            -- Просто передаем координаты, скрипт сам найдет ближайший к ним камень
+            SetupAutoFarm(Vector3.new(183.919, 14.507, -153.653))
         else
             CurrentActiveRock = nil
             if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
@@ -383,7 +388,7 @@ NormalSection2:AddToggle({
     Name = "Auto Punch Rock",
     Callback = function(v)
         if v then
-            SetupAutoFarm("Frozen Rock", Vector3.new(-2591.58, 7.26, -243.5))
+            SetupAutoFarm(Vector3.new(-2591.58, 7.26, -243.5))
         else
             CurrentActiveRock = nil
             if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
@@ -393,6 +398,7 @@ NormalSection2:AddToggle({
         end
     end
 })
+
 local NormalSection3 = GymExtractTab:DrawSection({
 	Name = "Mythical Gym",
 	Position = 'middle'	
