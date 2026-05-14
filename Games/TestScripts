@@ -341,6 +341,101 @@ local FpsBoosterExtractTab = MiscellaneousTab:DrawTab({
     Type = "Single"
 });
 
+local NormalSection1 = NormalTab:DrawSection({
+	Name = "Monitoring",
+	Position = 'middle'	
+});
+
+local RunService = game:GetService("RunService")
+local FpsConnection = nil
+local FpsMonitoringElement = nil
+
+local FpsToggle = NormalSection:AddToggle({
+    Name = "Fps Watermark Monitoring",
+    Flag = "Toggle_FpsMonitoring", -- Оставь пустым, если не нужно сохранять в конфиг
+    Default = false,
+    Callback = function(v)
+        playInterfaceSound("ButtonClick")
+        
+        -- Используем pcall для правильного отлова ошибок
+        local success, err = pcall(function()
+            if v then
+                -- Если элемент еще не создан, создаем его
+                if not FpsMonitoringElement then
+                    FpsMonitoringElement = Watermark:AddText({
+                        Icon = "energy",
+                        Text = "FPS: ...",
+                    })
+                end
+                
+                playInterfaceSound("NotificationSound")
+                Notifier.new({
+                    Title = "02: Notification",
+                    Content = "FPS Monitoring has been enabled!",
+                    Duration = 3,
+                    Icon = "rbxassetid://102643647961511"
+                });
+
+                -- Очищаем старое соединение на всякий случай
+                if FpsConnection then 
+                    FpsConnection:Disconnect() 
+                end
+                
+                -- Запускаем цикл постоянного обновления FPS
+                FpsConnection = RunService.RenderStepped:Connect(function(deltaTime)
+                    -- Высчитываем актуальный FPS
+                    local currentFPS = math.floor(1 / deltaTime)
+                    
+                    if FpsMonitoringElement then
+                        -- Проверяем, какой метод использует библиотека для изменения текста
+                        if type(FpsMonitoringElement) == "table" and FpsMonitoringElement.SetText then
+                            FpsMonitoringElement:SetText("FPS: " .. tostring(currentFPS))
+                        else
+                            FpsMonitoringElement.Text = "FPS: " .. tostring(currentFPS)
+                        end
+                    end
+                end)
+                
+            else
+                -- Если тумблер выключен, останавливаем цикл обновления
+                if FpsConnection then
+                    FpsConnection:Disconnect()
+                    FpsConnection = nil
+                end
+                
+                -- Уничтожаем элемент в Watermark
+                if FpsMonitoringElement then
+                    if type(FpsMonitoringElement) == "table" and FpsMonitoringElement.Destroy then
+                        FpsMonitoringElement:Destroy()
+                    elseif typeof(FpsMonitoringElement) == "Instance" then
+                        FpsMonitoringElement:Destroy()
+                    end
+                    FpsMonitoringElement = nil
+                end
+
+                playInterfaceSound("NotificationSound")
+                Notifier.new({
+                    Title = "02: Notification",
+                    Content = "FPS Monitoring has been disabled!",
+                    Duration = 3,
+                    Icon = "rbxassetid://102643647961511"
+                });
+            end
+        end)
+
+        -- Если pcall вернул ошибку, выводим её
+        if not success then
+            playInterfaceSound("ErrorSound")
+            Notifier.new({
+                Title = "02: Error",
+                Content = "An error occurred: " .. tostring(err),
+                Duration = 6,
+                Icon = "rbxassetid://102643647961511"
+            });
+        end
+    end,
+});
+
 local ServerExtractTab = MiscellaneousTab:DrawTab({
     Name = "Server",
     Type = "Single"
