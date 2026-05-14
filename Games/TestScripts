@@ -341,7 +341,7 @@ local FpsBoosterExtractTab = MiscellaneousTab:DrawTab({
     Type = "Single"
 });
 
-local NormalSection1 = NormalTab:DrawSection({
+local NormalSection1 = FpsBoosterExtractTab:DrawSection({
 	Name = "Monitoring",
 	Position = 'middle'	
 });
@@ -350,7 +350,7 @@ local RunService = game:GetService("RunService")
 local FpsConnection = nil
 local FpsMonitoringElement = nil
 
-local FpsToggle = NormalSection:AddToggle({
+local FpsToggle = NormalSection1:AddToggle({
     Name = "Fps Watermark Monitoring",
     Flag = "Toggle_FpsMonitoring", -- Оставь пустым, если не нужно сохранять в конфиг
     Default = false,
