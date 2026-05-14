@@ -430,6 +430,66 @@ local ToggleFastWeight = NormalSection2:AddToggle({
     end, -- ИСПРАВЛЕНО: Добавлен недостающий end и запятая
 });
 
+local ToggleFastPushups = NormalSection2:AddToggle({
+    Name = "Fast Pushups Speed",
+    Flag = "Toggle_FastPushups", -- Leave it blank will not save to config (ALL ELEMENTS)
+    Default = false,
+    Callback = function(v)
+        playInterfaceSound("ButtonClick")
+        
+        local character = player.Character or player.CharacterAdded:Wait()
+        local Item_Pushups = character:FindFirstChild("Pushups") or player:WaitForChild("Backpack"):FindFirstChild("Pushups")
+
+        -- БЕЗОПАСНОСТЬ: Проверяем, существует ли предмет
+        if not Item_Pushups then
+            playInterfaceSound("ErrorSound")
+            Notifier.new({
+                Title = "02: Error",
+                Content = "Item 'Pushups' not found in inventory or hands!",
+                Duration = 4,
+                Icon = "rbxassetid://102643647961511"
+            });
+            return
+        end
+
+        local Rep_Time = Item_Pushups:FindFirstChild("repTime")
+
+        if not Rep_Time then
+            playInterfaceSound("ErrorSound")
+            Notifier.new({
+                Title = "02: Error",
+                Content = "'repTime' not found in Pushups!",
+                Duration = 4,
+                Icon = "rbxassetid://102643647961511"
+            });
+            return
+        end
+
+        if v then
+            Rep_Time.Value = 0.05
+            
+            playInterfaceSound("NotificationSound")
+            Notifier.new({
+                Title = "02: Notification",
+                Content = "Fast Pushups Speed has been enabled!",
+                Duration = 3,
+                Icon = "rbxassetid://102643647961511"
+            });
+        else
+            Rep_Time.Value = 1
+            
+            playInterfaceSound("NotificationSound")
+            Notifier.new({
+                Title = "02: Notification",
+                Content = "Fast Pushups Speed has been Disabled!",
+                Duration = 3,
+                Icon = "rbxassetid://102643647961511"
+            });
+        end
+    end, -- ИСПРАВЛЕНО: Добавлен недостающий end и запятая
+});
+
+game:GetService("Players").LocalPlayer.Backpack.Pushups
 -- // Auto Tab \\ --
 
 local RebirthsExtractTab = AutoTab:DrawTab({
