@@ -248,6 +248,123 @@ local GymExtractTab = MainTab:DrawTab({
 	Type = "Single"
 });
 
+local NormalSection1 = GymExtractTab:DrawSection({
+	Name = "Beach Gym",
+	Position = 'middle'	
+});
+
+local NormalSection2 = GymExtractTab:DrawSection({
+	Name = "Frost Gym",
+	Position = 'middle'	
+});
+
+-- Уникальная переменная для этого конкретного камня
+local AutoPunchRockActive = false
+local RockCFrame = CFrame.new(-2591.58105, 7.263731, -244.106873)
+
+local AutoPunchRock = NormalSection2:AddToggle({
+    Name = "Auto Punch Rock",
+    Flag = "Toggle_PunchFrozenRock",
+    Default = false,
+    Callback = function(v)
+        playInterfaceSound("ButtonClick")
+        AutoPunchRockActive = v
+        
+        local character = player.Character
+        local hrp = character and character:FindFirstChild("HumanoidRootPart")
+        local humanoid = character and character:FindFirstChild("Humanoid")
+
+        if AutoPunchRockActive then
+            -- 1. Нотификация о начале
+            playInterfaceSound("NotificationSound")
+            Notifier.new({
+                Title = "Farming",
+                Content = "Teleporting to Rock and starting farm...",
+                Duration = 3,
+                Icon = "rbxassetid://102643647961511"
+            })
+
+            -- 2. Плавная телепортация к камню
+            if hrp then
+                local TweenService = game:GetService("TweenService")
+                local info = TweenInfo.new(1.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+                local tween = TweenService:Create(hrp, info, {CFrame = RockCFrame})
+                
+                tween:Play()
+                tween.Completed:Wait() -- Ждем завершения полета
+                
+                -- 3. Замораживаем игрока на месте, чтобы не откинуло
+                if AutoPunchRockActive then 
+                    hrp.Anchored = true 
+                end
+            end
+
+            -- 4. Зацикленный процесс битья
+            task.spawn(function()
+                while AutoPunchRockActive do
+                    if player.Character and player.Character:FindFirstChild("Humanoid") then
+                        -- Ищем предмет "Punch"
+                        local punch = player.Backpack:FindFirstChild("Punch") or player.Character:FindFirstChild("Punch")
+                        
+                        if punch then
+                            -- Надеваем, если он в рюкзаке
+                            if punch.Parent == player.Backpack then
+                                player.Character.Humanoid:EquipTool(punch)
+                            end
+                            -- Кликаем (активируем предмет)
+                            punch:Activate()
+                        end
+                    end
+                    task.wait(0.1) -- Высокая скорость кликов
+                end
+            end)
+
+        else
+            -- 5. Прекращение работы
+            if hrp then
+                hrp.Anchored = false -- Размораживаем
+            end
+            
+            if humanoid then
+                humanoid:UnequipTools() -- Убираем кулаки
+            end
+
+            playInterfaceSound("NotificationSound")
+            Notifier.new({
+                Title = "Farming",
+                Content = "Auto Punch Stopped. Character unfrozen.",
+                Duration = 3,
+                Icon = "rbxassetid://102643647961511"
+            })
+        end
+    end,
+})
+
+local NormalSection3 = GymExtractTab:DrawSection({
+	Name = "Mythical Gym",
+	Position = 'middle'	
+});
+
+local NormalSection4 = GymExtractTab:DrawSection({
+	Name = "Eternal Gym",
+	Position = 'middle'	
+});
+
+local NormalSection5 = GymExtractTab:DrawSection({
+	Name = "Legends Gym",
+	Position = 'middle'	
+});
+
+local NormalSection6 = GymExtractTab:DrawSection({
+	Name = "King Gym",
+	Position = 'middle'	
+});
+
+local NormalSection7 = GymExtractTab:DrawSection({
+	Name = "Jungle Gym",
+	Position = 'middle'	
+});
+
 local GeneralFarmExtractTab = MainTab:DrawTab({
 	Name = "Farm General",
 	Type = "Single"
