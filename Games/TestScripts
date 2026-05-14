@@ -308,124 +308,29 @@ NormalSection1:AddToggle({
 	end,
 });
 
-NormalSection1:AddColorPicker({
-	Name = "Highlight",
-	Default = LibraryUi.Colors.Highlight,
-	Callback = function(v)
-		LibraryUi.Colors.Highlight = v;
-		LibraryUi:RefreshCurrentColor();
-	end,
-});
+LibraryUi.Colors.Highlight = Color3.fromRGB(0, 239, 255);
 
-NormalSection1:AddColorPicker({
-	Name = "Toggle Color",
-	Default = LibraryUi.Colors.Toggle,
-	Callback = function(v)
-		LibraryUi.Colors.Toggle = v;
-		
-		LibraryUi:RefreshCurrentColor(v);
-	end,
-});
+LibraryUi.Colors.Toggle = Color3.fromRGB(12, 106, 111);
 
-NormalSection1:AddColorPicker({
-	Name = "Drop Color",
-	Default = LibraryUi.Colors.DropColor,
-	Callback = function(v)
-		LibraryUi.Colors.DropColor = v;
+LibraryUi.Colors.DropColor = Color3.fromRGB(23, 41, 76);
 
-		LibraryUi:RefreshCurrentColor(v);
-	end,
-});
+LibraryUi.Colors.Risky = Color3.fromRGB(255, 0, 0);
 
-NormalSection1:AddColorPicker({
-	Name = "Risky",
-	Default = LibraryUi.Colors.Risky,
-	Callback = function(v)
-		LibraryUi.Colors.Risky = v;
+LibraryUi.Colors.MouseEnter = Color3.fromRGB(17, 44, 107);
 
-		LibraryUi:RefreshCurrentColor(v);
-	end,
-});
+LibraryUi.Colors.BlockColor = Color3.fromRGB(18, 28, 77);
 
-NormalSection1:AddColorPicker({
-	Name = "Mouse Enter",
-	Default = LibraryUi.Colors.MouseEnter,
-	Callback = function(v)
-		LibraryUi.Colors.MouseEnter = v;
+ibraryUi.Colors.BGDBColor = Color3.fromRGB(6, 20, 53);
 
-		LibraryUi:RefreshCurrentColor(v);
-	end,
-});
+LibraryUi.Colors.BlockBackground = Color3.fromRGB(4, 15, 93);
 
-NormalSection1:AddColorPicker({
-	Name = "Block Color",
-	Default = LibraryUi.Colors.BlockColor,
-	Callback = function(v)
-		LibraryUi.Colors.BlockColor = v;
+LibraryUi.Colors.StrokeColor = Color3.fromRGB(31, 123, 139);
 
-		LibraryUi:RefreshCurrentColor(v);
-	end,
-});
+LibraryUi.Colors.HighStrokeColor = Color3.fromRGB(10, 84, 106);
 
-NormalSection1:AddColorPicker({
-	Name = "Background Color",
-	Default = LibraryUi.Colors.BGDBColor,
-	Callback = function(v)
-		LibraryUi.Colors.BGDBColor = v;
+LibraryUi.Colors.SwitchColor = Color3.fromRGB(22, 174, 209);
 
-		LibraryUi:RefreshCurrentColor(v);
-	end,
-});
-
-NormalSection1:AddColorPicker({
-	Name = "Block Background Color",
-	Default = LibraryUi.Colors.BlockBackground,
-	Callback = function(v)
-		LibraryUi.Colors.BlockBackground = v;
-
-		LibraryUi:RefreshCurrentColor(v);
-	end,
-});
-
-NormalSection1:AddColorPicker({
-	Name = "Stroke Color",
-	Default = LibraryUi.Colors.StrokeColor,
-	Callback = function(v)
-		LibraryUi.Colors.StrokeColor = v;
-
-		LibraryUi:RefreshCurrentColor(v);
-	end,
-});
-
-NormalSection1:AddColorPicker({
-	Name = "High Stroke Color",
-	Default = LibraryUi.Colors.HighStrokeColor,
-	Callback = function(v)
-		LibraryUi.Colors.HighStrokeColor = v;
-
-		LibraryUi:RefreshCurrentColor(v);
-	end,
-});
-
-NormalSection1:AddColorPicker({
-	Name = "Switch Color",
-	Default = LibraryUi.Colors.SwitchColor,
-	Callback = function(v)
-		LibraryUi.Colors.SwitchColor = v;
-
-		LibraryUi:RefreshCurrentColor(v);
-	end,
-});
-
-NormalSection1:AddColorPicker({
-	Name = "Line Color",
-	Default = LibraryUi.Colors.LineColor,
-	Callback = function(v)
-		LibraryUi.Colors.LineColor = v;
-
-		LibraryUi:RefreshCurrentColor(v);
-	end,
-});
+LibraryUi.Colors.LineColor = Color3.fromRGB(0, 239, 240);
 
 local NormalSection2 = UiSettingExtractTab:DrawSection({
 	Name = "Edition",
