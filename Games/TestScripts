@@ -253,7 +253,7 @@ local MachineRemote = game:GetService("ReplicatedStorage"):WaitForChild("rEvents
 
 local CurrentActiveRock = nil
 
--- Самая простая функция экипировки
+-- Функция для экипировки кулака (без лишних проверок)
 local function equipPunch(char)
     local p = char:FindFirstChild("Punch") or player.Backpack:FindFirstChild("Punch")
     if p and p.Parent == player.Backpack then
@@ -271,49 +271,42 @@ local function SetupAutoFarm(targetName, targetPos)
             local hrp = char:WaitForChild("HumanoidRootPart", 5)
             local hum = char:WaitForChild("Humanoid", 5)
             
-            -- Находим модель камня просто по имени в папке
+            -- Поиск модели камня напрямую по имени
             local rockModel = workspace.machinesFolder:FindFirstChild(targetName)
             local targetPart = rockModel and (rockModel:FindFirstChild("Rock") or rockModel:FindFirstChildOfClass("MeshPart"))
 
             if hrp and targetPart then
-                -- МГНОВЕННЫЙ ПЕРЕЛЕТ
-                -- Корректируем высоту: для размера 4 приподнимаем чуть меньше, чтобы кулаки доставали
-                local offset = (hum.HipHeight > 2) and (hum.HipHeight * 0.3) or 0
-                hrp.CFrame = CFrame.lookAt(targetPos + Vector3.new(0, offset, 0), targetPart.Position)
+                -- Мгновенно ставим в позицию
+                -- Смещение высоты для размера 4, чтобы руки были на уровне центра камня
+                local yOffset = (hum.HipHeight > 2) and (hum.HipHeight * 0.4) or 0
+                hrp.CFrame = CFrame.lookAt(targetPos + Vector3.new(0, yOffset, 0), targetPart.Position)
                 
-                -- Вместо Anchored используем маленькую платформу под ногами, чтобы не падать
-                local plat = Instance.new("Part", char)
-                plat.Size = Vector3.new(4, 0.5, 4)
-                plat.Anchored = true
-                plat.Transparency = 1
-                plat.CFrame = hrp.CFrame * CFrame.new(0, -3.5, 0)
+                -- Замораживаем персонажа, чтобы не улетал
+                hrp.Anchored = true
 
-                -- ЦИКЛ ФАРМА
+                -- Основной цикл (удары)
                 while CurrentActiveRock == targetName and hum.Health > 0 do
-                    -- 1. Берем кулак
+                    -- 1. Экипируем и бьем
                     local punch = equipPunch(char)
-                    
-                    -- 2. Физический клик через VirtualUser
-                    VirtualUser:CaptureController()
-                    VirtualUser:ClickButton1(Vector2.new(0,0))
-                    
                     if punch then 
                         punch:Activate() 
                     end
 
-                    -- 3. Прямой сигнал (пробуем реже, чтобы не палиться)
+                    -- 2. Физический клик мыши для сервера
+                    VirtualUser:Button1Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+                    
+                    -- 3. Прямой сигнал серверу (RemoteFunction)
                     pcall(function()
                         MachineRemote:InvokeServer(rockModel)
                     end)
 
-                    -- 4. Искусственное касание
+                    -- 4. Физическое касание (firetouchinterest)
                     firetouchinterest(hrp, targetPart, 0)
                     task.wait(0.01)
                     firetouchinterest(hrp, targetPart, 1)
 
-                    task.wait(0.1) -- Чуть медленнее, чтобы сервер успевал считать урон
+                    task.wait(0.05) -- Максимальная скорость
                 end
-                plat:Destroy()
             end
             task.wait(1)
         end
