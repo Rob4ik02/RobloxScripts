@@ -22,7 +22,7 @@ local Window = LibraryUi.new({
 	]],
 	Keybind = "LeftAlt",
 	Logo = "rbxassetid://102643647961511",
-	Scale = Mobile, -- Leave blank if you want automatic scale [PC, Mobile].
+	Scale = 0.9,
 	TextSize = 13,
 });
 
