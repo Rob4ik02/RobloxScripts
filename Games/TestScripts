@@ -1,3 +1,30 @@
+local LibraryUi = loadstring(game:HttpGet("https://raw.githubusercontent.com/4lpaca-pin/CompKiller/refs/heads/main/src/source.luau"))();
+LibraryUi:Loader("rbxassetid://102643647961511" , 3).yield();
+local Window = LibraryUi.new({
+	Name = [[
+	| Oxygen Hub
+	| Muscle Legends
+	]],
+	Keybind = "LeftAlt",
+	Logo = "rbxassetid://102643647961511",
+	Scale = Mobile,
+	TextSize = 10,
+});
+Window:DrawCategory({
+	Name = "Muscle Legends"
+});
+local SettingsTab = Window:DrawContainerTab({
+	Name = "Settings",
+	Icon = "gear",
+});
+local UiSettingExtractTab = SettingsTab:DrawTab({
+    Name = "Settings UI",
+    Type = "Single"
+});
+local NormalSection1 = UiSettingExtractTab:DrawSection({
+	Name = "Destroyer",
+	Position = 'middle'	
+});
 NormalSection1:AddButton({
     Name = "Destroy Gui",
     Callback = function()
