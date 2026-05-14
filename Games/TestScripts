@@ -456,7 +456,7 @@ NormalSection2:AddButton({
 				end
 
 			end)
-		end
+		
 	end,
 })
 
