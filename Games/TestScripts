@@ -259,8 +259,7 @@ local NormalSection2 = GymExtractTab:DrawSection({
 });
 
 local AutoPunchRockActive = false
--- Базовая позиция (от которой начинаем проверку)
-local BasePosition = Vector3.new(-2591.58, 7.26, -244.1)
+local StandPosition = Vector3.new(-2591.58, 7.26, -244.1)
 local MachineRemote = game:GetService("ReplicatedStorage"):WaitForChild("rEvents"):WaitForChild("machineInteractRemote")
 
 local AutoPunchRock = NormalSection2:AddToggle({
@@ -277,52 +276,28 @@ local AutoPunchRock = NormalSection2:AddToggle({
         local targetRock = rockModel and rockModel:FindFirstChild("Rock")
 
         if AutoPunchRockActive and hrp and targetRock then
-            -- 1. Первоначальный телепорт к базе и разворот к камню
-            hrp.CFrame = CFrame.lookAt(BasePosition, targetRock.Position)
-            task.wait(0.2)
+            -- Плавный полет к камню
+            local TweenService = game:GetService("TweenService")
+            local TargetCFrame = CFrame.lookAt(StandPosition, targetRock.Position)
+            TweenService:Create(hrp, info, {CFrame = TargetCFrame}):Play()
+            
+            task.wait(1.2)
 
-            -- 2. Динамическое сближение (нащупываем хитбокс)
+            -- ОСНОВНОЙ ЦИКЛ
             task.spawn(function()
-                local distanceShift = 0
-                -- Идем вперед по чуть-чуть, пока не коснемся или не пройдем 5 шагов
-                while AutoPunchRockActive and distanceShift < 5 do
-                    local parts = hrp:GetTouchingParts()
-                    local touching = false
-                    for _, p in pairs(parts) do
-                        if p:IsDescendantOf(rockModel) then
-                            touching = true
-                            break
-                        end
-                    end
-
-                    if touching then
-                        -- Если коснулись, чуть-чуть отходим назад для идеальной позиции
-                        hrp.CFrame = hrp.CFrame * CFrame.new(0, 0, 0.2)
-                        break
-                    else
-                        -- Идем вперед к камню
-                        distanceShift = distanceShift + 0.1
-                        hrp.CFrame = hrp.CFrame * CFrame.new(0, 0, -0.1)
-                    end
-                    task.wait(0.01)
-                end
-                
-                if AutoPunchRockActive then 
-                    hrp.Anchored = true 
-                end
-            end)
-
-            -- 3. Цикл фарма (Remote + Tool)
-            task.spawn(function()
+                local step = 0
                 while AutoPunchRockActive do
-                    -- Проверка на прочность (если есть данные в модели)
-                    local needed = rockModel:FindFirstChild("neededDurability")
-                    -- Если нужно 150к, а у нас меньше — бить бесполезно
-                    
+                    -- 1. Микро-движение для обновления хитбокса (персонаж будет чуть-чуть дрожать)
+                    step = step + 1
+                    local shift = math.sin(step) * 0.05 -- Движение на 0.05 пикселя
+                    hrp.CFrame = TargetCFrame * CFrame.new(0, 0, shift)
+
+                    -- 2. Отправка сигнала на сервер (RemoteFunction)
                     pcall(function()
                         MachineRemote:InvokeServer(rockModel)
                     end)
                     
+                    -- 3. Удар предметом
                     local punch = character:FindFirstChild("Punch") or player.Backpack:FindFirstChild("Punch")
                     if punch then
                         if punch.Parent == player.Backpack then
@@ -330,10 +305,18 @@ local AutoPunchRock = NormalSection2:AddToggle({
                         end
                         punch:Activate()
                     end
+                    
+                    -- 4. Если урон перестал идти, пробуем перенадеть тулз раз в 5 секунд
+                    if step % 100 == 0 then
+                        character.Humanoid:UnequipTools()
+                        task.wait(0.1)
+                    end
+
                     task.wait(0.05)
                 end
             end)
         else
+            -- При выключении просто даем свободу движений
             if hrp then hrp.Anchored = false end
         end
     end,
