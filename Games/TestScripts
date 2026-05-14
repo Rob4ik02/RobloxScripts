@@ -22,8 +22,8 @@ local Window = LibraryUi.new({
 	]],
 	Keybind = "LeftAlt",
 	Logo = "rbxassetid://102643647961511",
-	Scale = 0.9,
-	TextSize = 13,
+	Scale = Mobile,
+	TextSize = 10,
 });
 
 local Watermark = Window:Watermark();
