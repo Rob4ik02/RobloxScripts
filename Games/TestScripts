@@ -248,28 +248,25 @@ local GymExtractTab = MainTab:DrawTab({
 	Type = "Single"
 });
 
+local TweenService = game:GetService("TweenService")
 local VirtualUser = game:GetService("VirtualUser")
 local MachineRemote = game:GetService("ReplicatedStorage"):WaitForChild("rEvents"):WaitForChild("machineInteractRemote")
 
--- // Функция усиленного хитбокса инструмента \\ --
-local function enhancePunchTool(character)
-    local punch = character:FindFirstChild("Punch") or player.Backpack:FindFirstChild("Punch")
-    if punch and punch:FindFirstChild("Handle") then
-        local handle = punch.Handle
-        -- Делаем хитбокс самого кулака огромным
-        handle.Size = Vector3.new(15, 15, 15) 
-        handle.Transparency = 1
-        handle.CanCollide = false
-        
-        -- Удаляем ограничители, если они есть
-        local touchInterest = handle:FindFirstChildOfClass("TouchTransmitter")
-        if not touchInterest then
-            -- Force trigger touch
+local CurrentActiveRock = nil
+local currentHitbox = nil
+
+-- Функция для принудительного экипирования кулака
+local function ensurePunchEquipped(character)
+    local tool = character:FindFirstChild("Punch") or player.Backpack:FindFirstChild("Punch")
+    if tool then
+        if tool.Parent == player.Backpack then
+            character.Humanoid:EquipTool(tool)
         end
+        return tool
     end
+    return nil
 end
 
--- // ОБНОВЛЕННАЯ ФУНКЦИЯ ФАРМА \\ --
 local function SetupAutoFarm(targetName, targetPos)
     CurrentActiveRock = targetName
     
@@ -279,12 +276,11 @@ local function SetupAutoFarm(targetName, targetPos)
             local hrp = character:WaitForChild("HumanoidRootPart", 10)
             local hum = character:WaitForChild("Humanoid", 10)
             
-            -- Поиск модели камня (по имени и дистанции)
+            -- Поиск модели камня
             local rockModel = nil
             for _, v in pairs(workspace.machinesFolder:GetChildren()) do
                 if v.Name:find(targetName) then
-                    local p = v:GetModelCFrame().Position
-                    if (p - targetPos).Magnitude < 60 then
+                    if (v:GetModelCFrame().Position - targetPos).Magnitude < 100 then
                         rockModel = v
                         break
                     end
@@ -294,38 +290,41 @@ local function SetupAutoFarm(targetName, targetPos)
             local targetPart = rockModel and (rockModel:FindFirstChild("Rock") or rockModel:FindFirstChildOfClass("MeshPart"))
 
             if hrp and targetPart then
-                -- Усиливаем кулаки под размер
-                enhancePunchTool(character)
-                createMegaHitbox(character)
+                hrp.Anchored = false
                 
-                -- Коррекция высоты под размер персонажа
+                -- УСКОРЕННЫЙ ТЕЛЕПОРТ (Скорость 250 вместо 50)
+                local distance = (hrp.Position - targetPos).Magnitude
+                local speed = 250 -- ЛЕТИТ ОЧЕНЬ БЫСТРО
+                local duration = distance / speed
+                
+                -- Коррекция высоты под размер 4 и больше
                 local heightOffset = (hum.HipHeight > 2) and (hum.HipHeight - 1.5) or 0
                 local correctedPos = targetPos + Vector3.new(0, heightOffset, 0)
                 
-                hrp.Anchored = false
-                hrp.CFrame = CFrame.lookAt(correctedPos, targetPart.Position)
-                task.wait(0.2)
+                local info = TweenInfo.new(duration, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+                local tween = TweenService:Create(hrp, info, {CFrame = CFrame.lookAt(correctedPos, targetPart.Position)})
+                
+                tween:Play()
+                tween.Completed:Wait()
                 
                 if CurrentActiveRock == targetName then hrp.Anchored = true end
 
-                -- Цикл ударов с эмуляцией клика
+                -- Цикл Фарма
                 while CurrentActiveRock == targetName and hum.Health > 0 do
-                    -- 1. Сигнал RemoteFunction (Основной урон)
+                    -- 1. Вызываем Remote (Урон серверу)
                     pcall(function()
                         MachineRemote:InvokeServer(rockModel)
                     end)
                     
-                    -- 2. Работа с инструментом
-                    local punch = character:FindFirstChild("Punch") or player.Backpack:FindFirstChild("Punch")
+                    -- 2. Проверяем кулак и бьем
+                    local punch = ensurePunchEquipped(character)
                     if punch then
-                        if punch.Parent == player.Backpack then hum:EquipTool(punch) end
                         punch:Activate()
-                        
-                        -- Эмуляция клика мыши для обхода анти-афк и проверок
+                        -- Эмуляция клика (чтобы сервер видел активность)
                         VirtualUser:Button1Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
                     end
                     
-                    -- 3. Симуляция касания хитбокса
+                    -- 3. Хитбокс касания
                     if currentHitbox then
                         firetouchinterest(currentHitbox, targetPart, 0)
                         firetouchinterest(currentHitbox, targetPart, 1)
@@ -334,7 +333,7 @@ local function SetupAutoFarm(targetName, targetPos)
                     task.wait(0.05)
                 end
             end
-            task.wait(1)
+            task.wait(0.5)
         end
     end)
 end
