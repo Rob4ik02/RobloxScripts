@@ -12,7 +12,8 @@ return function(Env)
     local Notifier = Env.Notifier
     local RS = Env.RS
     local rEvents = Env.rEvents
-
+    print("Cloud Oxygen Hub: Loading Automation.lua")
+    print("Cloud Oxygen Hub: 0 / 10 Automation.Lua")
     -- // Rebirth Tab \\ (упрощённая версия)
   local RebirthsExtractTab = AutoTab:DrawTab({
       Name = "Rebirths",
@@ -157,7 +158,7 @@ return function(Env)
           end
       end
   })
-  
+  print("Cloud Oxygen Hub: 1 / 10 Automation.Lua")
   -- // SPIN FORTUNE AUTO \\ --
   
   
@@ -241,7 +242,9 @@ return function(Env)
           spinCD = Value
       end
   })
-  
+
+    print("Cloud Oxygen Hub: 2 / 10 Automation.Lua")
+    
   -- // Gift Box Tab \\ --
   
   
@@ -395,21 +398,21 @@ return function(Env)
           });
       end
   })
-  
+
+  print("Cloud Oxygen Hub: 3 / 10 Automation.Lua")
+
+          
   local QuestsExtractTab = AutoTab:DrawTab({
   	Name = "Quests",
   	Type = "Single"
   });
   
   local NormalSection1 = QuestsExtractTab:DrawSection({
-  	Name = "There nothing here :(",
+  	Name = "Cooming soon...",
   	Position = 'left'	
   });
-  
-  NormalSection1:AddParagraph({
-  	Title = "Cooming soon!",
-  	Content = "Потому что я делаю другие функции, я потом создам здесь все."
-  })
+
+  print("Cloud Oxygen Hub: 4 / 10 Automation.Lua")
   
   local AutoEatExtractTab = AutoTab:DrawTab({
       Name = "Auto Eat",
@@ -563,7 +566,9 @@ return function(Env)
           updateStatus()
       end
   });
-  
+
+  print("Cloud Oxygen Hub: 5 / 10 Automation.Lua")
+              
   -- // Shop Tab \\ --
   
   local CrystalExtractTab = ShopTab:DrawTab({
@@ -895,7 +900,7 @@ return function(Env)
       end
   })
   
-  
+  print("Cloud Oxygen Hub: 6 / 10 AAutomation.Lua")
   -- // Kill Tab \\ --
   local function getLocalCharacter()
       local char = player.Character
@@ -1222,6 +1227,8 @@ return function(Env)
       Title = "Blacklist:",
       Content = "None"
   })
+
+  print("Cloud Oxygen Hub: 7 / 10 Automation.Lua")
   
   -- // Status Tab \\ --
   
@@ -1229,17 +1236,23 @@ return function(Env)
       Name = "Cooming Soon...",
       Type = "Single"
   });
+
+  print("Cloud Oxygen Hub: 8 / 10 Automation.Lua")
   
   local ServerExtractTab = MiscellaneousTab:DrawTab({
       Name = "Server",
       Type = "Single"
   });
+
+                  
   
   local TextSection2 = ServerExtractTab:DrawSection({
   	Name = "Cooming soon...",
   	Position = 'middle'	
   });
-  
+
+  print("Cloud Oxygen Hub: 9 / 10 Automation.Lua")
+                    
   local SlidersExtractTab = MiscellaneousTab:DrawTab({
   	Name = "Adjustment Tab",
   	Type = "Single"
@@ -1533,6 +1546,8 @@ return function(Env)
           end
       end
   })
+
+  print("Cloud Oxygen Hub: 9 / 10 Automation.Lua")
   
   -- // Settings Tab \\ --
   
@@ -1570,4 +1585,6 @@ return function(Env)
       Duration = 10,
       Icon = "rbxassetid://102643647961511"
   });
+  print("Cloud Oxygen Hub: 10 / 10 Automation.Lua")
+  print("Cloud Oxygen Hub: Loaded Automation.lua!")
 end
