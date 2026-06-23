@@ -4,7 +4,7 @@ return function(Env)
   	local ShopTab = Env.Tabs.Shop
   	local StatusTab = Env.Tabs.Status
   	local SettingsTab = Env.Tabs.Settings
-    local KillTab = Tabs.Kill
+    local KillTab = Env.Tabs.Kill
   	local MiscTab = Env.Tabs.Misc
     local MainTab = Env.Tabs.Main
     local player = Env.player
