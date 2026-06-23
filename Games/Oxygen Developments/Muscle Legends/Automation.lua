@@ -1,12 +1,12 @@
 return function(Env)
-  	local AutoTab = Env.Tabs.Auto
-  	local HomeTab = Env.Tabs.Home
-  	local ShopTab = Env.Tabs.Shop
-  	local StatusTab = Env.Tabs.Status
-  	local SettingsTab = Env.Tabs.Settings
-    local KillTab = Env.Tabs.Kill
-  	local MiscTab = Env.Tabs.Misc
-    local MainTab = Env.Tabs.Main
+  	local AutoTab = Env.Tabs.Auto --3
+  	local HomeTab = Env.Tabs.Home -- 1
+  	local ShopTab = Env.Tabs.Shop -- 4
+  	local StatusTab = Env.Tabs.Status -- 6
+  	local SettingsTab = Env.Tabs.Settings -- 8
+    local KillTab = Env.Tabs.Kill -- 5
+  	local MiscellaneousTab = Env.Tabs.Misc -- 7
+    local MainTab = Env.Tabs.Main -- 2
     local player = Env.player
     local playInterfaceSound = Env.playInterfaceSound
     local Notifier = Env.Notifier
