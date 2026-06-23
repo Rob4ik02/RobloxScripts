@@ -124,8 +124,12 @@ local function loadExternalModule(url, env)
 end
 
 -- Теперь загружаем модули вот так:
+loadExternalModule("https://raw.githubusercontent.com/Rob4ik02/RobloxScripts/refs/heads/main/Games/Oxygen%20Developments/Muscle%20Legends/VerifyPlayer.lua", Env)
+loadExternalModule("https://raw.githubusercontent.com/Rob4ik02/RobloxScripts/refs/heads/main/Games/Oxygen%20Developments/Muscle%20Legends/Home.lua", Env)
 loadExternalModule("https://raw.githubusercontent.com/Rob4ik02/RobloxScripts/refs/heads/main/Games/Oxygen%20Developments/Muscle%20Legends/GymFarm.lua", Env)
 loadExternalModule("https://raw.githubusercontent.com/Rob4ik02/RobloxScripts/refs/heads/main/Games/Oxygen%20Developments/Muscle%20Legends/Automation.lua", Env)
+
+
 
 playInterfaceSound("NotificationSound")
 Notifier.new({
