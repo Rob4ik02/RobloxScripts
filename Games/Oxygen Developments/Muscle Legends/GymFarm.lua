@@ -1,5 +1,5 @@
 return function(Env)
-	
+	print("Cloud Oxygen Hub: Loading GymFarm.Lua
 	local AutoTab = Env.Tabs.Auto
 	local HomeTab = Env.Tabs.Home
 	local ShopTab = Env.Tabs.Shop
@@ -1279,4 +1279,5 @@ return function(Env)
 	        end
 	    end, -- ИСПРАВЛЕНО: Добавлен недостающий end и запятая
 	});
+	print("Cloud Oxygen Hub: Loaded GymFarm.lua!")
 end
