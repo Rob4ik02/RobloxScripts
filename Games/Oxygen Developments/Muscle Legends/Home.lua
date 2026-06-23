@@ -12,7 +12,8 @@ return function(Env)
     local Notifier = Env.Notifier
     local RS = Env.RS
     local rEvents = Env.rEvents
-
+    print("Cloud Oxygen Hub: Loading Home.lua")
+    print("Cloud Oxygen Hub: 0/2 Home.Lua")
     -- // Home Tab \\ --
 
     local CreditsExtractTab = HomeTab:DrawTab({
@@ -39,7 +40,7 @@ return function(Env)
     	Title = "Players (Helped in coding and testing)",
     	Content = "Axearoz, My4Back, 8h8ph."
     })
-    
+    print("Cloud Oxygen Hub: 1/2 Home.Lua")
     local FAQExtractTab = HomeTab:DrawTab({
     	Name = "FAQ",
     	Type = "Single"
@@ -93,6 +94,8 @@ return function(Env)
     	Name = "Key System",
     	Type = "Single"
     });
+
+    print("Cloud Oxygen Hub: 2/2 Home.Lua")
     
     local TextSection1 = KeySystemExtractTab:DrawSection({
     	Name = "Key Time Status:",
@@ -106,4 +109,6 @@ return function(Env)
     the development stage, and the devs want to add more features in the future.
         ]]
     })
+    wait(0.5)
+    print("Cloud Oxygen Hub: Loaded Home.lua!")
 end
