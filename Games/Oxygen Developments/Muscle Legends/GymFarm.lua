@@ -12,7 +12,7 @@ return function(Env)
     local Notifier = Env.Notifier
     local RS = Env.RS
     local rEvents = Env.rEvents
-	
+	print("Cloud Oxygen Hub: 0 / 5 GymFarm.Lua
   local GymExtractTab = MainTab:DrawTab({
 	    Name = "Gym Farm",
 	    Type = "Single"
@@ -163,7 +163,7 @@ return function(Env)
 	        { RequiredStrength = 0, Pos = CFrame.new(-8944.47754, 58.9421883, -5695.39844) }
 	    }
 	}
-	
+	print("Cloud Oxygen Hub: 1 / 5 GymFarm.Lua
 	-- =============================================================================
 	-- ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ФИЛЬТРАЦИИ КОРДИНАТ ПО СИЛЕ
 	-- =============================================================================
@@ -390,7 +390,7 @@ return function(Env)
 	        end
 	    end)
 	end
-	
+	print("Cloud Oxygen Hub: 2 / 5 GymFarm.Lua
 	-- =============================================================================
 	-- ГЕНЕРАЦИЯ ИНТЕРФЕЙСА ДЛЯ ВСЕХ ОСТРОВОВ
 	-- =============================================================================
@@ -508,6 +508,8 @@ return function(Env)
 	        end
 	    })
 	end
+
+	print("Cloud Oxygen Hub: 3 / 5 GymFarm.Lua
 	
 	local section2 = GymExtractTab:DrawSection({ Name = "Rock Farming", Position = 'middle' })
 	
@@ -689,6 +691,8 @@ return function(Env)
 	        end
 	    end
 	})
+
+	print("Cloud Oxygen Hub: 4 / 5 GymFarm.Lua
 	
 	local GeneralFarmExtractTab = MainTab:DrawTab({
 		Name = "Farm General",
@@ -1279,5 +1283,7 @@ return function(Env)
 	        end
 	    end, -- ИСПРАВЛЕНО: Добавлен недостающий end и запятая
 	});
+	print("Cloud Oxygen Hub: 5 / 5 GymFarm.Lua
+	wait(0.5)
 	print("Cloud Oxygen Hub: Loaded GymFarm.lua!")
 end
