@@ -93,14 +93,39 @@ local Env = {
 }
 
 -- =============================================================================
--- ЗАГРУЗКА МОДУЛЕЙ С GITHUB
+-- БЕЗОПАСНАЯ ЗАГРУЗКА МОДУЛЕЙ
 -- =============================================================================
-local REPO_URL = "https://github.com/Rob4ik02/RobloxScripts/tree/main/Games/Oxygen%20Developments/Muscle%20Legends"
+local function loadExternalModule(url, env)
+    local success, scriptContent = pcall(function()
+        return game:HttpGet(url)
+    end)
+    
+    if not success then
+        warn("Ошибка сети (не удалось скачать файл): " .. url)
+        return
+    end
 
--- Загружаем модули и передаем им таблицу Env
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Rob4ik02/RobloxScripts/refs/heads/main/Games/Oxygen%20Developments/Muscle%20Legends/GymFarm.lua"))()(Env)
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Rob4ik02/RobloxScripts/refs/heads/main/Games/Oxygen%20Developments/Muscle%20Legends/Automation.lua"))()(Env)
--- Добавляй сюда следующие файлы по такому же принципу
+    local func, err = loadstring(scriptContent)
+    if not func then
+        warn("Ошибка компиляции (синтаксис в файле?): " .. url .. "\n" .. tostring(err))
+        return
+    end
+
+    local successExec, result = pcall(func)
+    if successExec then
+        if type(result) == "function" then
+            result(env) -- Передаем Env
+        else
+            warn("Модуль " .. url .. " не вернул функцию! Убедись, что файл начинается с 'return function(Env)'")
+        end
+    else
+        warn("Ошибка исполнения в модуле: " .. url .. "\n" .. tostring(result))
+    end
+end
+
+-- Теперь загружаем модули вот так:
+loadExternalModule("https://raw.githubusercontent.com/Rob4ik02/RobloxScripts/refs/heads/main/Games/Oxygen%20Developments/Muscle%20Legends/GymFarm.lua", Env)
+loadExternalModule("https://raw.githubusercontent.com/Rob4ik02/RobloxScripts/refs/heads/main/Games/Oxygen%20Developments/Muscle%20Legends/Automation.lua", Env)
 
 playInterfaceSound("NotificationSound")
 Notifier.new({
