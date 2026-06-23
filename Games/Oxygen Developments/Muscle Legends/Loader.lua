@@ -98,8 +98,8 @@ local Env = {
 local REPO_URL = "https://github.com/Rob4ik02/RobloxScripts/tree/main/Games/Oxygen%20Developments/Muscle%20Legends"
 
 -- Загружаем модули и передаем им таблицу Env
-loadstring(game:HttpGet(REPO_URL .. "GymFarm.lua"))()(Env)
-loadstring(game:HttpGet(REPO_URL .. "Automation.lua"))()(Env)
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Rob4ik02/RobloxScripts/refs/heads/main/Games/Oxygen%20Developments/Muscle%20Legends/GymFarm.lua"))()(Env)
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Rob4ik02/RobloxScripts/refs/heads/main/Games/Oxygen%20Developments/Muscle%20Legends/Automation.lua"))()(Env)
 -- Добавляй сюда следующие файлы по такому же принципу
 
 playInterfaceSound("NotificationSound")
