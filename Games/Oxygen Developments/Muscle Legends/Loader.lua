@@ -50,6 +50,8 @@ LibraryUi:Loader("rbxassetid://102643647961511" , 3).yield();
 task.wait(3)
 playInterfaceSound("LoadedSound")
 
+print(" OXYGEN SYSTEM: Welcome to console! The Script is loading now..")
+warn(" OXYGEN SYSTEM: The script can maybe not loaded if your exploit not strong possible!")
 -- // Создание Окна \\ --
 local Window = LibraryUi.new({
     Name = "Oxygen Hub | Muscle Legends",
@@ -101,13 +103,13 @@ local function loadExternalModule(url, env)
     end)
     
     if not success then
-        warn("Ошибка сети (не удалось скачать файл): " .. url)
+        warn("OXYGEN SYSTEM: Bad internet. (Can't download the module): " .. url)
         return
     end
 
     local func, err = loadstring(scriptContent)
     if not func then
-        warn("Ошибка компиляции (синтаксис в файле?): " .. url .. "\n" .. tostring(err))
+        warn("OXYGEN SYSTEM: No func after then. (Syntax in file?): " .. url .. "\n" .. tostring(err))
         return
     end
 
@@ -116,17 +118,24 @@ local function loadExternalModule(url, env)
         if type(result) == "function" then
             result(env) -- Передаем Env
         else
-            warn("Модуль " .. url .. " не вернул функцию! Убедись, что файл начинается с 'return function(Env)'")
+            warn("OXYGEN SYSTEM: Module " .. url .. " wasn't back the answer!")
         end
     else
-        warn("Ошибка исполнения в модуле: " .. url .. "\n" .. tostring(result))
+        warn("OXYGEN SYSTEM: Module isn't loaded!" .. url .. "\n" .. tostring(result))
     end
 end
 
--- Теперь загружаем модули вот так:
+wait(1)
+print(" OXYGEN SYSTEM: Loading External Module 'VerifyPlayer.lua'")
 loadExternalModule("https://raw.githubusercontent.com/Rob4ik02/RobloxScripts/refs/heads/main/Games/Oxygen%20Developments/Muscle%20Legends/VerifyPlayer.lua", Env)
+wait(1)
+print(" OXYGEN SYSTEM: Loading External Module 'Home.lua'")
 loadExternalModule("https://raw.githubusercontent.com/Rob4ik02/RobloxScripts/refs/heads/main/Games/Oxygen%20Developments/Muscle%20Legends/Home.lua", Env)
+wait(1)
+print(" OXYGEN SYSTEM: Loading External Module 'GymFarm.lua'")
 loadExternalModule("https://raw.githubusercontent.com/Rob4ik02/RobloxScripts/refs/heads/main/Games/Oxygen%20Developments/Muscle%20Legends/GymFarm.lua", Env)
+wait(1)
+print(" OXYGEN SYSTEM: Loading External Module 'Automation.lua'")
 loadExternalModule("https://raw.githubusercontent.com/Rob4ik02/RobloxScripts/refs/heads/main/Games/Oxygen%20Developments/Muscle%20Legends/Automation.lua", Env)
 
 
